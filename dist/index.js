@@ -4,6 +4,77 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _Input = require('./Input');
+
+var _Input2 = _interopRequireDefault(_Input);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Field = function Field() {
+  var InputComponent = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _Input2.default;
+
+  var RawFieldComponent = function RawFieldComponent(props) {
+    return _react2.default.createElement(
+      'div',
+      null,
+      _react2.default.createElement(
+        'label',
+        { htmlFor: props.label },
+        _react2.default.createElement(InputComponent, props)
+      )
+    );
+  };
+
+  RawFieldComponent.propTypes = {
+    label: _react2.default.PropTypes.string,
+    pristine: _react2.default.PropTypes.bool,
+    valid: _react2.default.PropTypes.bool,
+    message: _react2.default.PropTypes.string
+  };
+
+  return RawFieldComponent;
+};
+
+exports.default = Field;
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Input = function Input(props) {
+  return _react2.default.createElement('input', {
+    type: props.type,
+    name: props.label,
+    value: props.value,
+    onChange: props.onChange
+  });
+};
+
+Input.propTypes = {
+  type: _react2.default.PropTypes.string,
+  label: _react2.default.PropTypes.string,
+  value: _react2.default.PropTypes.string,
+  onChange: _react2.default.PropTypes.func
+};
+
+exports.default = Input;
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -16,15 +87,11 @@ var _lodash = require('lodash.debounce');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _validators = require('./validators');
-
-var validatorFunctions = _interopRequireWildcard(_validators);
-
-var _Field = require('./Field');
+var _Field = require('./Field.jsx');
 
 var _Field2 = _interopRequireDefault(_Field);
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+var _utilities = require('../helpers/utilities.jsx');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33,55 +100,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function assembleValidators(_ref) {
-  var email = _ref.email,
-      length = _ref.length,
-      required = _ref.required,
-      match = _ref.match,
-      alpha = _ref.alpha,
-      number = _ref.number,
-      max = _ref.max,
-      min = _ref.min;
-
-  var validators = {};
-  if (email) {
-    validators.email = validatorFunctions.email(email === true ? undefined : email);
-  }
-  if (length) {
-    validators.length = validatorFunctions.length(length);
-  }
-  if (required) {
-    validators.required = validatorFunctions.required();
-  }
-  if (match) {
-    validators.match = validatorFunctions.match(match);
-  }
-  if (alpha) {
-    validators.alpha = validatorFunctions.alpha();
-  }
-  if (number) {
-    validators.numeric = validatorFunctions.numeric();
-  }
-  if (max) {
-    validators.max = validatorFunctions.max(max);
-  }
-  if (min) {
-    validators.min = validatorFunctions.min(min);
-  }
-  return validators;
-}
-
-function updateValidators(config, validators) {
-  return Object.assign({}, validators, assembleValidators(config));
-}
-
-function isValid(value, validators) {
-  return validators.reduce(function (status, validator) {
-    if (!status) return false;
-    return validator(value);
-  }, true);
-}
 
 var ValidatedField = function (_React$Component) {
   _inherits(ValidatedField, _React$Component);
@@ -95,8 +113,8 @@ var ValidatedField = function (_React$Component) {
       value: props.value,
       valid: false,
       pristine: true,
-      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, // eslint-disable-line
-      validators: assembleValidators(props)
+      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0,
+      validators: (0, _utilities.assembleValidators)(props)
     };
 
     _this.message = '';
@@ -119,8 +137,8 @@ var ValidatedField = function (_React$Component) {
       }
 
       if (this.props.match !== nextProps.match) {
-        var validators = updateValidators({ match: nextProps.match }, this.state.validators);
-        this.setState({ valid: isValid(this.state.value, Object.values(validators)), validators: validators });
+        var validators = (0, _utilities.updateValidators)({ match: nextProps.match }, this.state.validators);
+        this.setState({ valid: (0, _utilities.isValid)(this.state.value, Object.values(validators)), validators: validators });
       }
     }
   }, {
@@ -144,7 +162,7 @@ var ValidatedField = function (_React$Component) {
 
       var validators = Object.values(this.state.validators);
 
-      this.setState({ value: value, valid: isValid(value, validators), pristine: false });
+      this.setState({ value: value, valid: (0, _utilities.isValid)(value, validators), pristine: false });
       this.finalValue = value;
       this.debouncedBroadcastChange();
     }
@@ -202,14 +220,64 @@ exports.default = ValidatedField;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.assembleValidators = assembleValidators;
+exports.updateValidators = updateValidators;
+exports.isValid = isValid;
 
-var _ValidatedField = require('./ValidatedField.jsx');
+var _validators = require('./validators.jsx');
 
-var _ValidatedField2 = _interopRequireDefault(_ValidatedField);
+var validatorFunctions = _interopRequireWildcard(_validators);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-exports.default = { ValidatedField: _ValidatedField2.default };
+function assembleValidators(_ref) {
+  var email = _ref.email,
+      length = _ref.length,
+      required = _ref.required,
+      match = _ref.match,
+      alpha = _ref.alpha,
+      number = _ref.number,
+      max = _ref.max,
+      min = _ref.min;
+
+  var validators = {};
+  if (email) {
+    validators.email = validatorFunctions.email(email === true ? undefined : email);
+  }
+  if (length) {
+    validators.length = validatorFunctions.length(length);
+  }
+  if (required) {
+    validators.required = validatorFunctions.required();
+  }
+  if (match) {
+    validators.match = validatorFunctions.match(match);
+  }
+  if (alpha) {
+    validators.alpha = validatorFunctions.alpha();
+  }
+  if (number) {
+    validators.numeric = validatorFunctions.numeric();
+  }
+  if (max) {
+    validators.max = validatorFunctions.max(max);
+  }
+  if (min) {
+    validators.min = validatorFunctions.min(min);
+  }
+  return validators;
+}
+
+function updateValidators(config, validators) {
+  return Object.assign({}, validators, assembleValidators(config));
+}
+
+function isValid(value, validators) {
+  return validators.reduce(function (status, validator) {
+    if (!status) return false;
+    return validator(value);
+  }, true);
+}
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -298,3 +366,16 @@ function custom(validatingFn) {
     return validatingFn(value);
   };
 }
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _ValidatedField = require('./components/ValidatedField.jsx');
+
+var _ValidatedField2 = _interopRequireDefault(_ValidatedField);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = { ValidatedField: _ValidatedField2.default };

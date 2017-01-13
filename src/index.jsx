@@ -1,3 +1,3 @@
-import ValidatedField from './ValidatedField.jsx';
+import ValidatedField from './components/ValidatedField.jsx';
 
 export default { ValidatedField };

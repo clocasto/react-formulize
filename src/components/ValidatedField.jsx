@@ -1,31 +1,7 @@
 import React from 'react';
 import debounce from 'lodash.debounce';
-import * as validatorFunctions from './validators';
-import Field from './Field';
-
-function assembleValidators({ email, length, required, match, alpha, number, max, min }) {
-  const validators = {};
-  if (email) { validators.email = validatorFunctions.email(email === true ? undefined : email); }
-  if (length) { validators.length = validatorFunctions.length(length); }
-  if (required) { validators.required = validatorFunctions.required(); }
-  if (match) { validators.match = validatorFunctions.match(match); }
-  if (alpha) { validators.alpha = validatorFunctions.alpha(); }
-  if (number) { validators.numeric = validatorFunctions.numeric(); }
-  if (max) { validators.max = validatorFunctions.max(max); }
-  if (min) { validators.min = validatorFunctions.min(min); }
-  return validators;
-}
-
-function updateValidators(config, validators) {
-  return Object.assign({}, validators, assembleValidators(config));
-}
-
-function isValid(value, validators) {
-  return validators.reduce((status, validator) => {
-    if (!status) return false;
-    return validator(value);
-  }, true);
-}
+import Field from './Field.jsx';
+import { assembleValidators, isValid, updateValidators } from '../helpers/utilities.jsx';
 
 const ValidatedField = class extends React.Component {
   constructor(props) {
@@ -35,7 +11,7 @@ const ValidatedField = class extends React.Component {
       value: props.value,
       valid: false,
       pristine: true,
-      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, // eslint-disable-line
+      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0,
       validators: assembleValidators(props),
     };
 
