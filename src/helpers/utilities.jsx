@@ -23,3 +23,21 @@ export function isValid(value, validators) {
     return validator(value);
   }, true);
 }
+
+export function onChange(changeInfo) {
+  const { name: field, value, status, pristine } = changeInfo;
+
+  this.setState({
+    [field]: { value, status, pristine },
+  });
+};
+
+export function addField(name) {
+  if (!name) return;
+
+  if (Array.isArray(name)) {
+    name.forEach(_name => this.addField(_name));
+  } else if (typeof name === 'string') {
+    this.state[name] = { value: '', valid: false, pristine: false };
+  }
+};
