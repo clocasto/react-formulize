@@ -1,0 +1,44 @@
+{
+  "name": "formwizard-react",
+  "version": "0.0.1",
+  "description": "A simple form validation library for React.js which wires up custom, controlled inputs through a declarative API.",
+  "main": "dist/index.js",
+  "keywords": [
+    "react",
+    "form",
+    "field",
+    "input",
+    "validation",
+    "controlled",
+    "debounce"
+  ],
+  "author": "@clocasto",
+  "license": "MIT",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/_mocha tests/",
+    "cover:prod": "node node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha --report lcovonly -- tests",
+    "cover:dev": "node node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- tests && open coverage/lcov-report/index.html",
+    "test-travis": "npm run transpile && npm run cover:prod",
+    "transpile": "node node_modules/babel-cli/bin/babel.js src --out-file dist/index.js --presets=react,es2015"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "chai": "^3.5.0",
+    "coveralls": "^2.11.15",
+    "eslint": "^3.9.1",
+    "eslint-plugin-react": "^6.9.0",
+    "fs-extra": "^1.0.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.1.2",
+    "mocha-lcov-reporter": "^1.2.0",
+    "react": "^15.4.2"
+  },
+  "dependencies": {
+    "lodash.debounce": "^4.0.8"
+  },
+  "peerDependencies": {
+    "react": "^15.4.2"
+  }
+}
