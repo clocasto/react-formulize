@@ -199,11 +199,17 @@ ValidatedField.propTypes = {
 exports.default = ValidatedField;
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _ValidatedField = require('./ValidatedField.jsx');
 
 var _ValidatedField2 = _interopRequireDefault(_ValidatedField);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = { ValidatedField: _ValidatedField2.default };
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
