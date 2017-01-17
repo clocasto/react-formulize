@@ -1,7 +1,7 @@
 import React from 'react';
 import debounce from 'lodash.debounce';
-import Input from './Input.jsx';
-import { assembleValidators, isValid, updateValidators } from '../helpers/utilities.jsx';
+import Input from './Input';
+import { assembleValidators, isValid, updateValidators } from '../helpers/utilities';
 
 const Field = class extends React.Component {
   constructor(props) {
@@ -62,7 +62,7 @@ const Field = class extends React.Component {
   broadcastChange() {
     if (this.props.onChange) {
       this.props.onChange({
-        name: this.props.label,
+        label: this.props.label,
         value: this.finalValue,
         status: this.state.valid,
         pristine: this.state.pristine,

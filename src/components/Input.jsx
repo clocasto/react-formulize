@@ -1,7 +1,6 @@
 import React from 'react';
-import Input from './Input';
 
-const Input = (props) => {
+const Input = (props = {}) => {
   return (
     <div>
       <label htmlFor={props.label}>
@@ -16,9 +15,6 @@ Input.propTypes = {
   pristine: React.PropTypes.bool,
   valid: React.PropTypes.bool,
   message: React.PropTypes.string,
-};
-
-return Input;
 };
 
 export default Input;

@@ -2,7 +2,7 @@
   "name": "formwizard-react",
   "version": "0.0.1",
   "description": "A simple form validation library for React.js which wires up custom, controlled inputs through a declarative API.",
-  "main": "dist/index.js",
+  "main": "dist/index",
   "keywords": [
     "react",
     "form",
@@ -15,11 +15,12 @@
   "author": "@clocasto",
   "license": "MIT",
   "scripts": {
-    "test": "./node_modules/mocha/bin/_mocha tests/",
     "cover:prod": "node node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha --report lcovonly -- tests",
     "cover:dev": "node node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- tests && open coverage/lcov-report/index.html",
-    "test-travis": "npm run transpile && npm run cover:prod",
-    "transpile": "node node_modules/babel-cli/bin/babel.js src --out-file dist/index.js --presets=react,es2015"
+    "test-travis": "npm run build:prod && npm run cover:prod",
+    "build": "rm -rf dist && node node_modules/babel-cli/bin/babel.js src --out-dir dist/ --presets=es2015,react",
+    "test": "./node_modules/mocha/bin/_mocha tests/index.js tests --recursive --harmony ",
+    "pack": "npm run build && npm test"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
@@ -32,9 +33,12 @@
     "eslint-plugin-react": "^6.9.0",
     "fs-extra": "^1.0.0",
     "istanbul": "^0.4.5",
+    "jsdom": "^9.9.1",
     "mocha": "^3.1.2",
     "mocha-lcov-reporter": "^1.2.0",
-    "react": "^15.4.2"
+    "react": "^15.4.2",
+    "react-addons-test-utils": "^15.4.2",
+    "react-dom": "^15.4.2"
   },
   "dependencies": {
     "lodash.debounce": "^4.0.8"

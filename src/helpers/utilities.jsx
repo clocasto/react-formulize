@@ -1,4 +1,4 @@
-import * as validatorFunctions from './validators.jsx';
+import * as validatorFunctions from './validators';
 
 export function assembleValidators({ email, length, required, match, alpha, number, max, min }) {
   const validators = {};
@@ -25,19 +25,28 @@ export function isValid(value, validators) {
 }
 
 export function onChange(changeInfo) {
-  const { name: field, value, status, pristine } = changeInfo;
+  const { label: field, value, status, pristine } = changeInfo;
 
   this.setState({
     [field]: { value, status, pristine },
   });
 };
 
-export function addField(name) {
-  if (!name) return;
+export function addFieldToState(field) {
+  if (!field) return;
 
-  if (Array.isArray(name)) {
-    name.forEach(_name => this.addField(_name));
-  } else if (typeof name === 'string') {
-    this.state[name] = { value: '', valid: false, pristine: false };
+  if (Array.isArray(field)) {
+    field.forEach(_name => this.addFieldToState(_name));
+  } else if (typeof field === 'string') {
+    this.state[field] = { value: '', valid: false, pristine: false };
+  } else if (typeof field === 'object') {
+    const { label: _name, value, valid, pristine } = field;
+    const _state = { value: '', valid: false, pristine: false };
+
+    if (value !== undefined) Object.assign(_state, { value });
+    if (valid !== undefined) Object.assign(_state, { valid });
+    if (pristine !== undefined) Object.assign(_state, { pristine });
+
+    this.state[_name] = _state;
   }
 };
