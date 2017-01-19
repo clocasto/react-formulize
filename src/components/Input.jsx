@@ -12,9 +12,9 @@ const Input = (props = {}) => {
 
 Input.propTypes = {
   label: React.PropTypes.string,
-  pristine: React.PropTypes.bool,
-  valid: React.PropTypes.bool,
-  message: React.PropTypes.string,
+  onChange: React.PropTypes.func,
+  type: React.PropTypes.string,
+  value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
 };
 
 export default Input;

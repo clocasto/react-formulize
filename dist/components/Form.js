@@ -72,7 +72,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      return this.form ? _react2.default.createElement(this.form, _extends({}, props, {
+      return this.form ? _react2.default.createElement(this.form, _extends({}, this.props, {
         onChange: this.onChange,
         data: Object.assign({}, this.state),
         Form: undefined
@@ -88,7 +88,7 @@ var Form = function (_React$Component) {
 }(_react2.default.Component);
 
 Form.propTypes = {
-  Form: _react2.default.PropTypes.element,
+  Form: _react2.default.PropTypes.func,
   fields: _react2.default.PropTypes.array
 };
 

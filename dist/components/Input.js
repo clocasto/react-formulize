@@ -26,9 +26,9 @@ var Input = function Input() {
 
 Input.propTypes = {
   label: _react2.default.PropTypes.string,
-  pristine: _react2.default.PropTypes.bool,
-  valid: _react2.default.PropTypes.bool,
-  message: _react2.default.PropTypes.string
+  onChange: _react2.default.PropTypes.func,
+  type: _react2.default.PropTypes.string,
+  value: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number])
 };
 
 exports.default = Input;

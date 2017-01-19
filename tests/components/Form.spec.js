@@ -54,6 +54,62 @@ describe('<Form /> Higher-Order-Component', () => {
   });
 
   describe('Custom Form', () => {
+    let customFormConstructor;
+    let customFormClass;
 
+    before('Assemble a custom form element', () => {
+      const customForm = (
+        <form id="test-form">
+        <h4>This is my highly-customized test form!</h4>
+        <Field value={'10'} onChange={null} label={'name'}></Field>
+        <Field value={'15'} onChange={null} label={'email'}></Field>
+        <Field value={'20'} onChange={null} type={'password'} label={'password'}></Field>
+      </form>);
+
+      customFormConstructor = (props) => customForm;
+
+      customFormClass = class extends React.Component {
+        render() {
+          return customForm;
+        }
+      }
+    });
+
+    it('will wrap a custom form (constructor function) passed through `Form` prop', () => {
+      const wrapper = mount(<Form Form={customFormConstructor} />);
+
+      expect(wrapper.find('#test-form')).to.have.length(1);
+      expect(wrapper.find(Field)).to.have.length(3);
+
+      expect(wrapper.find('h4')).to.have.length(1);
+      expect(wrapper.find('h4').text()).to.equal('This is my highly-customized test form!');
+    });
+
+    it('will wrap a custom form (React Component Subclass) passed through `Form` prop', () => {
+      const wrapper = mount(<Form Form={customFormClass} />);
+
+      expect(wrapper.find('#test-form')).to.have.length(1);
+      expect(wrapper.find(Field)).to.have.length(3);
+
+      expect(wrapper.find('h4')).to.have.length(1);
+      expect(wrapper.find('h4').text()).to.equal('This is my highly-customized test form!');
+    });
+
+
+    it('passes `props.data` down to the custom form component', () => {
+      const wrapper = mount(<Form Form={customFormConstructor} fields={['name', 'email', {label: 'pw', value: '123goodPass'}]} />);
+
+      const renderedCustomForm = wrapper.find(customFormConstructor);
+      expect(renderedCustomForm).to.have.length(1);
+
+      const renderedCustomFormProps = {
+        name: { value: '', valid: false, pristine: false },
+        email: { value: '', valid: false, pristine: false },
+        pw: { value: '123goodPass', valid: false, pristine: false }
+      };
+
+      expect(renderedCustomForm.props()).to.have.property('data');
+      expect(renderedCustomForm.props().data).to.eql(renderedCustomFormProps);
+    });
   });
 });

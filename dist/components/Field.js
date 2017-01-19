@@ -135,7 +135,7 @@ var Field = function (_React$Component) {
 }(_react2.default.Component);
 
 Field.propTypes = {
-  value: _react2.default.PropTypes.string,
+  value: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number]),
   label: _react2.default.PropTypes.string,
   onChange: _react2.default.PropTypes.func,
   debounce: _react2.default.PropTypes.number,

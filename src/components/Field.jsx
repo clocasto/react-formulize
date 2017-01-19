@@ -93,7 +93,7 @@ const Field = class extends React.Component {
 };
 
 Field.propTypes = {
-  value: React.PropTypes.string,
+  value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
   label: React.PropTypes.string,
   onChange: React.PropTypes.func,
   debounce: React.PropTypes.number,

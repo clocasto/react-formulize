@@ -36,13 +36,13 @@ const Form = class extends React.Component {
         onChange={this.onChange}
         label={name}
       />)
-  }
+  } 
 
   render() {
     return (
       this.form ?
       <this.form 
-        {...props} 
+        {...this.props} 
         onChange={this.onChange} 
         data={Object.assign({},this.state)}
         Form={undefined} 
@@ -55,7 +55,7 @@ const Form = class extends React.Component {
 }
 
 Form.propTypes = {
-  Form: React.PropTypes.element,
+  Form: React.PropTypes.func,
   fields: React.PropTypes.array,
 }
 
