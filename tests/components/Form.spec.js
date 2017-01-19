@@ -2,7 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { shallow, mount } from 'enzyme';
 
-import { Form, Field } from '../../dist/index';
+import { Form, Field, Input } from '../../dist/index';
 
 describe('<Form /> Higher-Order-Component', () => {
   const nameField = { label: 'name', value: 'Test Name' };

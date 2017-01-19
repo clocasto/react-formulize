@@ -23,9 +23,7 @@ var _Input2 = _interopRequireDefault(_Input);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// const formwizard_react = { Form, Field, Input };
-
-exports.default = 5;
+exports.default = { Form: _Form2.default, Field: _Field2.default, Input: _Input2.default };
 exports.Field = _Field2.default;
 exports.Form = _Form2.default;
 exports.Input = _Input2.default;
