@@ -1,8 +1,13 @@
 import React from 'react';
+import sinon from 'sinon';
 import { expect } from 'chai';
 import { shallow, mount } from 'enzyme';
 
 import { Form, Field, Input } from '../../dist/index';
+
+function updateInput(DOM, value = '', type = 'text') {
+  DOM.find('input').simulate('change', { target: { value }, type });
+}
 
 describe('<Field /> Higher-Order-Component', () => {
   const nameField = { label: 'name', value: 'Test Name' };
@@ -14,10 +19,10 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(wrapper.find(Input)).to.have.length(1);
     });
 
-    it('passes appropriate props down', () => {
+    it('passes all props down', () => {
       const propsToPass = Object.assign({}, nameField, { debounce: 300, required: true });
 
-      const wrapper = mount(<Field {...propsToPass} />);
+      const wrapper = mount(<Field {...propsToPass} testProp/>);
 
       const fields = wrapper.find(Field);
       expect(fields).to.have.length(1);
@@ -27,6 +32,7 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(nameFieldProps).to.have.property('debounce', 300);
       expect(nameFieldProps).to.have.property('required', true);
       expect(nameFieldProps).to.have.property('value', nameField.value);
+      expect(nameFieldProps).to.have.property('testProp', true);
     });
   });
 
@@ -85,5 +91,76 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(renderedCustomInputProps).to.have.property('onChange');
       expect(typeof renderedCustomInputProps.onChange).to.eql('function');
     });
+  });
+
+  describe('has validators', () => {
+    describe('which are', () => {
+      it('composable through `props`', () => {
+        const vanillaWrapper = mount(<Field />)
+        const validatedWrapper = mount(<Field email required length={[0, 0]} fakeValidator />);
+
+        expect(vanillaWrapper.state()).to.have.property('validators');
+        expect(vanillaWrapper.state().validators).to.eql({});
+
+        expect(validatedWrapper.state()).to.have.property('validators');
+        expect(validatedWrapper.state().validators).to.have.property('email');
+        expect(validatedWrapper.state().validators).to.have.property('required');
+        expect(validatedWrapper.state().validators).to.have.property('length');
+        expect(validatedWrapper.state().validators).to.not.have.property('fakeValidator');
+      });
+
+      it('invoked every `componentWillUpdate`', () => {
+        sinon.spy(Field.prototype, 'componentWillUpdate');
+        sinon.spy(Field.prototype, 'onChange');
+
+        expect(Field.prototype.componentWillUpdate).to.have.property('callCount', 0);
+        expect(Field.prototype.onChange).to.have.property('callCount', 0);
+
+        const wrapper = mount(<Field label={'email'} type="text" />);
+
+        expect(wrapper.state()).to.have.property('value', '');
+
+        updateInput(wrapper, 'test@test.test');
+
+        expect(Field.prototype.componentWillUpdate).to.have.property('callCount', 1);
+        expect(Field.prototype.onChange).to.have.property('callCount', 1);
+        expect(wrapper.state()).to.have.property('value', 'test@test.test');
+
+        updateInput(wrapper, '');
+
+        expect(Field.prototype.componentWillUpdate).to.have.property('callCount', 2);
+        expect(Field.prototype.onChange).to.have.property('callCount', 2);
+        expect(wrapper.state()).to.have.property('value', '');
+
+        Field.prototype.componentWillUpdate.restore();
+        Field.prototype.onChange.restore();
+      });
+
+      it('adjust the component\'s validity', () => {
+        const wrapper = mount(<Field label={'email'} type="text" required />);
+
+        expect(wrapper.state()).to.have.property('valid', false);
+
+        updateInput(wrapper, 'test@test.test');
+
+        expect(wrapper.state()).to.have.property('value', 'test@test.test');
+        expect(wrapper.state()).to.have.property('valid', true);
+
+        updateInput(wrapper, '');
+
+        expect(wrapper.state()).to.have.property('value', '');
+        expect(wrapper.state()).to.have.property('valid', false);
+      });
+    });
+
+    describe('Required', () => {});
+    describe('Email', () => {});
+    describe('Length', () => {});
+    describe('Match', () => {});
+    describe('Alpha', () => {});
+    describe('Numeric', () => {});
+    describe('Number', () => {});
+    describe('Max', () => {});
+    describe('Min', () => {});
   });
 });

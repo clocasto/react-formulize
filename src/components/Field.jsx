@@ -8,7 +8,7 @@ const Field = class extends React.Component {
     super(props);
 
     this.state = {
-      value: props.value,
+      value: props.value || (props.type === 'number' ? 0 : ''),
       valid: false,
       pristine: true,
       debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0,
@@ -25,7 +25,7 @@ const Field = class extends React.Component {
       debounce(this.broadcastChange, this.state.debounceDuration) : this.broadcastChange;
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillUpdate(nextProps) {
     if ((nextProps.value !== this.props.value) && (nextProps.value !== this.finalValue)) {
       this.cancelBroadcast();
       this.setState({ value: nextProps.value });
