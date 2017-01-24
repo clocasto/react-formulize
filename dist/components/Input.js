@@ -12,7 +12,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Input = function Input() {
   var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
   return _react2.default.createElement(
     'div',
     null,

@@ -15,7 +15,6 @@ const Field = class extends React.Component {
       validators: assembleValidators(props),
     };
 
-    this.message = '';
     this.finalValue = null;
     this.Input = props.Input || Input;
 
@@ -85,9 +84,8 @@ const Field = class extends React.Component {
       value={this.state.value}
       valid={this.state.valid}
       pristine={this.state.pristine}
-      message={this.message}
       onChange={this.onChange}
-      Input={undefined}
+      Input={null}
     />);
   }
 };
@@ -98,7 +96,7 @@ Field.propTypes = {
   onChange: React.PropTypes.func,
   debounce: React.PropTypes.number,
   match: React.PropTypes.string,
-  Input: React.PropTypes.element,
+  Input: React.PropTypes.func,
 };
 
 export default Field;

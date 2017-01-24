@@ -4,112 +4,86 @@ import { shallow, mount } from 'enzyme';
 
 import { Form, Field, Input } from '../../dist/index';
 
-describe.only('<Field /> Higher-Order-Component', () => {
+describe('<Field /> Higher-Order-Component', () => {
   const nameField = { label: 'name', value: 'Test Name' };
   const emailField = { label: 'email', value: 'user@company.com' };
 
   describe('Default Field', () => {
-    it('contains a <form /> element', () => {
-      const wrapper = shallow(<Form />);
-      expect(wrapper.contains(<form />)).to.equal(true);
+    it('by default renders an `Input` component', () => {
+      const wrapper = shallow(<Field />);
+      expect(wrapper.find(Input)).to.have.length(1);
     });
 
-    it('can generate fields from `fields` prop', () => {
-      const wrapper = mount(<Form fields={['name', 'email']} />);
+    it('passes appropriate props down', () => {
+      const propsToPass = Object.assign({}, nameField, { debounce: 300, required: true });
 
-      const inputs = wrapper.find('input');
-
-      expect(inputs).to.have.length(2);
-      expect(inputs.first().getDOMNode().name).to.equal('name');
-      expect(inputs.last().getDOMNode().name).to.equal('email');
-    });
-
-    it('can populate fields mapped from `fields` prop', () => {
-      const wrapper = mount(<Form fields={[nameField, emailField]} />);
-
-      const inputs = wrapper.find('input');
-
-      expect(inputs).to.have.length(2);
-      expect(inputs.first().getDOMNode().value).to.equal('Test Name');
-      expect(inputs.last().getDOMNode().value).to.equal('user@company.com');
-    });
-
-
-    it('passes appropriate props down from the `fields` prop', () => {
-      const _nameField = Object.assign({}, nameField, { debounce: 300, required: true });
-
-      const wrapper = mount(<Form fields={[_nameField, emailField]} />);
+      const wrapper = mount(<Field {...propsToPass} />);
 
       const fields = wrapper.find(Field);
-      expect(fields).to.have.length(2);
+      expect(fields).to.have.length(1);
 
-      const nameProps = fields.first().props();
-      const emailProps = fields.last().props();
+      const nameFieldProps = fields.first().props();
 
-      expect(nameProps).to.have.property('debounce', 300);
-      expect(nameProps).to.have.property('required', true);
-      expect(nameProps).to.have.property('value', _nameField.value);
-      expect(emailProps).to.have.property('value', emailField.value);
+      expect(nameFieldProps).to.have.property('debounce', 300);
+      expect(nameFieldProps).to.have.property('required', true);
+      expect(nameFieldProps).to.have.property('value', nameField.value);
     });
   });
 
   describe('Custom Input', () => {
-    let customFormConstructor;
-    let customFormClass;
+    let customInputConstructor;
+    let customInputClass;
 
     before('Assemble a custom input element', () => {
-      const customForm = (
-        <form id="test-form">
-        <h4>This is my highly-customized test form!</h4>
-        <Field value={'10'} onChange={null} label={'name'}></Field>
-        <Field value={'15'} onChange={null} label={'email'}></Field>
-        <Field value={'20'} onChange={null} type={'password'} label={'password'}></Field>
-      </form>);
+      customInputConstructor = props => <div><h4>My Test Input!</h4><input value={props.value} onChange={props.onChange}/></div>;
 
-      customFormConstructor = (props) => customForm;
-
-      customFormClass = class extends React.Component {
+      customInputClass = class extends React.Component {
         render() {
-          return customForm;
+          return (<div> {customInputConstructor(this.props)} <h5>Class test!</h5></div>)
         }
       }
     });
 
-    it('will wrap a custom form (constructor function) passed through `Form` prop', () => {
-      const wrapper = mount(<Form Form={customFormConstructor} />);
+    it('will wrap a custom form (constructor function) passed through `Input` prop', () => {
+      const wrapper = mount(<Field Input={customInputConstructor} value={'value!'} />);
 
-      expect(wrapper.find('#test-form')).to.have.length(1);
-      expect(wrapper.find(Field)).to.have.length(3);
-
+      expect(wrapper.find(Field)).to.have.length(1);
       expect(wrapper.find('h4')).to.have.length(1);
-      expect(wrapper.find('h4').text()).to.equal('This is my highly-customized test form!');
+      expect(wrapper.find('h4').text()).to.equal('My Test Input!');
     });
 
     it('will wrap a custom form (React Component Subclass) passed through `Form` prop', () => {
-      const wrapper = mount(<Form Form={customFormClass} />);
+      const wrapper = mount(<Field Input={customInputClass} value={'value!'} />);
 
-      expect(wrapper.find('#test-form')).to.have.length(1);
-      expect(wrapper.find(Field)).to.have.length(3);
-
+      expect(wrapper.find(Field)).to.have.length(1);
       expect(wrapper.find('h4')).to.have.length(1);
-      expect(wrapper.find('h4').text()).to.equal('This is my highly-customized test form!');
+      expect(wrapper.find('h4').text()).to.equal('My Test Input!');
+      expect(wrapper.find('h5').text()).to.equal('Class test!');
     });
 
 
-    it('passes `props.data` down to the custom form component', () => {
-      const wrapper = mount(<Form Form={customFormConstructor} fields={['name', 'email', {label: 'pw', value: '123goodPass'}]} />);
+    it('passes `props` down to the custom `Input` component', () => {
+      const _onChange = function(e) { console.log(e.target); }
+      const _Field = <Field Input={customInputConstructor} value={'value!'} label="pass" value="123goodPass" onChange={_onChange} />;
+      const wrapper = mount(_Field);
 
-      const renderedCustomForm = wrapper.find(customFormConstructor);
-      expect(renderedCustomForm).to.have.length(1);
+      expect(wrapper.find(Field)).to.have.length(1);
+      expect(wrapper.find('h4')).to.have.length(1);
+      expect(wrapper.find('h4').text()).to.equal('My Test Input!');
 
-      const renderedCustomFormProps = {
-        name: { value: '', valid: false, pristine: false },
-        email: { value: '', valid: false, pristine: false },
-        pw: { value: '123goodPass', valid: false, pristine: false }
-      };
+      const renderedCustomInput = wrapper.find(customInputConstructor);
+      expect(renderedCustomInput).to.have.length(1);
 
-      expect(renderedCustomForm.props()).to.have.property('data');
-      expect(renderedCustomForm.props().data).to.eql(renderedCustomFormProps);
+      const renderedCustomInputProps = renderedCustomInput.props();
+
+      expect(renderedCustomInputProps).to.have.property('Input', null);
+      expect(renderedCustomInputProps).to.have.property('value', renderedCustomInputProps.value);
+      expect(renderedCustomInputProps).to.have.property('label', renderedCustomInputProps.label);
+      expect(renderedCustomInputProps).to.have.property('valid', renderedCustomInputProps.valid);
+      expect(renderedCustomInputProps).to.have.property('pristine', renderedCustomInputProps.pristine);
+
+      expect(renderedCustomInputProps).to.have.property('onChange');
+      expect(typeof renderedCustomInputProps.onChange).to.eql('function');
     });
   });
 });

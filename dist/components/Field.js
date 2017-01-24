@@ -46,7 +46,6 @@ var Field = function (_React$Component) {
       validators: (0, _utilities.assembleValidators)(props)
     };
 
-    _this.message = '';
     _this.finalValue = null;
     _this.Input = props.Input || _Input2.default;
 
@@ -124,9 +123,8 @@ var Field = function (_React$Component) {
         value: this.state.value,
         valid: this.state.valid,
         pristine: this.state.pristine,
-        message: this.message,
         onChange: this.onChange,
-        Input: undefined
+        Input: null
       }));
     }
   }]);
@@ -140,7 +138,7 @@ Field.propTypes = {
   onChange: _react2.default.PropTypes.func,
   debounce: _react2.default.PropTypes.number,
   match: _react2.default.PropTypes.string,
-  Input: _react2.default.PropTypes.element
+  Input: _react2.default.PropTypes.func
 };
 
 exports.default = Field;
