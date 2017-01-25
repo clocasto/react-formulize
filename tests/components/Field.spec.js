@@ -4,10 +4,7 @@ import { expect } from 'chai';
 import { shallow, mount } from 'enzyme';
 
 import { Form, Field, Input } from '../../dist/index';
-
-function updateInput(DOM, value = '', type = 'text') {
-  DOM.find('input').simulate('change', { target: { value }, type });
-}
+import { updateInput } from '../helpers';
 
 describe('<Field /> Higher-Order-Component', () => {
   const nameField = { label: 'name', value: 'Test Name' };
@@ -94,73 +91,61 @@ describe('<Field /> Higher-Order-Component', () => {
   });
 
   describe('has validators', () => {
-    describe('which are', () => {
-      it('composable through `props`', () => {
-        const vanillaWrapper = mount(<Field />)
-        const validatedWrapper = mount(<Field email required length={[0, 0]} fakeValidator />);
+    it('which are composable through `props`', () => {
+      const vanillaWrapper = mount(<Field />)
+      const validatedWrapper = mount(<Field email required length={[0, 0]} fakeValidator />);
 
-        expect(vanillaWrapper.state()).to.have.property('validators');
-        expect(vanillaWrapper.state().validators).to.eql({});
+      expect(vanillaWrapper.state()).to.have.property('validators');
+      expect(vanillaWrapper.state().validators).to.eql({});
 
-        expect(validatedWrapper.state()).to.have.property('validators');
-        expect(validatedWrapper.state().validators).to.have.property('email');
-        expect(validatedWrapper.state().validators).to.have.property('required');
-        expect(validatedWrapper.state().validators).to.have.property('length');
-        expect(validatedWrapper.state().validators).to.not.have.property('fakeValidator');
-      });
-
-      it('invoked every `componentWillUpdate`', () => {
-        sinon.spy(Field.prototype, 'componentWillUpdate');
-        sinon.spy(Field.prototype, 'onChange');
-
-        expect(Field.prototype.componentWillUpdate).to.have.property('callCount', 0);
-        expect(Field.prototype.onChange).to.have.property('callCount', 0);
-
-        const wrapper = mount(<Field label={'email'} type="text" />);
-
-        expect(wrapper.state()).to.have.property('value', '');
-
-        updateInput(wrapper, 'test@test.test');
-
-        expect(Field.prototype.componentWillUpdate).to.have.property('callCount', 1);
-        expect(Field.prototype.onChange).to.have.property('callCount', 1);
-        expect(wrapper.state()).to.have.property('value', 'test@test.test');
-
-        updateInput(wrapper, '');
-
-        expect(Field.prototype.componentWillUpdate).to.have.property('callCount', 2);
-        expect(Field.prototype.onChange).to.have.property('callCount', 2);
-        expect(wrapper.state()).to.have.property('value', '');
-
-        Field.prototype.componentWillUpdate.restore();
-        Field.prototype.onChange.restore();
-      });
-
-      it('adjust the component\'s validity', () => {
-        const wrapper = mount(<Field label={'email'} type="text" required />);
-
-        expect(wrapper.state()).to.have.property('valid', false);
-
-        updateInput(wrapper, 'test@test.test');
-
-        expect(wrapper.state()).to.have.property('value', 'test@test.test');
-        expect(wrapper.state()).to.have.property('valid', true);
-
-        updateInput(wrapper, '');
-
-        expect(wrapper.state()).to.have.property('value', '');
-        expect(wrapper.state()).to.have.property('valid', false);
-      });
+      expect(validatedWrapper.state()).to.have.property('validators');
+      expect(validatedWrapper.state().validators).to.have.property('email');
+      expect(validatedWrapper.state().validators).to.have.property('required');
+      expect(validatedWrapper.state().validators).to.have.property('length');
+      expect(validatedWrapper.state().validators).to.not.have.property('fakeValidator');
     });
 
-    describe('Required', () => {});
-    describe('Email', () => {});
-    describe('Length', () => {});
-    describe('Match', () => {});
-    describe('Alpha', () => {});
-    describe('Numeric', () => {});
-    describe('Number', () => {});
-    describe('Max', () => {});
-    describe('Min', () => {});
+    it('which are invoked every `componentWillUpdate`', () => {
+      sinon.spy(Field.prototype, 'componentWillUpdate');
+      sinon.spy(Field.prototype, 'onChange');
+
+      expect(Field.prototype.componentWillUpdate).to.have.property('callCount', 0);
+      expect(Field.prototype.onChange).to.have.property('callCount', 0);
+
+      const wrapper = mount(<Field label={'email'} type="text" />);
+
+      expect(wrapper.state()).to.have.property('value', '');
+
+      updateInput(wrapper, 'test@test.test');
+
+      expect(Field.prototype.componentWillUpdate).to.have.property('callCount', 1);
+      expect(Field.prototype.onChange).to.have.property('callCount', 1);
+      expect(wrapper.state()).to.have.property('value', 'test@test.test');
+
+      updateInput(wrapper, '');
+
+      expect(Field.prototype.componentWillUpdate).to.have.property('callCount', 2);
+      expect(Field.prototype.onChange).to.have.property('callCount', 2);
+      expect(wrapper.state()).to.have.property('value', '');
+
+      Field.prototype.componentWillUpdate.restore();
+      Field.prototype.onChange.restore();
+    });
+
+    it('which adjust the component\'s validity', () => {
+      const wrapper = mount(<Field label={'email'} type="text" required />);
+
+      expect(wrapper.state()).to.have.property('valid', false);
+
+      updateInput(wrapper, 'test@test.test');
+
+      expect(wrapper.state()).to.have.property('value', 'test@test.test');
+      expect(wrapper.state()).to.have.property('valid', true);
+
+      updateInput(wrapper, '');
+
+      expect(wrapper.state()).to.have.property('value', '');
+      expect(wrapper.state()).to.have.property('valid', false);
+    });
   });
 });

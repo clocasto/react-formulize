@@ -20,7 +20,7 @@ export function length([minValue, maxValue]) {
 }
 
 export function required() {
-  return value => (!!value || (value === 0 || value === '0'));
+  return value => ((typeof value === 'string' && !!value) || typeof value === 'number');
 }
 
 export function match(valueToMatch) {

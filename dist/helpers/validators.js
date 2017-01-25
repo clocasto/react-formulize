@@ -44,7 +44,7 @@ function length(_ref) {
 
 function required() {
   return function (value) {
-    return !!value || value === 0 || value === '0';
+    return typeof value === 'string' && !!value || typeof value === 'number';
   };
 }
 
