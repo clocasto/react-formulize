@@ -31,20 +31,131 @@ describe.only('Validator Functionality', () => {
       expect(valFunc(undefined)).to.equal(false);
       expect(valFunc(new Promise((resolve, reject) => {}))).to.equal(false);
     });
+
+    it('is properly used by a `Field` component to validate', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+
+      updateInput(wrapper, 'test input!');
+
+      expect(wrapper.state()).to.have.property('valid', true);
+      expect(wrapper.state()).to.have.property('value', 'test input!');
+
+      updateInput(wrapper, '');
+
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+    });
   });
 
   describe('Email', () => {
     const wrapper = buildField(mount, 'email', true);
-    let valFunc;
+    let valFunc = validators.email();
 
-    it('', () => {});
+    it('returns `true` for valid email addresses', () => {
+      expect(valFunc('test@test.com')).to.equal(true);
+      expect(valFunc('test.test.test@test.com')).to.equal(true);
+      expect(valFunc('test@test.test.test')).to.equal(true);
+      expect(valFunc('test.test@test.test')).to.equal(true);
+    });
+
+    it('returns `false` for invalid email addresses', () => {
+      expect(valFunc('test@test.')).to.equal(false);
+      expect(valFunc('test@@test.test.test')).to.equal(false);
+      expect(valFunc('test.test@test..test')).to.equal(false);
+      expect(valFunc('test..test@test.test')).to.equal(false);
+    });
+
+    it('is properly used by a `Field` component to validate', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+
+      updateInput(wrapper, 'test@test.test');
+
+      expect(wrapper.state()).to.have.property('valid', true);
+      expect(wrapper.state()).to.have.property('value', 'test@test.test');
+
+      updateInput(wrapper, '');
+
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+    });
+
+    it('can take a custom regular expression for validating', () => {
+      const _wrapper = buildField(mount, 'email', /test\@test\.test/);
+
+      expect(_wrapper.state()).to.have.property('valid', false);
+      expect(_wrapper.state()).to.have.property('value', '');
+
+      //Updating input to valid email which doesn't match RegEx
+      updateInput(_wrapper, 'valid@email.com');
+      expect(_wrapper.state()).to.have.property('valid', false);
+      expect(_wrapper.state()).to.have.property('value', 'valid@email.com');
+
+      //Updating input to matching email
+      updateInput(_wrapper, 'test@test.test');
+      expect(_wrapper.state()).to.have.property('valid', true);
+      expect(_wrapper.state()).to.have.property('value', 'test@test.test');
+
+      //Updating input to valid email which doesn't match RegEx
+      updateInput(_wrapper, 'test@test.tes');
+      expect(_wrapper.state()).to.have.property('valid', false);
+      expect(_wrapper.state()).to.have.property('value', 'test@test.tes');
+    });
   });
 
   describe('Length', () => {
     const wrapper = buildField(mount, 'length', [6, 10]);
-    let valFunc;
 
-    it('', () => {});
+    const minLen = 6;
+    const maxLen = 10;
+
+    /**
+     * Length Validator Function
+     * @lengthArray {Array} - [minLen, maxLen] OR [maxLen]
+     */
+    let valFunc = validators.length([minLen, maxLen]);
+
+    it('returns `true` for inputs `>=minLen` and `<=maxLen`', () => {
+      expect(valFunc('123456')).to.equal(true);
+      expect(valFunc('0123456789')).to.equal(true);
+      expect(valFunc('Test input')).to.equal(true);
+      expect(valFunc('\'Quote123\'')).to.equal(true);
+    });
+
+    it('returns `false` for inputs `<minLen` and `>maxLen`', () => {
+      expect(valFunc('')).to.equal(false);
+      expect(valFunc('12345')).to.equal(false);
+      expect(valFunc('012345678910')).to.equal(false);
+      expect(valFunc('Test Input!')).to.equal(false);
+    });
+
+    it('returns `false` for non-string inputs', () => {
+      expect(valFunc(12345678)).to.equal(false);
+      expect(valFunc(() => '12345678')).to.equal(false);
+      expect(valFunc({ value: 'Test Input' })).to.equal(false);
+      expect(valFunc(true)).to.equal(false);
+    });
+
+    it('is properly used by a `Field` component to validate', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+
+      updateInput(wrapper, 'Test Input');
+
+      expect(wrapper.state()).to.have.property('valid', true);
+      expect(wrapper.state()).to.have.property('value', 'Test Input');
+
+      updateInput(wrapper, 'Test Input!');
+
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', 'Test Input!');
+
+      updateInput(wrapper, '0123456789');
+
+      expect(wrapper.state()).to.have.property('valid', true);
+      expect(wrapper.state()).to.have.property('value', '0123456789');
+    });
   });
 
   describe('Match', () => {

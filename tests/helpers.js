@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Field, Input } from '../dist';
 
+// Updates first input in `DOM` wrapper with given `value` and `type`
 export function updateInput(DOM, value = '', type = 'text') {
   DOM.find('input').simulate('change', { target: { value }, type });
 }

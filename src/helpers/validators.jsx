@@ -11,7 +11,13 @@ export function email(emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s
 }
 
 export function length([minValue, maxValue]) {
+  /**
+   * `Length` Validator
+   * @param  {[String]} value [Input value for 'text' and 'number' inputs]
+   * @return {[boolean]}       [Returns whether the input value is acceptable (true) or not (false)]
+   */
   return (value) => {
+    if (typeof value !== 'string') return false;
     if (minValue && !maxValue) return value.length <= minValue;
     if (minValue && value.length < minValue) return false;
     if (maxValue && value.length > maxValue) return false;
@@ -20,6 +26,11 @@ export function length([minValue, maxValue]) {
 }
 
 export function required() {
+  /**
+   * `Required` Validator
+   * @param  {[String, Number]} value [Input value for 'text' and 'number' inputs]
+   * @return {[boolean]}       [Returns whether the input value is acceptable (true) or not (false)]
+   */
   return value => ((typeof value === 'string' && !!value) || typeof value === 'number');
 }
 

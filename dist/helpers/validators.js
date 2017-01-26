@@ -34,7 +34,13 @@ function length(_ref) {
       minValue = _ref2[0],
       maxValue = _ref2[1];
 
+  /**
+   * `Length` Validator
+   * @param  {[String]} value [Input value for 'text' and 'number' inputs]
+   * @return {[boolean]}       [Returns whether the input value is acceptable (true) or not (false)]
+   */
   return function (value) {
+    if (typeof value !== 'string') return false;
     if (minValue && !maxValue) return value.length <= minValue;
     if (minValue && value.length < minValue) return false;
     if (maxValue && value.length > maxValue) return false;
@@ -43,6 +49,11 @@ function length(_ref) {
 }
 
 function required() {
+  /**
+   * `Required` Validator
+   * @param  {[String, Number]} value [Input value for 'text' and 'number' inputs]
+   * @return {[boolean]}       [Returns whether the input value is acceptable (true) or not (false)]
+   */
   return function (value) {
     return typeof value === 'string' && !!value || typeof value === 'number';
   };
