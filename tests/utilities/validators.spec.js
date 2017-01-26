@@ -105,11 +105,10 @@ describe.only('Validator Functionality', () => {
   });
 
   describe('Length', () => {
-    const wrapper = buildField(mount, 'length', [6, 10]);
-
     const minLen = 6;
     const maxLen = 10;
 
+    const wrapper = buildField(mount, 'length', [minLen, maxLen]);
     /**
      * Length Validator Function
      * @lengthArray {Array} - [minLen, maxLen] OR [maxLen]
@@ -160,37 +159,123 @@ describe.only('Validator Functionality', () => {
 
   describe('Match', () => {
     const returnValue = () => 'My input value!';
-    const wrapper = buildField(mount, 'match', returnValue());
-    let valFunc;
 
-    it('', () => {});
+    const wrapper = buildField(mount, 'match', returnValue());
+    let valFunc = validators.match(returnValue);
+
+    it('returns `true` for a matching input', () => {
+      expect(valFunc('My input value!')).to.equal(true);
+    });
+
+    it('returns `false` for non-matching inputs', () => {
+      expect(valFunc('')).to.equal(false);
+      expect(valFunc({ value: 'My input value!' })).to.equal(false);
+      expect(valFunc('My input value')).to.equal(false);
+      expect(valFunc(() => 'My input value!')).to.equal(false);
+    });
+
+    it('is properly used by a `Field` component to validate', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+
+      updateInput(wrapper, 'Wrong Input!');
+
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', 'Wrong Input!');
+
+      updateInput(wrapper, 'My input value!');
+
+      expect(wrapper.state()).to.have.property('valid', true);
+      expect(wrapper.state()).to.have.property('value', 'My input value!');
+
+      updateInput(wrapper, 'Will this work?');
+
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', 'Will this work?'); // No!
+    });
   });
 
-  describe('Alpha', () => {
+  describe.only('Alpha', () => {
     const wrapper = buildField(mount, 'alpha', true);
-    let valFunc;
+    let valFunc = validators.alpha();
 
-    it('', () => {});
+    it('returns `true` for', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+    });
+
+    it('returns `false` for', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+    });
+
+    it('is properly used by a `Field` component to validate', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+    });
   });
 
   describe('Number', () => {
     const wrapper = buildField(mount, 'number', true);
-    let valFunc;
+    let valFunc = validators.numeric();
 
-    it('', () => {});
+    it('returns `true` for', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+    });
+
+    it('returns `false` for', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+    });
+
+    it('is properly used by a `Field` component to validate', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+    });
   });
 
   describe('Max', () => {
-    const wrapper = buildField(mount, 'Max', 25);
-    let valFunc;
+    const criterion = 6;
 
-    it('', () => {});
+    const wrapper = buildField(mount, 'Max', criterion);
+    let valFunc = validators.max(criterion);
+
+    it('returns `true` for', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+    });
+
+    it('returns `false` for', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+    });
+
+    it('is properly used by a `Field` component to validate', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+    });
   });
 
   describe('Min', () => {
-    const wrapper = buildField(mount, 'Min', 16);
-    let valFunc;
+    const criterion = 6;
 
-    it('', () => {});
+    const wrapper = buildField(mount, 'Min', criterion);
+    let valFunc = validators.min(criterion);
+
+    it('returns `true` for', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+    });
+
+    it('returns `false` for', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+    });
+
+    it('is properly used by a `Field` component to validate', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+    });
   });
 });
