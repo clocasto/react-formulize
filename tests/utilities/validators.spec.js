@@ -8,7 +8,7 @@ import { buildField, updateInput } from '../helpers';
 
 import * as validators from '../../src/helpers/validators';
 
-describe.only('Validator Functionality', () => {
+describe('Validator Functionality', () => {
   describe('Required', () => {
     const wrapper = buildField(mount, 'required', true);
     let valFunc = validators.required();
@@ -60,6 +60,7 @@ describe.only('Validator Functionality', () => {
     });
 
     it('returns `false` for invalid email addresses', () => {
+      expect(valFunc('')).to.equal(false);
       expect(valFunc('test@test.')).to.equal(false);
       expect(valFunc('test@@test.test.test')).to.equal(false);
       expect(valFunc('test.test@test..test')).to.equal(false);
@@ -199,19 +200,44 @@ describe.only('Validator Functionality', () => {
     const wrapper = buildField(mount, 'alpha', true);
     let valFunc = validators.alpha();
 
-    it('returns `true` for', () => {
-      expect(wrapper.state()).to.have.property('valid', false);
-      expect(wrapper.state()).to.have.property('value', '');
+    // Implemented to only supports english
+    it('returns `true` for strings consisting of only alphabet and space characters', () => {
+      expect(valFunc('')).to.equal(true);
+      expect(valFunc('abc')).to.equal(true);
+      expect(valFunc('ABC')).to.equal(true);
+      expect(valFunc('AaBbCc')).to.equal(true);
+      expect(valFunc('AaBbCc Second Word')).to.equal(true);
+      expect(valFunc('\t\n ')).to.equal(true);
     });
 
-    it('returns `false` for', () => {
-      expect(wrapper.state()).to.have.property('valid', false);
-      expect(wrapper.state()).to.have.property('value', '');
+    it('returns `false` for text inputs with non-alphabet characters', () => {
+      expect(valFunc('_')).to.equal(false);
+      expect(valFunc('abc!')).to.equal(false);
+      expect(valFunc('ABC*')).to.equal(false);
+      expect(valFunc('$AaBbCc')).to.equal(false);
+      expect(valFunc('$!\.')).to.equal(false);
+      expect(valFunc('0123')).to.equal(false);
+      expect(valFunc('Is this valid?')).to.equal(false);
     });
 
     it('is properly used by a `Field` component to validate', () => {
       expect(wrapper.state()).to.have.property('valid', false);
       expect(wrapper.state()).to.have.property('value', '');
+
+      updateInput(wrapper, 'Test Input');
+
+      expect(wrapper.state()).to.have.property('valid', true);
+      expect(wrapper.state()).to.have.property('value', 'Test Input');
+
+      updateInput(wrapper, 'Test Input!');
+
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', 'Test Input!');
+
+      updateInput(wrapper, 'Testing \ttabs and \nnewlines');
+
+      expect(wrapper.state()).to.have.property('valid', true);
+      expect(wrapper.state()).to.have.property('value', 'Testing \ttabs and \nnewlines');
     });
   });
 
