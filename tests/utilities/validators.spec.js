@@ -196,7 +196,7 @@ describe('Validator Functionality', () => {
     });
   });
 
-  describe.only('Alpha', () => {
+  describe('Alpha', () => {
     const wrapper = buildField(mount, 'alpha', true);
     let valFunc = validators.alpha();
 
@@ -220,6 +220,13 @@ describe('Validator Functionality', () => {
       expect(valFunc('Is this valid?')).to.equal(false);
     });
 
+    it('returns `false` for non-string inputs', () => {
+      expect(valFunc(() => 'Good String Input')).to.equal(false);
+      expect(valFunc({ value: 'Good String Input' })).to.equal(false);
+      expect(valFunc(1234)).to.equal(false);
+      expect(valFunc(true)).to.equal(false);
+    });
+
     it('is properly used by a `Field` component to validate', () => {
       expect(wrapper.state()).to.have.property('valid', false);
       expect(wrapper.state()).to.have.property('value', '');
@@ -241,23 +248,45 @@ describe('Validator Functionality', () => {
     });
   });
 
-  describe('Number', () => {
+  describe.only('Number', () => {
     const wrapper = buildField(mount, 'number', true);
     let valFunc = validators.numeric();
 
-    it('returns `true` for', () => {
-      expect(wrapper.state()).to.have.property('valid', false);
-      expect(wrapper.state()).to.have.property('value', '');
+    it('returns `true` for strings consisting of only number and space characters', () => {
+      expect(valFunc('')).to.equal(true);
+      expect(valFunc('0123')).to.equal(true);
+      expect(valFunc(123)).to.equal(true);
+      expect(valFunc('123 123 123')).to.equal(true);
+      expect(valFunc('\t\n ')).to.equal(true);
     });
 
-    it('returns `false` for', () => {
-      expect(wrapper.state()).to.have.property('valid', false);
-      expect(wrapper.state()).to.have.property('value', '');
+    it('returns `false` for text inputs with non-numeric/non-space characters', () => {
+      expect(valFunc('_')).to.equal(false);
+      expect(valFunc('123!')).to.equal(false);
+      expect(valFunc('890*')).to.equal(false);
+      expect(valFunc('$112233')).to.equal(false);
+      expect(valFunc('$!\.')).to.equal(false);
+      expect(valFunc('Is this valid?')).to.equal(false);
     });
 
     it('is properly used by a `Field` component to validate', () => {
       expect(wrapper.state()).to.have.property('valid', false);
       expect(wrapper.state()).to.have.property('value', '');
+
+      updateInput(wrapper, '12345\t12345 12345');
+
+      expect(wrapper.state()).to.have.property('valid', true);
+      expect(wrapper.state()).to.have.property('value', '12345\t12345 12345');
+
+      updateInput(wrapper, '1234-1234-1234-1234');
+
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '1234-1234-1234-1234');
+
+      updateInput(wrapper, 123, 'number');
+
+      expect(wrapper.state()).to.have.property('valid', true);
+      expect(wrapper.state()).to.have.property('value', 123);
     });
   });
 

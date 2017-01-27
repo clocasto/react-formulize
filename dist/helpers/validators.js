@@ -69,14 +69,14 @@ function match(valueToMatch) {
 function alpha() {
   var alphaRegex = /[^a-z\s]/i;
   return function (value) {
-    return !alphaRegex.test(value);
+    return typeof value !== 'string' || !alphaRegex.test(value);
   };
 }
 
 function numeric() {
-  var numericRegex = /[^0-9]/i;
+  var numericRegex = /[^0-9\s]/i;
   return function (value) {
-    return !numericRegex.test(value);
+    return typeof value === 'number' || typeof value === 'string' && !numericRegex.test(value);
   };
 }
 

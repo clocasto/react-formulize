@@ -43,12 +43,12 @@ export function match(valueToMatch) {
 
 export function alpha() {
   const alphaRegex = /[^a-z\s]/i;
-  return value => !alphaRegex.test(value);
+  return value => (typeof value !== 'string') || !alphaRegex.test(value);
 }
 
 export function numeric() {
-  const numericRegex = /[^0-9]/i;
-  return value => !numericRegex.test(value);
+  const numericRegex = /[^0-9\s]/i;
+  return value => typeof value === 'number' || (typeof value === 'string' && !numericRegex.test(value));
 }
 
 export function max(criteria) {
