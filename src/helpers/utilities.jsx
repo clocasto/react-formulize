@@ -1,6 +1,6 @@
 import * as validatorFunctions from './validators';
 
-export function assembleValidators({ email, length, required, match, alpha, number, max, min }) {
+export function assembleValidators({ email, length, required, match, alpha, number, max, min, custom }) {
   const validators = {};
   if (email) { validators.email = validatorFunctions.email(email === true ? undefined : email); }
   if (Array.isArray(length)) { validators.length = validatorFunctions.length(length); }
@@ -10,6 +10,7 @@ export function assembleValidators({ email, length, required, match, alpha, numb
   if (number) { validators.numeric = validatorFunctions.numeric(); }
   if (Number(max) >= 0) { validators.max = validatorFunctions.max(max); }
   if (Number(min) >= 0) { validators.min = validatorFunctions.min(min); }
+  if (typeof custom === 'function') validators.custom = custom;
   return validators;
 }
 

@@ -386,4 +386,27 @@ describe('Validator Functionality', () => {
       expect(wrapper.state()).to.have.property('value', -5000);
     });
   });
+
+  describe('Custom', () => {
+    const isPositive = (value) => typeof value === 'number' && value > 0;
+
+    const wrapper = buildField(mount, 'custom', isPositive, 'number');
+
+    it('is properly used by a `Field` component to validate', () => {
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '');
+
+      updateInput(wrapper, -5);
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', -5);
+
+      updateInput(wrapper, 12);
+      expect(wrapper.state()).to.have.property('valid', true);
+      expect(wrapper.state()).to.have.property('value', 12);
+
+      updateInput(wrapper, '120');
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', '120');
+    });
+  });
 });

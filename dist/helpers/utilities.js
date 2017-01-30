@@ -28,7 +28,8 @@ function assembleValidators(_ref) {
       alpha = _ref.alpha,
       number = _ref.number,
       max = _ref.max,
-      min = _ref.min;
+      min = _ref.min,
+      custom = _ref.custom;
 
   var validators = {};
   if (email) {
@@ -55,6 +56,7 @@ function assembleValidators(_ref) {
   if (Number(min) >= 0) {
     validators.min = validatorFunctions.min(min);
   }
+  if (typeof custom === 'function') validators.custom = custom;
   return validators;
 }
 
