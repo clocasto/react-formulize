@@ -22,7 +22,7 @@
   "scripts": {
     "cover:prod": "node node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha --report lcovonly -- tests",
     "cover:dev": "node node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- tests && open coverage/lcov-report/index.html",
-    "test-travis": "npm run build:prod && npm run cover:prod",
+    "test-travis": "npm run build && npm run cover:prod",
     "build": "rm -rf dist && node node_modules/babel-cli/bin/babel.js src --out-dir dist/ --presets=es2015,react",
     "test": "./node_modules/mocha/bin/_mocha tests/index.js tests --recursive --harmony ",
     "pack": "npm run build && npm test"
