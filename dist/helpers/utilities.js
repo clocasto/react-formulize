@@ -34,7 +34,7 @@ function assembleValidators(_ref) {
   if (email) {
     validators.email = validatorFunctions.email(email === true ? undefined : email);
   }
-  if (length) {
+  if (Array.isArray(length)) {
     validators.length = validatorFunctions.length(length);
   }
   if (required) {
@@ -49,10 +49,10 @@ function assembleValidators(_ref) {
   if (number) {
     validators.numeric = validatorFunctions.numeric();
   }
-  if (max) {
+  if (Number(max) >= 0) {
     validators.max = validatorFunctions.max(max);
   }
-  if (min) {
+  if (Number(min) >= 0) {
     validators.min = validatorFunctions.min(min);
   }
   return validators;

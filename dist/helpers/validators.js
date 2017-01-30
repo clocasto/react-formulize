@@ -69,7 +69,7 @@ function match(valueToMatch) {
 function alpha() {
   var alphaRegex = /[^a-z\s]/i;
   return function (value) {
-    return typeof value !== 'string' || !alphaRegex.test(value);
+    return typeof value === 'string' && !alphaRegex.test(value);
   };
 }
 
@@ -82,7 +82,7 @@ function numeric() {
 
 function max(criteria) {
   return function (value) {
-    return +value <= +criteria;
+    return (typeof value === 'string' && value || typeof value === 'number') && Number(value) <= Number(criteria);
   };
 }
 

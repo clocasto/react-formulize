@@ -43,7 +43,7 @@ export function match(valueToMatch) {
 
 export function alpha() {
   const alphaRegex = /[^a-z\s]/i;
-  return value => (typeof value !== 'string') || !alphaRegex.test(value);
+  return value => (typeof value === 'string') && !alphaRegex.test(value);
 }
 
 export function numeric() {
@@ -52,7 +52,7 @@ export function numeric() {
 }
 
 export function max(criteria) {
-  return value => (+value <= +criteria);
+  return value => ((typeof value === 'string' && value) || typeof value === 'number') && (Number(value) <= Number(criteria));
 }
 
 export function min(criteria) {

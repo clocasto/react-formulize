@@ -39,7 +39,7 @@ var Field = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Field.__proto__ || Object.getPrototypeOf(Field)).call(this, props));
 
     _this.state = {
-      value: props.value || (props.type === 'number' ? 0 : ''),
+      value: props.value || '',
       valid: false,
       pristine: true,
       debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0,

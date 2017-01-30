@@ -37,12 +37,10 @@ describe('Validator Functionality', () => {
       expect(wrapper.state()).to.have.property('value', '');
 
       updateInput(wrapper, 'test input!');
-
       expect(wrapper.state()).to.have.property('valid', true);
       expect(wrapper.state()).to.have.property('value', 'test input!');
 
       updateInput(wrapper, '');
-
       expect(wrapper.state()).to.have.property('valid', false);
       expect(wrapper.state()).to.have.property('value', '');
     });
@@ -72,12 +70,10 @@ describe('Validator Functionality', () => {
       expect(wrapper.state()).to.have.property('value', '');
 
       updateInput(wrapper, 'test@test.test');
-
       expect(wrapper.state()).to.have.property('valid', true);
       expect(wrapper.state()).to.have.property('value', 'test@test.test');
 
       updateInput(wrapper, '');
-
       expect(wrapper.state()).to.have.property('valid', false);
       expect(wrapper.state()).to.have.property('value', '');
     });
@@ -142,17 +138,14 @@ describe('Validator Functionality', () => {
       expect(wrapper.state()).to.have.property('value', '');
 
       updateInput(wrapper, 'Test Input');
-
       expect(wrapper.state()).to.have.property('valid', true);
       expect(wrapper.state()).to.have.property('value', 'Test Input');
 
       updateInput(wrapper, 'Test Input!');
-
       expect(wrapper.state()).to.have.property('valid', false);
       expect(wrapper.state()).to.have.property('value', 'Test Input!');
 
       updateInput(wrapper, '0123456789');
-
       expect(wrapper.state()).to.have.property('valid', true);
       expect(wrapper.state()).to.have.property('value', '0123456789');
     });
@@ -180,17 +173,14 @@ describe('Validator Functionality', () => {
       expect(wrapper.state()).to.have.property('value', '');
 
       updateInput(wrapper, 'Wrong Input!');
-
       expect(wrapper.state()).to.have.property('valid', false);
       expect(wrapper.state()).to.have.property('value', 'Wrong Input!');
 
       updateInput(wrapper, 'My input value!');
-
       expect(wrapper.state()).to.have.property('valid', true);
       expect(wrapper.state()).to.have.property('value', 'My input value!');
 
       updateInput(wrapper, 'Will this work?');
-
       expect(wrapper.state()).to.have.property('valid', false);
       expect(wrapper.state()).to.have.property('value', 'Will this work?'); // No!
     });
@@ -232,23 +222,20 @@ describe('Validator Functionality', () => {
       expect(wrapper.state()).to.have.property('value', '');
 
       updateInput(wrapper, 'Test Input');
-
       expect(wrapper.state()).to.have.property('valid', true);
       expect(wrapper.state()).to.have.property('value', 'Test Input');
 
       updateInput(wrapper, 'Test Input!');
-
       expect(wrapper.state()).to.have.property('valid', false);
       expect(wrapper.state()).to.have.property('value', 'Test Input!');
 
       updateInput(wrapper, 'Testing \ttabs and \nnewlines');
-
       expect(wrapper.state()).to.have.property('valid', true);
       expect(wrapper.state()).to.have.property('value', 'Testing \ttabs and \nnewlines');
     });
   });
 
-  describe.only('Number', () => {
+  describe('Number', () => {
     const wrapper = buildField(mount, 'number', true);
     let valFunc = validators.numeric();
 
@@ -274,17 +261,14 @@ describe('Validator Functionality', () => {
       expect(wrapper.state()).to.have.property('value', '');
 
       updateInput(wrapper, '12345\t12345 12345');
-
       expect(wrapper.state()).to.have.property('valid', true);
       expect(wrapper.state()).to.have.property('value', '12345\t12345 12345');
 
       updateInput(wrapper, '1234-1234-1234-1234');
-
       expect(wrapper.state()).to.have.property('valid', false);
       expect(wrapper.state()).to.have.property('value', '1234-1234-1234-1234');
 
       updateInput(wrapper, 123, 'number');
-
       expect(wrapper.state()).to.have.property('valid', true);
       expect(wrapper.state()).to.have.property('value', 123);
     });
@@ -293,44 +277,113 @@ describe('Validator Functionality', () => {
   describe('Max', () => {
     const criterion = 6;
 
-    const wrapper = buildField(mount, 'Max', criterion);
+    const wrapper = buildField(mount, 'max', criterion, 'number');
     let valFunc = validators.max(criterion);
 
-    it('returns `true` for', () => {
-      expect(wrapper.state()).to.have.property('valid', false);
-      expect(wrapper.state()).to.have.property('value', '');
+    it('returns `true` for numbers less than or equal to the criterion', () => {
+      expect(valFunc(-5000)).to.equal(true);
+      expect(valFunc('-5000')).to.equal(true);
+      expect(valFunc('+5')).to.equal(true);
+      expect(valFunc(0)).to.equal(true);
+      expect(valFunc(4)).to.equal(true);
+      expect(valFunc(+4)).to.equal(true);
+      expect(valFunc(6)).to.equal(true);
+      expect(valFunc('6')).to.equal(true);
+      expect(valFunc(-Infinity)).to.equal(true);
     });
 
-    it('returns `false` for', () => {
-      expect(wrapper.state()).to.have.property('valid', false);
-      expect(wrapper.state()).to.have.property('value', '');
+    it('returns `false` for numbers greater than the criterion', () => {
+      expect(valFunc('')).to.equal(false);
+      expect(valFunc(7)).to.equal(false);
+      expect(valFunc(1000)).to.equal(false);
+    });
+
+    // `max` validator coerces input to a `number`
+    it('returns `false` for non-number & non-string-to-number inputs', () => {
+      expect(valFunc({ value: 3 })).to.equal(false);
+      expect(valFunc(() => 2)).to.equal(false);
+      expect(valFunc(NaN)).to.equal(false);
+      expect(valFunc(Infinity)).to.equal(false);
+      expect(valFunc(+Infinity)).to.equal(false);
     });
 
     it('is properly used by a `Field` component to validate', () => {
       expect(wrapper.state()).to.have.property('valid', false);
       expect(wrapper.state()).to.have.property('value', '');
+
+      updateInput(wrapper, 3);
+      expect(wrapper.state()).to.have.property('valid', true);
+      expect(wrapper.state()).to.have.property('value', 3);
+
+      updateInput(wrapper, 6);
+      expect(wrapper.state()).to.have.property('value', 6);
+      expect(wrapper.state()).to.have.property('valid', true);
+
+      updateInput(wrapper, 10);
+      expect(wrapper.state()).to.have.property('value', 10);
+      expect(wrapper.state()).to.have.property('valid', false);
+
+      updateInput(wrapper, -5000);
+      expect(wrapper.state()).to.have.property('valid', true);
+      expect(wrapper.state()).to.have.property('value', -5000);
     });
   });
 
   describe('Min', () => {
     const criterion = 6;
 
-    const wrapper = buildField(mount, 'Min', criterion);
+    const wrapper = buildField(mount, 'min', criterion);
     let valFunc = validators.min(criterion);
 
-    it('returns `true` for', () => {
-      expect(wrapper.state()).to.have.property('valid', false);
-      expect(wrapper.state()).to.have.property('value', '');
+    it('returns `true` for numbers greater than or equal to the criterion', () => {
+      expect(valFunc(5000)).to.equal(true);
+      expect(valFunc('5000')).to.equal(true);
+      expect(valFunc('+8')).to.equal(true);
+      expect(valFunc(10)).to.equal(true);
+      expect(valFunc(84)).to.equal(true);
+      expect(valFunc(+6)).to.equal(true);
+      expect(valFunc(6)).to.equal(true);
+      expect(valFunc('6')).to.equal(true);
+      expect(valFunc(Infinity)).to.equal(true);
+      expect(valFunc(+Infinity)).to.equal(true);
     });
 
-    it('returns `false` for', () => {
-      expect(wrapper.state()).to.have.property('valid', false);
-      expect(wrapper.state()).to.have.property('value', '');
+    it('returns `false` for numbers less than the criterion', () => {
+      expect(valFunc('')).to.equal(false);
+      expect(valFunc(-5000)).to.equal(false);
+      expect(valFunc('-1000')).to.equal(false);
+      expect(valFunc(0)).to.equal(false);
+      expect(valFunc(5)).to.equal(false);
+      expect(valFunc('4')).to.equal(false);
+    });
+
+    // `min` validator coerces input to a `number`
+    it('returns `false` for non-number & non-string-to-number inputs', () => {
+      expect(valFunc({ value: 3 })).to.equal(false);
+      expect(valFunc(() => 2)).to.equal(false);
+      expect(valFunc(NaN)).to.equal(false);
+      expect(valFunc(-Infinity)).to.equal(false);
     });
 
     it('is properly used by a `Field` component to validate', () => {
       expect(wrapper.state()).to.have.property('valid', false);
       expect(wrapper.state()).to.have.property('value', '');
+
+      updateInput(wrapper, 3);
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', 3);
+
+      updateInput(wrapper, 6);
+      expect(wrapper.state()).to.have.property('value', 6);
+      expect(wrapper.state()).to.have.property('valid', true);
+
+      updateInput(wrapper, 10);
+      expect(wrapper.state()).to.have.property('value', 10);
+      expect(wrapper.state()).to.have.property('valid', true);
+
+      updateInput(wrapper, -5000);
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('value', -5000);
     });
   });
 });

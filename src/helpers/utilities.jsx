@@ -3,13 +3,13 @@ import * as validatorFunctions from './validators';
 export function assembleValidators({ email, length, required, match, alpha, number, max, min }) {
   const validators = {};
   if (email) { validators.email = validatorFunctions.email(email === true ? undefined : email); }
-  if (length) { validators.length = validatorFunctions.length(length); }
+  if (Array.isArray(length)) { validators.length = validatorFunctions.length(length); }
   if (required) { validators.required = validatorFunctions.required(); }
   if (match) { validators.match = validatorFunctions.match(match); }
   if (alpha) { validators.alpha = validatorFunctions.alpha(); }
   if (number) { validators.numeric = validatorFunctions.numeric(); }
-  if (max) { validators.max = validatorFunctions.max(max); }
-  if (min) { validators.min = validatorFunctions.min(min); }
+  if (Number(max) >= 0) { validators.max = validatorFunctions.max(max); }
+  if (Number(min) >= 0) { validators.min = validatorFunctions.min(min); }
   return validators;
 }
 

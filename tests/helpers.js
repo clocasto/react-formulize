@@ -6,9 +6,9 @@ export function updateInput(DOM, value = '', type = 'text') {
   DOM.find('input').simulate('change', { target: { value }, type });
 }
 
-export function buildField(mountingFunction, validator, value) {
+export function buildField(mountingFunction, validator, value, type) {
   const _validator = {
     [validator]: value,
   };
-  return mountingFunction(<Field {..._validator}/>)
+  return mountingFunction(<Field {..._validator} type={type}/>)
 }
