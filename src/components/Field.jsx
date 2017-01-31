@@ -1,7 +1,7 @@
 import React from 'react';
 import debounce from 'lodash.debounce';
 import Input from './Input';
-import { assembleValidators, isValid, updateValidators } from '../helpers/utilities';
+import { assembleValidators, isValid, updateValidators, getValuesOf } from '../helpers/utilities';
 
 const Field = class extends React.Component {
   constructor(props) {
@@ -11,7 +11,7 @@ const Field = class extends React.Component {
       value: props.value || '',
       valid: false,
       pristine: true,
-      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0,
+      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: assembleValidators(props),
     };
 
@@ -33,7 +33,7 @@ const Field = class extends React.Component {
 
     if (this.props.match !== nextProps.match) {
       const validators = updateValidators({ match: nextProps.match }, this.state.validators);
-      this.setState({ valid: isValid(this.state.value, Object.values(validators)), validators });
+      this.setState({ valid: isValid(this.state.value, getValuesOf(validators)), validators });
     }
   }
 
@@ -51,7 +51,7 @@ const Field = class extends React.Component {
 
   onChange(e) {
     const { value } = e.target;
-    const validators = Object.values(this.state.validators);
+    const validators = getValuesOf(this.state.validators);
 
     this.setState({ value, valid: isValid(value, validators), pristine: false });
     this.finalValue = value;
@@ -97,6 +97,15 @@ Field.propTypes = {
   debounce: React.PropTypes.number,
   match: React.PropTypes.string,
   Input: React.PropTypes.func,
+};
+
+Field.defaultProps = {
+  value: '',
+  label: '',
+  onChange: undefined,
+  debounce: 0,
+  match: undefined,
+  Input: undefined,
 };
 
 export default Field;

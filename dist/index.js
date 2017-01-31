@@ -5,10 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Input = exports.Form = exports.Field = undefined;
 
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
 var _Field = require('./components/Field');
 
 var _Field2 = _interopRequireDefault(_Field);

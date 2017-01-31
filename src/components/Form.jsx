@@ -1,6 +1,6 @@
 import React from 'react';
 import Field from './Field';
-import { onChange, addFieldToState, produceFieldComponent } from '../helpers/utilities';
+import { onChange, addFieldToState } from '../helpers/utilities';
 
 const Form = class extends React.Component {
   constructor(props) {
@@ -17,46 +17,51 @@ const Form = class extends React.Component {
   }
 
   produceFieldComponent(field, index) {
-    const _props = {};
+    const newProps = {};
     let name;
 
     if (typeof field === 'object') {
       name = field.label;
-      Object.assign(_props, this.props.fields[index]);
-      delete _props.pristine;
-      delete _props.valid;
+      Object.assign(newProps, this.props.fields[index]);
+      delete newProps.pristine;
+      delete newProps.valid;
     } else {
       name = field;
     }
 
-    return (<Field 
-        {..._props}
-        key={name}
-        value={this.state[name].value}
-        onChange={this.onChange}
-        label={name}
-      />)
-  } 
+    return (<Field
+      {...newProps}
+      key={name}
+      value={this.state[name].value}
+      onChange={this.onChange}
+      label={name}
+    />);
+  }
 
   render() {
     return (
       this.form ?
-      <this.form 
-        {...this.props} 
-        onChange={this.onChange} 
-        data={Object.assign({},this.state)}
-        Form={undefined} 
-      /> :
-      <form>
-        {(this.props.fields || []).map(this.produceFieldComponent)}
-      </form>
-    )
+        <this.form
+          {...this.props}
+          onChange={this.onChange}
+          data={Object.assign({}, this.state)}
+          Form={undefined}
+        /> :
+        <form>
+          {(this.props.fields || []).map(this.produceFieldComponent)}
+        </form>
+    );
   }
-}
+};
 
 Form.propTypes = {
   Form: React.PropTypes.func,
-  fields: React.PropTypes.array,
-}
+  fields: React.PropTypes.arrayOf(React.PropTypes.string),
+};
+
+Form.defaultProps = {
+  Form: undefined,
+  fields: [],
+};
 
 export default Form;

@@ -11,5 +11,5 @@ addons:
       - g++-4.8
 notifications:
   email: false
-script: "npm run-script test-travis"
-after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+script: npm run pack
+after_success: npm run coverage

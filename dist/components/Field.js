@@ -42,7 +42,7 @@ var Field = function (_React$Component) {
       value: props.value || '',
       valid: false,
       pristine: true,
-      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0,
+      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: (0, _utilities.assembleValidators)(props)
     };
 
@@ -66,7 +66,7 @@ var Field = function (_React$Component) {
 
       if (this.props.match !== nextProps.match) {
         var validators = (0, _utilities.updateValidators)({ match: nextProps.match }, this.state.validators);
-        this.setState({ valid: (0, _utilities.isValid)(this.state.value, Object.values(validators)), validators: validators });
+        this.setState({ valid: (0, _utilities.isValid)(this.state.value, (0, _utilities.getValuesOf)(validators)), validators: validators });
       }
     }
   }, {
@@ -88,7 +88,7 @@ var Field = function (_React$Component) {
     value: function onChange(e) {
       var value = e.target.value;
 
-      var validators = Object.values(this.state.validators);
+      var validators = (0, _utilities.getValuesOf)(this.state.validators);
 
       this.setState({ value: value, valid: (0, _utilities.isValid)(value, validators), pristine: false });
       this.finalValue = value;
@@ -139,6 +139,15 @@ Field.propTypes = {
   debounce: _react2.default.PropTypes.number,
   match: _react2.default.PropTypes.string,
   Input: _react2.default.PropTypes.func
+};
+
+Field.defaultProps = {
+  value: '',
+  label: '',
+  onChange: undefined,
+  debounce: 0,
+  match: undefined,
+  Input: undefined
 };
 
 exports.default = Field;

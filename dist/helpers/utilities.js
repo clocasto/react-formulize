@@ -11,6 +11,7 @@ exports.updateValidators = updateValidators;
 exports.isValid = isValid;
 exports.onChange = onChange;
 exports.addFieldToState = addFieldToState;
+exports.getValuesOf = getValuesOf;
 
 var _validators = require('./validators');
 
@@ -79,7 +80,7 @@ function onChange(changeInfo) {
 
 
   this.setState(_defineProperty({}, field, { value: value, status: status, pristine: pristine }));
-};
+}
 
 function addFieldToState(field) {
   var _this = this;
@@ -87,23 +88,31 @@ function addFieldToState(field) {
   if (!field) return;
 
   if (Array.isArray(field)) {
-    field.forEach(function (_name) {
-      return _this.addFieldToState(_name);
+    field.forEach(function (name) {
+      return _this.addFieldToState(name);
     });
   } else if (typeof field === 'string') {
     this.state[field] = { value: '', valid: false, pristine: false };
   } else if ((typeof field === 'undefined' ? 'undefined' : _typeof(field)) === 'object') {
-    var _name = field.label,
+    var name = field.label,
         value = field.value,
         valid = field.valid,
         pristine = field.pristine;
 
-    var _state = { value: '', valid: false, pristine: false };
+    var newState = { value: '', valid: false, pristine: false };
 
-    if (value !== undefined) Object.assign(_state, { value: value });
-    if (valid !== undefined) Object.assign(_state, { valid: valid });
-    if (pristine !== undefined) Object.assign(_state, { pristine: pristine });
+    if (value !== undefined) Object.assign(newState, { value: value });
+    if (valid !== undefined) Object.assign(newState, { valid: valid });
+    if (pristine !== undefined) Object.assign(newState, { pristine: pristine });
 
-    this.state[_name] = _state;
+    this.state[name] = newState;
   }
-};
+}
+
+function getValuesOf() {
+  var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+  return Object.keys(obj).map(function (key) {
+    return obj[key];
+  });
+}

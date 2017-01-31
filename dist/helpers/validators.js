@@ -60,9 +60,10 @@ function required() {
 }
 
 function match(valueToMatch) {
+  var matchingValue = valueToMatch;
   return function (value) {
-    if (typeof valueToMatch === 'function') valueToMatch = valueToMatch();
-    return value === valueToMatch;
+    if (typeof valueToMatch === 'function') matchingValue = valueToMatch();
+    return value === matchingValue;
   };
 }
 
