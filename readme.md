@@ -35,9 +35,10 @@ An optional form component to wrap. `Form` will pass down `props.data` to this c
 *Example:*  
 ```  
   const customForm = <div><input name="field_name_1"/><input name="field_name_2"/><div>;
+
   <Form Form={customForm} fields={['field_name_1', 'field_name_2']} /> 
 
-  // customForm will receive `props.data`: {'field_name_1': {value: '', valid: false, pristine: true... }... }  
+  // customForm receives `props.data`: {'field_name_1': {value: '', valid: false, pristine: true... }... }  
 ```  
 
 ### props.fields(fieldNames {Array})  
