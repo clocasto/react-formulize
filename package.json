@@ -20,12 +20,13 @@
     "url": "https://github.com/clocasto/formwizard-react.git"
   },
   "scripts": {
-    "cover:prod": "node node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha --report lcovonly -- tests",
-    "cover:dev": "node node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- tests && open coverage/lcov-report/index.html",
-    "test-travis": "npm run build && npm run cover:prod",
-    "build": "rm -rf dist && node node_modules/babel-cli/bin/babel.js src --out-dir dist/ --presets=es2015,react",
-    "test": "./node_modules/mocha/bin/_mocha tests/index.js tests --recursive --harmony ",
-    "pack": "npm run build && npm test"
+    "run-coverage": "node_modules/.bin/nyc report --reporter=text-lcov | node_modules/coveralls/bin/coveralls.js",
+    "clean-coverage": "rm -rf .nyc_output && rm -rf coverage",
+    "coverage": "npm run run-coverage && npm run clean-coverage",
+    "build": "rm -rf dist && node node_modules/babel-cli/bin/babel.js src --out-dir dist/",
+    "test": "node_modules/.bin/nyc --require babel-core/register ./node_modules/mocha/bin/_mocha tests --recursive",
+    "pack": "npm run build && npm test",
+    "lint": "node_modules/eslint/bin/eslint.js src/**"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
@@ -35,12 +36,14 @@
     "coveralls": "^2.11.15",
     "enzyme": "^2.7.0",
     "eslint": "^3.9.1",
+    "eslint-config-airbnb": "^14.0.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^3.0.2",
     "eslint-plugin-react": "^6.9.0",
-    "fs-extra": "^1.0.0",
     "istanbul": "^0.4.5",
     "jsdom": "^9.9.1",
     "mocha": "^3.1.2",
-    "mocha-lcov-reporter": "^1.2.0",
+    "nyc": "^10.1.2",
     "react": "^15.4.2",
     "react-addons-test-utils": "^15.4.2",
     "react-dom": "^15.4.2",

@@ -18,7 +18,13 @@ var Input = function Input() {
     _react2.default.createElement(
       'label',
       { htmlFor: props.label },
-      _react2.default.createElement('input', { checked: props.checked, type: props.type, name: props.label, value: props.value, onChange: props.onChange })
+      _react2.default.createElement('input', {
+        checked: props.checked,
+        type: props.type,
+        name: props.label,
+        value: props.value,
+        onChange: props.onChange
+      })
     )
   );
 };
@@ -29,6 +35,14 @@ Input.propTypes = {
   type: _react2.default.PropTypes.string,
   value: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number, _react2.default.PropTypes.bool]),
   checked: _react2.default.PropTypes.bool
+};
+
+Input.defaultProps = {
+  label: '',
+  onChange: undefined,
+  type: 'text',
+  value: '',
+  checked: false
 };
 
 exports.default = Input;

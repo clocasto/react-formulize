@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { shallow, mount } from 'enzyme';
 
 import { Form, Field, Input } from '../../dist/index';
-import { buildField, updateInput } from '../helpers';
+import { buildField, updateInput } from '../spec_helpers';
 
 import * as validators from '../../src/helpers/validators';
 

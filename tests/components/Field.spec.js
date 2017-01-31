@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { shallow, mount } from 'enzyme';
 
 import { Form, Field, Input } from '../../dist/index';
-import { updateInput } from '../helpers';
+import { updateInput } from '../spec_helpers';
 
 describe('<Field /> Higher-Order-Component', () => {
   const nameField = { label: 'name', value: 'Test Name' };

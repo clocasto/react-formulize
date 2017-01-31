@@ -50,19 +50,19 @@ var Form = function (_React$Component) {
   _createClass(Form, [{
     key: 'produceFieldComponent',
     value: function produceFieldComponent(field, index) {
-      var _props = {};
+      var newProps = {};
       var name = void 0;
 
       if ((typeof field === 'undefined' ? 'undefined' : _typeof(field)) === 'object') {
         name = field.label;
-        Object.assign(_props, this.props.fields[index]);
-        delete _props.pristine;
-        delete _props.valid;
+        Object.assign(newProps, this.props.fields[index]);
+        delete newProps.pristine;
+        delete newProps.valid;
       } else {
         name = field;
       }
 
-      return _react2.default.createElement(_Field2.default, _extends({}, _props, {
+      return _react2.default.createElement(_Field2.default, _extends({}, newProps, {
         key: name,
         value: this.state[name].value,
         onChange: this.onChange,
@@ -89,7 +89,12 @@ var Form = function (_React$Component) {
 
 Form.propTypes = {
   Form: _react2.default.PropTypes.func,
-  fields: _react2.default.PropTypes.array
+  fields: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.string)
+};
+
+Form.defaultProps = {
+  Form: undefined,
+  fields: []
 };
 
 exports.default = Form;

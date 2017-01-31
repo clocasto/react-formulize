@@ -11,7 +11,7 @@ const Field = class extends React.Component {
       value: props.value || '',
       valid: false,
       pristine: true,
-      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0,
+      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: assembleValidators(props),
     };
 
@@ -97,6 +97,15 @@ Field.propTypes = {
   debounce: React.PropTypes.number,
   match: React.PropTypes.string,
   Input: React.PropTypes.func,
+};
+
+Field.defaultProps = {
+  value: '',
+  label: '',
+  onChange: undefined,
+  debounce: 0,
+  match: undefined,
+  Input: undefined,
 };
 
 export default Field;

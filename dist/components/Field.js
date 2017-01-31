@@ -42,7 +42,7 @@ var Field = function (_React$Component) {
       value: props.value || '',
       valid: false,
       pristine: true,
-      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0,
+      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: (0, _utilities.assembleValidators)(props)
     };
 
@@ -139,6 +139,15 @@ Field.propTypes = {
   debounce: _react2.default.PropTypes.number,
   match: _react2.default.PropTypes.string,
   Input: _react2.default.PropTypes.func
+};
+
+Field.defaultProps = {
+  value: '',
+  label: '',
+  onChange: undefined,
+  debounce: 0,
+  match: undefined,
+  Input: undefined
 };
 
 exports.default = Field;

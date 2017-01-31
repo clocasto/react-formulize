@@ -35,9 +35,10 @@ export function required() {
 }
 
 export function match(valueToMatch) {
+  let matchingValue = valueToMatch;
   return (value) => {
-    if (typeof valueToMatch === 'function') valueToMatch = valueToMatch();
-    return (value === valueToMatch);
+    if (typeof valueToMatch === 'function') matchingValue = valueToMatch();
+    return (value === matchingValue);
   };
 }
 

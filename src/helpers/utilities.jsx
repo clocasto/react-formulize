@@ -1,6 +1,16 @@
 import * as validatorFunctions from './validators';
 
-export function assembleValidators({ email, length, required, match, alpha, number, max, min, custom }) {
+export function assembleValidators({
+  email,
+  length,
+  required,
+  match,
+  alpha,
+  number,
+  max,
+  min,
+  custom,
+}) {
   const validators = {};
   if (email) { validators.email = validatorFunctions.email(email === true ? undefined : email); }
   if (Array.isArray(length)) { validators.length = validatorFunctions.length(length); }
@@ -31,23 +41,23 @@ export function onChange(changeInfo) {
   this.setState({
     [field]: { value, status, pristine },
   });
-};
+}
 
 export function addFieldToState(field) {
   if (!field) return;
 
   if (Array.isArray(field)) {
-    field.forEach(_name => this.addFieldToState(_name));
+    field.forEach(name => this.addFieldToState(name));
   } else if (typeof field === 'string') {
     this.state[field] = { value: '', valid: false, pristine: false };
   } else if (typeof field === 'object') {
-    const { label: _name, value, valid, pristine } = field;
-    const _state = { value: '', valid: false, pristine: false };
+    const { label: name, value, valid, pristine } = field;
+    const newState = { value: '', valid: false, pristine: false };
 
-    if (value !== undefined) Object.assign(_state, { value });
-    if (valid !== undefined) Object.assign(_state, { valid });
-    if (pristine !== undefined) Object.assign(_state, { pristine });
+    if (value !== undefined) Object.assign(newState, { value });
+    if (valid !== undefined) Object.assign(newState, { valid });
+    if (pristine !== undefined) Object.assign(newState, { pristine });
 
-    this.state[_name] = _state;
+    this.state[name] = newState;
   }
-};
+}
