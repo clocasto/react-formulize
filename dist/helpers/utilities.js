@@ -11,6 +11,7 @@ exports.updateValidators = updateValidators;
 exports.isValid = isValid;
 exports.onChange = onChange;
 exports.addFieldToState = addFieldToState;
+exports.getValuesOf = getValuesOf;
 
 var _validators = require('./validators');
 
@@ -106,4 +107,12 @@ function addFieldToState(field) {
 
     this.state[name] = newState;
   }
+}
+
+function getValuesOf() {
+  var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+  return Object.keys(obj).map(function (key) {
+    return obj[key];
+  });
 }

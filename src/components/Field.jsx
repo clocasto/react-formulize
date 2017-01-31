@@ -1,7 +1,7 @@
 import React from 'react';
 import debounce from 'lodash.debounce';
 import Input from './Input';
-import { assembleValidators, isValid, updateValidators } from '../helpers/utilities';
+import { assembleValidators, isValid, updateValidators, getValuesOf } from '../helpers/utilities';
 
 const Field = class extends React.Component {
   constructor(props) {
@@ -33,7 +33,7 @@ const Field = class extends React.Component {
 
     if (this.props.match !== nextProps.match) {
       const validators = updateValidators({ match: nextProps.match }, this.state.validators);
-      this.setState({ valid: isValid(this.state.value, Object.values(validators)), validators });
+      this.setState({ valid: isValid(this.state.value, getValuesOf(validators)), validators });
     }
   }
 
@@ -51,7 +51,7 @@ const Field = class extends React.Component {
 
   onChange(e) {
     const { value } = e.target;
-    const validators = Object.values(this.state.validators);
+    const validators = getValuesOf(this.state.validators);
 
     this.setState({ value, valid: isValid(value, validators), pristine: false });
     this.finalValue = value;

@@ -61,3 +61,7 @@ export function addFieldToState(field) {
     this.state[name] = newState;
   }
 }
+
+export function getValuesOf(obj = {}) {
+  return Object.keys(obj).map(key => obj[key]);
+}

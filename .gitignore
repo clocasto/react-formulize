@@ -3,4 +3,5 @@ tests/test-folder
 coverage
 npm-debug.log
 .nyc-output
+.nyc-output/**
 .coveralls.yml

@@ -66,7 +66,7 @@ var Field = function (_React$Component) {
 
       if (this.props.match !== nextProps.match) {
         var validators = (0, _utilities.updateValidators)({ match: nextProps.match }, this.state.validators);
-        this.setState({ valid: (0, _utilities.isValid)(this.state.value, Object.values(validators)), validators: validators });
+        this.setState({ valid: (0, _utilities.isValid)(this.state.value, (0, _utilities.getValuesOf)(validators)), validators: validators });
       }
     }
   }, {
@@ -88,7 +88,7 @@ var Field = function (_React$Component) {
     value: function onChange(e) {
       var value = e.target.value;
 
-      var validators = Object.values(this.state.validators);
+      var validators = (0, _utilities.getValuesOf)(this.state.validators);
 
       this.setState({ value: value, valid: (0, _utilities.isValid)(value, validators), pristine: false });
       this.finalValue = value;
