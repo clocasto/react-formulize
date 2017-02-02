@@ -22,7 +22,73 @@ A simple form validation library for React.js which wires up custom, controlled 
 
 ## <a href="usage"></a>Usage
 
+Formwizard-react can be used to both quickly compose forms or add validation to existing input components.  
+
+### Wrapping A Custom Form (Managing Form State)
+```javascript  
+  import React from 'react';
+  import { Form } from 'formwizard-react';
+  import { customForm } from './components/form';
+  // customForm = <div><input name="field_1"/><input name="field_2"/><div>;
+
+  export default function (props) {
+    // CustomForm receives `data` prop: {'field_1': {value: '', valid: false, pristine: true... }... } 
+    return (<Form Form={CustomForm} fields={['field_name_1', 'field_2']} />);
+  } 
+```  
+
+### Composing A New Form (With Custom Input Component)
+```javascript  
+  import React from 'react';
+  import { Form, Field } from 'formwizard-react';
+  import { agePickerComponent } from './components/agePicker';
   
+  export default function (props) { 
+    return (
+      <Form fields={['name_field', 'email_field', 'age_field']}>
+        <Field name="name_field" length={[3, 24]} />
+        <Field name="email_field" required email debounce="300" />
+        <Field name="age_field" type="number" Input={agePickerComponent} required min="18" max="150" />
+        <button type="submit" />
+      </Form>
+     );
+  } 
+```  
+
+### Adding Validation To A Custom Component
+```javascript  
+  import React from 'react';
+  import { Field } from 'formwizard-react';
+  import { agePickerComponent } from './components/agePicker';
+  
+  export class RegistrationForm extends React.Component { 
+    constructor(props) {
+      super(props);
+      this.state = {
+        'name_field': { value: '' },
+        'email_field': { value: '' },
+        'age_field': { value: '' },
+      };
+    }
+    
+    render() {
+      return (
+        <form>
+          <div>
+            <input name="name_field" length={[3, 24]} />
+          </div>
+          <div>
+            <input name="email_field"  />
+          </div>
+          <div>
+            <Field name="age_field" type="number" Input={agePickerComponent} required min="18" max="150" />
+          </div>
+          <button type="submit" />
+        </form>
+       );
+     }
+  } 
+```  
 
 ## <a href="form-component-api"></a>Form Component API
 
@@ -31,16 +97,7 @@ The `Form` component is a stateful higher-order-component which wraps a presenta
 ### props.Form = formComponent  
 > @param {Function} [formComponent=undefined] - Optional. A presentational form component to wrap   
 
-An optional form component to wrap. `Form` will pass down `props.data` to this component.  
-
-*Example:*  
-```  
-  const customForm = <div><input name="field_name_1"/><input name="field_name_2"/><div>;
-
-  <Form Form={customForm} fields={['field_name_1', 'field_name_2']} /> 
-
-  // customForm receives `props.data`: {'field_name_1': {value: '', valid: false, pristine: true... }... }  
-```  
+An optional form component to wrap. `Form` will pass down `props.data` to this component.   
 
 ### props.fields = fieldNames  
 > @param {String[]} fieldNames - A list of input field names belonging to the form (to be used for indexing state)  
