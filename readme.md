@@ -3,7 +3,7 @@ formwizard-react [![Build Status](https://travis-ci.org/clocasto/formwizard-reac
 
 A simple form validation library for React.js which wires up custom, controlled inputs through a declarative API.  
 
-#### Table of Contents  
+## Table of Contents  
   1. [Installation](#installation)
   2. [Usage](#usage)
   3. [Component API](#component-api)
@@ -22,20 +22,7 @@ A simple form validation library for React.js which wires up custom, controlled 
 
 Formwizard-react can be used to both quickly compose forms or add validation to existing input components.  
 
-### Wrapping A Custom Form (Managing Form State)
-```javascript  
-  import React from 'react';
-  import { Form } from 'formwizard-react';
-  import { customForm } from './components/form';
-  // customForm = <div><input name="field_1"/><input name="field_2"/><div>;
-
-  export default function (props) {
-    // CustomForm receives `data` prop: {'field_1': {value: '', valid: false, pristine: true... }... } 
-    return (<Form Form={CustomForm} fields={['field_name_1', 'field_2']} />);
-  } 
-```  
-
-### Composing A New Form (With Custom Input Component)
+#### Composing A New Form With Custom Input Component(s)
 ```javascript  
   import React from 'react';
   import { Form, Field } from 'formwizard-react';
@@ -52,8 +39,27 @@ Formwizard-react can be used to both quickly compose forms or add validation to 
      );
   } 
 ```  
+#### Wrapping A Custom Form (Managing Form State)
+```javascript  
+  import React from 'react';
+  import { Form } from 'formwizard-react';
+  import { customForm } from './components/form';
+  /* customForm = (props) => {
+      return (<div>
+        <div><h3>My Custom Form!</h3></div>
+        <input name="field_1" value={props.data['field_1'].value} onChange={props.onChange}/>
+        <input name="field_2" value={props.data['field_2'].value} onChange={props.onChange}/>
+      <div>);
+     }
+  */  
 
-### Adding Validation To A Custom Component
+  export default function (props) {
+    // CustomForm receives `data` prop: {'field_1': {value: '', valid: false, pristine: true... }... } 
+    return (<Form Form={CustomForm} fields={['field_name_1', 'field_2']} />);
+  } 
+```  
+
+#### Adding Validation To An Existing Form
 ```javascript  
   import React from 'react';
   import { Field } from 'formwizard-react';
@@ -69,17 +75,24 @@ Formwizard-react can be used to both quickly compose forms or add validation to 
       };
     }
     
+    onChange(e) {
+      this.setState({ [e.target.name]: e.target.value });
+    }
+    
     render() {
       return (
         <form>
           <div>
-            <input name="name_field" length={[3, 24]} />
-          </div>
-          <div>
-            <input name="email_field"  />
-          </div>
-          <div>
-            <Field name="age_field" type="number" Input={agePickerComponent} required min="18" max="150" />
+            <input type="text" name="name_field" onChange={this.onChange}/>
+            <Field
+              name="age_field"
+              type="number"
+              Input={agePickerComponent}
+              onChange={this.onChange}
+              required
+              min="18"
+              max="150"
+            />
           </div>
           <button type="submit" />
         </form>
@@ -108,6 +121,21 @@ The `Field` component is a stateful, higher-order component which wraps a given 
 Each `Field` component will maintain its input element's value (`state.value` {String, Number}), validity(`state.valid`{Boolean}), and pristine state (`state.pristine` {Boolean}), as well as provide an onChange handler passed down through `props.onChange`.
 
 There are also a handful of different validators and properties (debounce, length, etc.) that can be attached to the field component. This is done through declaring the properties in the props passed to the field component. See below for the `Field` component's API.  
+
+#### props.value = value
+> @param {String} [value=''] - The value of the wrapped input component.   
+
+  This property is used to control the value of the wrapped input component.  
+
+#### props.label = label
+> @param {String} [label=''] - The name of the wrapped input component. 
+
+  The name of the wrapped input component. If no custom input component is passed in (via `props.Input`), then a label element will be created around the input and the input will be named, both with this value.
+
+#### props.onChange = onChangeHandler
+> @param {Function} onChangeHandler - A function used to update (control) the state of the input element.  
+
+  This property will be invoked on a change event in a wrapped `input` element (unless a custom `input` element is provided, then this function will be passed down to the custom component through `props.onChange`).  
 
 #### props.debounce = duration
 > @param {Number} duration - An amount to debounce `props.onChange` invocation   
@@ -161,6 +189,26 @@ There are also a handful of different validators and properties (debounce, lengt
 
 ### Input  
 A generic `Input` component which is simply a `label` and `input` element wrapped in a `div` element. The `input` element will invoked `props.onChange` upon change, apply `props.label` appropriately, and set its input type per `props.type`.  
+
+#### props.value = value
+> @param {String} [value=''] - The value of the wrapped input element.   
+
+  This property is used to control the value of the wrapped input element.  
+
+#### props.label = label
+> @param {String} [label=''] - The name of the wrapped input element. 
+
+  The name of the wrapped input element. A label element will be created around the input and the input will be named, both with this value.
+
+#### props.type = type
+> @param {String} [type='text'] - The input type of the wrapped input element. 
+
+  The input type for the wrapped input element. Defaults to `text`.
+
+#### props.onChange = onChangeHandler
+> @param {Function} onChangeHandler - A function used to update (control) the state of the input element.  
+
+  This property will be invoked on a change event in a wrapped `input` element.  
 
 ## <a href="tests"></a>Tests
 
