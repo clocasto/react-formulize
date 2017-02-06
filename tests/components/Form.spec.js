@@ -1,8 +1,9 @@
+/* globals describe it before beforeEach after afterEach */
 import React from 'react';
-import { expect } from 'chai';
-import { shallow, mount } from 'enzyme';
+import { expect } from 'chai'; // eslint-disable-line
+import { shallow, mount } from 'enzyme'; // eslint-disable-line
 
-import { Form, Field, Input } from '../../dist/index';
+import { Form, Field } from '../../dist/index';
 
 describe('<Form /> Higher-Order-Component', () => {
   const nameField = { label: 'name', value: 'Test Name' };
@@ -36,9 +37,9 @@ describe('<Form /> Higher-Order-Component', () => {
 
 
     it('passes appropriate props down from the `fields` prop', () => {
-      const _nameField = Object.assign({}, nameField, { debounce: 300, required: true });
+      const newNameField = Object.assign({}, nameField, { debounce: 300, required: true });
 
-      const wrapper = mount(<Form fields={[_nameField, emailField]} />);
+      const wrapper = mount(<Form fields={[newNameField, emailField]} />);
 
       const fields = wrapper.find(Field);
       expect(fields).to.have.length(2);
@@ -48,7 +49,7 @@ describe('<Form /> Higher-Order-Component', () => {
 
       expect(nameProps).to.have.property('debounce', 300);
       expect(nameProps).to.have.property('required', true);
-      expect(nameProps).to.have.property('value', _nameField.value);
+      expect(nameProps).to.have.property('value', newNameField.value);
       expect(emailProps).to.have.property('value', emailField.value);
     });
   });
@@ -60,19 +61,19 @@ describe('<Form /> Higher-Order-Component', () => {
     before('Assemble a custom form element', () => {
       const customForm = (
         <form id="test-form">
-        <h4>This is my highly-customized test form!</h4>
-        <Field value={'10'} onChange={null} label={'name'}></Field>
-        <Field value={'15'} onChange={null} label={'email'}></Field>
-        <Field value={'20'} onChange={null} type={'password'} label={'password'}></Field>
-      </form>);
+          <h4>This is my highly-customized test form!</h4>
+          <Field value={'10'} onChange={null} label={'name'} />
+          <Field value={'15'} onChange={null} label={'email'} />
+          <Field value={'20'} onChange={null} type={'password'} label={'password'} />
+        </form>);
 
-      customFormConstructor = (props) => customForm;
+      customFormConstructor = () => customForm;
 
       customFormClass = class extends React.Component {
         render() {
           return customForm;
         }
-      }
+      };
     });
 
     it('will wrap a custom form (constructor function) passed through `Form` prop', () => {
@@ -105,7 +106,7 @@ describe('<Form /> Higher-Order-Component', () => {
       const renderedCustomFormProps = {
         name: { value: '', valid: false, pristine: false },
         email: { value: '', valid: false, pristine: false },
-        pw: { value: '123goodPass', valid: false, pristine: false }
+        pw: { value: '123goodPass', valid: false, pristine: false },
       };
 
       expect(renderedCustomForm.props()).to.have.property('data');

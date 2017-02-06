@@ -1,14 +1,14 @@
+/* globals describe it before beforeEach after afterEach */
 import React from 'react';
-import sinon from 'sinon';
-import { expect } from 'chai';
-import { shallow, mount } from 'enzyme';
+import sinon from 'sinon'; // eslint-disable-line
+import { expect } from 'chai'; // eslint-disable-line
+import { shallow, mount } from 'enzyme'; // eslint-disable-line
 
-import { Form, Field, Input } from '../../dist/index';
+import { Field, Input } from '../../dist/index';
 import { updateInput } from '../spec_helpers';
 
 describe('<Field /> Higher-Order-Component', () => {
   const nameField = { label: 'name', value: 'Test Name' };
-  const emailField = { label: 'email', value: 'user@company.com' };
 
   describe('Default Field', () => {
     it('by default renders an `Input` component', () => {
@@ -19,7 +19,7 @@ describe('<Field /> Higher-Order-Component', () => {
     it('passes all props down', () => {
       const propsToPass = Object.assign({}, nameField, { debounce: 300, required: true });
 
-      const wrapper = mount(<Field {...propsToPass} testProp/>);
+      const wrapper = mount(<Field {...propsToPass} testProp />);
 
       const fields = wrapper.find(Field);
       expect(fields).to.have.length(1);
@@ -38,13 +38,19 @@ describe('<Field /> Higher-Order-Component', () => {
     let customInputClass;
 
     before('Assemble a custom input element', () => {
-      customInputConstructor = props => <div><h4>My Test Input!</h4><input value={props.value} onChange={props.onChange}/></div>;
+      /* eslint-disable */
+      customInputConstructor = props => (
+        <div>
+          <h4>My Test Input!</h4>
+          <input value={props.value} onChange={props.onChange} />
+        </div>);
+      /* eslint-enable */
 
-      customInputClass = class extends React.Component {
+      customInputClass = class extends React.Component { // eslint-disable-line
         render() {
-          return (<div> {customInputConstructor(this.props)} <h5>Class test!</h5></div>)
+          return (<div> {customInputConstructor(this.props)} <h5>Class test!</h5></div>);
         }
-      }
+      };
     });
 
     it('will wrap a custom form (constructor function) passed through `Input` prop', () => {
