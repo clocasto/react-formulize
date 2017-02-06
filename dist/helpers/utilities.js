@@ -73,13 +73,13 @@ function isValid(value, validators) {
 }
 
 function onChange(changeInfo) {
-  var field = changeInfo.label,
+  var name = changeInfo.name,
       value = changeInfo.value,
       status = changeInfo.status,
       pristine = changeInfo.pristine;
 
 
-  this.setState(_defineProperty({}, field, { value: value, status: status, pristine: pristine }));
+  this.setState(_defineProperty({}, name, { value: value, status: status, pristine: pristine }));
 }
 
 function addFieldToState(field) {
@@ -94,10 +94,11 @@ function addFieldToState(field) {
   } else if (typeof field === 'string') {
     this.state[field] = { value: '', valid: false, pristine: false };
   } else if ((typeof field === 'undefined' ? 'undefined' : _typeof(field)) === 'object') {
-    var name = field.label,
-        value = field.value,
-        valid = field.valid,
-        pristine = field.pristine;
+    var _field$props = field.props,
+        name = _field$props.name,
+        value = _field$props.value,
+        valid = _field$props.valid,
+        pristine = _field$props.pristine;
 
     var newState = { value: '', valid: false, pristine: false };
 

@@ -4,19 +4,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
-
-var _Field = require('./Field');
-
-var _Field2 = _interopRequireDefault(_Field);
 
 var _utilities = require('../helpers/utilities');
 
@@ -38,48 +30,40 @@ var Form = function (_React$Component) {
 
     _this.addFieldToState = _utilities.addFieldToState.bind(_this);
     _this.onChange = _utilities.onChange.bind(_this);
-    _this.produceFieldComponent = _this.produceFieldComponent.bind(_this);
+    _this.onSubmit = _this.onSubmit.bind(_this);
 
     _this.state = {};
-    _this.form = props.Form;
-
-    _this.addFieldToState(props.fields);
+    _this.addFieldToState(props.children.filter(function (child) {
+      return child.type.name === 'Field';
+    }));
     return _this;
   }
 
   _createClass(Form, [{
-    key: 'produceFieldComponent',
-    value: function produceFieldComponent(field, index) {
-      var newProps = {};
-      var name = void 0;
-
-      if ((typeof field === 'undefined' ? 'undefined' : _typeof(field)) === 'object') {
-        name = field.label;
-        Object.assign(newProps, this.props.fields[index]);
-        delete newProps.pristine;
-        delete newProps.valid;
-      } else {
-        name = field;
-      }
-
-      return _react2.default.createElement(_Field2.default, _extends({}, newProps, {
-        key: name,
-        value: this.state[name].value,
-        onChange: this.onChange,
-        label: name
-      }));
+    key: 'onSubmit',
+    value: function onSubmit(e) {
+      e.preventDefault();
+      if (this.props.onSubmit) this.props.onSubmit(this.state);
     }
   }, {
     key: 'render',
     value: function render() {
-      return this.form ? _react2.default.createElement(this.form, _extends({}, this.props, {
-        onChange: this.onChange,
-        data: Object.assign({}, this.state),
-        Form: undefined
-      })) : _react2.default.createElement(
+      var _this2 = this;
+
+      return _react2.default.createElement(
         'form',
-        null,
-        (this.props.fields || []).map(this.produceFieldComponent)
+        { onSubmit: this.onSubmit },
+        _react2.default.Children.count(this.props.children) && _react2.default.Children.map(this.props.children, function (child) {
+          if (child.type.name === 'Field') {
+            var name = child.props.name;
+
+            var value = _this2.state[name].value;
+            return _react2.default.cloneElement(child, { key: child.props.name, value: value, name: name });
+          } else if (child.props.form) {
+            return _react2.default.cloneElement(child, { data: _this2.state });
+          }
+          return _react2.default.cloneElement(child);
+        })
       );
     }
   }]);
@@ -88,13 +72,13 @@ var Form = function (_React$Component) {
 }(_react2.default.Component);
 
 Form.propTypes = {
-  Form: _react2.default.PropTypes.func,
-  fields: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.string)
+  children: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.element),
+  onSubmit: _react2.default.PropTypes.func
 };
 
 Form.defaultProps = {
-  Form: undefined,
-  fields: []
+  children: [],
+  onSubmit: null
 };
 
 exports.default = Form;

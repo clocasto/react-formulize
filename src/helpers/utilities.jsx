@@ -36,10 +36,10 @@ export function isValid(value, validators) {
 }
 
 export function onChange(changeInfo) {
-  const { label: field, value, status, pristine } = changeInfo;
+  const { name, value, status, pristine } = changeInfo;
 
   this.setState({
-    [field]: { value, status, pristine },
+    [name]: { value, status, pristine },
   });
 }
 
@@ -51,7 +51,7 @@ export function addFieldToState(field) {
   } else if (typeof field === 'string') {
     this.state[field] = { value: '', valid: false, pristine: false };
   } else if (typeof field === 'object') {
-    const { label: name, value, valid, pristine } = field;
+    const { name, value, valid, pristine } = field.props;
     const newState = { value: '', valid: false, pristine: false };
 
     if (value !== undefined) Object.assign(newState, { value });

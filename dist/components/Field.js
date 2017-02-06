@@ -99,7 +99,7 @@ var Field = function (_React$Component) {
     value: function broadcastChange() {
       if (this.props.onChange) {
         this.props.onChange({
-          label: this.props.label,
+          name: this.props.name,
           value: this.finalValue,
           status: this.state.valid,
           pristine: this.state.pristine
@@ -134,7 +134,7 @@ var Field = function (_React$Component) {
 
 Field.propTypes = {
   value: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number]),
-  label: _react2.default.PropTypes.string,
+  name: _react2.default.PropTypes.string,
   onChange: _react2.default.PropTypes.func,
   debounce: _react2.default.PropTypes.number,
   match: _react2.default.PropTypes.string,
@@ -143,7 +143,7 @@ Field.propTypes = {
 
 Field.defaultProps = {
   value: '',
-  label: '',
+  name: '',
   onChange: undefined,
   debounce: 0,
   match: undefined,

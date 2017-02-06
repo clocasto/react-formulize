@@ -61,7 +61,7 @@ const Field = class extends React.Component {
   broadcastChange() {
     if (this.props.onChange) {
       this.props.onChange({
-        label: this.props.label,
+        name: this.props.name,
         value: this.finalValue,
         status: this.state.valid,
         pristine: this.state.pristine,
@@ -92,7 +92,7 @@ const Field = class extends React.Component {
 
 Field.propTypes = {
   value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
-  label: React.PropTypes.string,
+  name: React.PropTypes.string,
   onChange: React.PropTypes.func,
   debounce: React.PropTypes.number,
   match: React.PropTypes.string,
@@ -101,7 +101,7 @@ Field.propTypes = {
 
 Field.defaultProps = {
   value: '',
-  label: '',
+  name: '',
   onChange: undefined,
   debounce: 0,
   match: undefined,
