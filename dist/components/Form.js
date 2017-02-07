@@ -33,9 +33,10 @@ var Form = function (_React$Component) {
     _this.onSubmit = _this.onSubmit.bind(_this);
 
     _this.state = {};
-    _this.addFieldToState(props.children.filter(function (child) {
+    var fieldsToAdd = _react2.default.Children.toArray(props.children).filter(function (child) {
       return child.type.name === 'Field';
-    }));
+    });
+    _this.addFieldToState(fieldsToAdd);
     return _this;
   }
 
@@ -58,9 +59,8 @@ var Form = function (_React$Component) {
             var name = child.props.name;
 
             var value = _this2.state[name].value;
+            console.log('child', child.props);
             return _react2.default.cloneElement(child, { key: child.props.name, value: value, name: name });
-          } else if (child.props.form) {
-            return _react2.default.cloneElement(child, { data: _this2.state });
           }
           return _react2.default.cloneElement(child);
         })

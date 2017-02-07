@@ -10,7 +10,9 @@ const Form = class extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {};
-    this.addFieldToState(props.children.filter(child => (child.type.name === 'Field')));
+    const fieldsToAdd = React.Children.toArray(props.children)
+      .filter(child => (child.type.name === 'Field'));
+    this.addFieldToState(fieldsToAdd);
   }
 
   onSubmit(e) {
@@ -27,8 +29,6 @@ const Form = class extends React.Component {
               const { name } = child.props;
               const value = this.state[name].value;
               return React.cloneElement(child, { key: child.props.name, value, name });
-            } else if (child.props.form) {
-              return React.cloneElement(child, { data: this.state });
             }
             return React.cloneElement(child);
           })}

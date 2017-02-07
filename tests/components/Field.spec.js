@@ -12,7 +12,7 @@ describe('<Field /> Higher-Order-Component', () => {
 
   describe('Default Field', () => {
     it('by default renders an `Input` component', () => {
-      const wrapper = shallow(<Field />);
+      const wrapper = shallow(<Field />); // eslint-disable-line
       expect(wrapper.find(Input)).to.have.length(1);
     });
 
@@ -72,9 +72,14 @@ describe('<Field /> Higher-Order-Component', () => {
 
 
     it('passes `props` down to the custom `Input` component', () => {
-      const _onChange = function(e) { console.log(e.target); }
-      const _Field = <Field Input={customInputConstructor} value={'value!'} label="pass" value="123goodPass" onChange={_onChange} />;
-      const wrapper = mount(_Field);
+      const onChange = (e) => { console.log(e.target); }; // eslint-disable-line
+      const newField = (<Field
+        Input={customInputConstructor}
+        label="pass"
+        value="123goodPass"
+        onChange={onChange}
+      />);
+      const wrapper = mount(newField);
 
       expect(wrapper.find(Field)).to.have.length(1);
       expect(wrapper.find('h4')).to.have.length(1);
@@ -98,7 +103,7 @@ describe('<Field /> Higher-Order-Component', () => {
 
   describe('has validators', () => {
     it('which are composable through `props`', () => {
-      const vanillaWrapper = mount(<Field />)
+      const vanillaWrapper = mount(<Field />);
       const validatedWrapper = mount(<Field email required length={[0, 0]} fakeValidator />);
 
       expect(vanillaWrapper.state()).to.have.property('validators');
