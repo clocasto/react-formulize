@@ -29,7 +29,6 @@ var Form = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Form.__proto__ || Object.getPrototypeOf(Form)).call(this, props));
 
     _this.addFieldToState = _utilities.addFieldToState.bind(_this);
-    _this.onChange = _utilities.onChange.bind(_this);
     _this.onSubmit = _this.onSubmit.bind(_this);
 
     _this.state = {};
@@ -59,7 +58,6 @@ var Form = function (_React$Component) {
             var name = child.props.name;
 
             var value = _this2.state[name].value;
-            console.log('child', child.props);
             return _react2.default.cloneElement(child, { key: child.props.name, value: value, name: name });
           }
           return _react2.default.cloneElement(child);

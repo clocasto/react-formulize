@@ -35,14 +35,6 @@ export function isValid(value, validators) {
   }, true);
 }
 
-export function onChange(changeInfo) {
-  const { name, value, status, pristine } = changeInfo;
-
-  this.setState({
-    [name]: { value, status, pristine },
-  });
-}
-
 export function addFieldToState(field) {
   if (!field) return;
 

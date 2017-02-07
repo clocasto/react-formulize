@@ -9,7 +9,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 exports.assembleValidators = assembleValidators;
 exports.updateValidators = updateValidators;
 exports.isValid = isValid;
-exports.onChange = onChange;
 exports.addFieldToState = addFieldToState;
 exports.getValuesOf = getValuesOf;
 
@@ -18,8 +17,6 @@ var _validators = require('./validators');
 var validatorFunctions = _interopRequireWildcard(_validators);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function assembleValidators(_ref) {
   var email = _ref.email,
@@ -70,16 +67,6 @@ function isValid(value, validators) {
     if (!status) return false;
     return validator(value);
   }, true);
-}
-
-function onChange(changeInfo) {
-  var name = changeInfo.name,
-      value = changeInfo.value,
-      status = changeInfo.status,
-      pristine = changeInfo.pristine;
-
-
-  this.setState(_defineProperty({}, name, { value: value, status: status, pristine: pristine }));
 }
 
 function addFieldToState(field) {

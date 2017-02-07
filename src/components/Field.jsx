@@ -11,7 +11,7 @@ const Field = class extends React.Component {
       value: props.value || '',
       valid: false,
       pristine: true,
-      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
+      debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: assembleValidators(props),
     };
 
@@ -21,8 +21,8 @@ const Field = class extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.broadcastChange = this.broadcastChange.bind(this);
     this.cancelBroadcast = this.cancelBroadcast.bind(this);
-    this.debouncedBroadcastChange = this.state.debounceDuration ?
-      debounce(this.broadcastChange, this.state.debounceDuration) : this.broadcastChange;
+    this.debouncedBroadcastChange = this.state.debounce ?
+      debounce(this.broadcastChange, this.state.debounce) : this.broadcastChange;
   }
 
   componentWillUpdate(nextProps) {

@@ -42,7 +42,7 @@ var Field = function (_React$Component) {
       value: props.value || '',
       valid: false,
       pristine: true,
-      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
+      debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: (0, _utilities.assembleValidators)(props)
     };
 
@@ -52,7 +52,7 @@ var Field = function (_React$Component) {
     _this.onChange = _this.onChange.bind(_this);
     _this.broadcastChange = _this.broadcastChange.bind(_this);
     _this.cancelBroadcast = _this.cancelBroadcast.bind(_this);
-    _this.debouncedBroadcastChange = _this.state.debounceDuration ? (0, _lodash2.default)(_this.broadcastChange, _this.state.debounceDuration) : _this.broadcastChange;
+    _this.debouncedBroadcastChange = _this.state.debounce ? (0, _lodash2.default)(_this.broadcastChange, _this.state.debounce) : _this.broadcastChange;
     return _this;
   }
 
