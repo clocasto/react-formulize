@@ -79,36 +79,24 @@ const Field = class extends React.Component {
 
   render() {
     const childCount = React.Children(this.props.children);
+    const inputProps = {
+      value: this.state.value,
+      valid: this.state.valid,
+      pristine: this.state.pristine,
+      onChange: this.onChange,
+    };
 
     if (!childCount) {
-      return (
-        <Input
-          {...this.props}
-          value={this.state.value}
-          valid={this.state.valid}
-          pristine={this.state.pristine}
-          onChange={this.onChange}
-        />
-      );
+      return React.cloneElement(Input, Object.assign(inputProps, { ...this.props }));
     } else if (childCount === 1) {
-      return React.cloneElement(this.props.children, {
-        value: this.state.value,
-        valid: this.state.valid,
-        pristine: this.state.pristine,
-        onChange: this.onChange,
-      });
+      return React.cloneElement(this.props.children, inputProps);
     }
 
     return (
       <div>
         {React.Children.map(this.props.children, (child) => {
           if (child.type.name === 'Input') {
-            return React.cloneElement(this.props.children[0], {
-              value: this.state.value,
-              valid: this.state.valid,
-              pristine: this.state.pristine,
-              onChange: this.onChange,
-            });
+            return React.cloneElement(this.props.children[0], inputProps);
           }
           return child;
         })}
