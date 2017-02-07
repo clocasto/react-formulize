@@ -16,7 +16,6 @@ const Field = class extends React.Component {
     };
 
     this.finalValue = null;
-    this.Input = props.Input || Input;
 
     this.onChange = this.onChange.bind(this);
     this.broadcastChange = this.broadcastChange.bind(this);
@@ -79,14 +78,42 @@ const Field = class extends React.Component {
   }
 
   render() {
-    return (<this.Input
-      {...this.props}
-      value={this.state.value}
-      valid={this.state.valid}
-      pristine={this.state.pristine}
-      onChange={this.onChange}
-      Input={null}
-    />);
+    const childCount = React.Children(this.props.children);
+
+    if (!childCount) {
+      return (
+        <Input
+          {...this.props}
+          value={this.state.value}
+          valid={this.state.valid}
+          pristine={this.state.pristine}
+          onChange={this.onChange}
+        />
+      );
+    } else if (childCount === 1) {
+      return React.cloneElement(this.props.children, {
+        value: this.state.value,
+        valid: this.state.valid,
+        pristine: this.state.pristine,
+        onChange: this.onChange,
+      });
+    }
+
+    return (
+      <div>
+        {React.Children.map(this.props.children, (child) => {
+          if (child.type.name === 'Input') {
+            return React.cloneElement(this.props.children[0], {
+              value: this.state.value,
+              valid: this.state.valid,
+              pristine: this.state.pristine,
+              onChange: this.onChange,
+            });
+          }
+          return child;
+        })}
+      </div>
+    );
   }
 };
 
@@ -96,7 +123,7 @@ Field.propTypes = {
   onChange: React.PropTypes.func,
   debounce: React.PropTypes.number,
   match: React.PropTypes.string,
-  Input: React.PropTypes.func,
+  children: React.PropTypes.arrayOf(React.PropTypes.element),
 };
 
 Field.defaultProps = {
@@ -105,7 +132,7 @@ Field.defaultProps = {
   onChange: undefined,
   debounce: 0,
   match: undefined,
-  Input: undefined,
+  children: [],
 };
 
 export default Field;
