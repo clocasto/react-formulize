@@ -1,6 +1,6 @@
 import React from 'react';
 import debounce from 'lodash.debounce';
-import Input from './Input';
+import DefaultInput from './Input';
 import { assembleValidators, isValid, updateValidators, getValuesOf } from '../helpers/utilities';
 
 const Field = class extends React.Component {
@@ -78,7 +78,7 @@ const Field = class extends React.Component {
   }
 
   render() {
-    const childCount = React.Children(this.props.children);
+    const childCount = React.Children.count(this.props.children);
     const inputProps = {
       value: this.state.value,
       valid: this.state.valid,
@@ -87,7 +87,7 @@ const Field = class extends React.Component {
     };
 
     if (!childCount) {
-      return React.cloneElement(Input, Object.assign(inputProps, { ...this.props }));
+      return <DefaultInput {...this.props} {...inputProps} />;
     } else if (childCount === 1) {
       return React.cloneElement(this.props.children, inputProps);
     }
@@ -96,7 +96,7 @@ const Field = class extends React.Component {
       <div>
         {React.Children.map(this.props.children, (child) => {
           if (child.type.name === 'Input') {
-            return React.cloneElement(this.props.children[0], inputProps);
+            return React.cloneElement(child, inputProps);
           }
           return child;
         })}

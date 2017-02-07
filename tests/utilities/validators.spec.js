@@ -1,9 +1,7 @@
-import React from 'react';
-import sinon from 'sinon';
-import { expect } from 'chai';
-import { shallow, mount } from 'enzyme';
+/* globals describe it before beforeEach after afterEach */
+import { expect } from 'chai'; // eslint-disable-line
+import { shallow, mount } from 'enzyme'; // eslint-disable-line
 
-import { Form, Field, Input } from '../../dist/index';
 import { buildField, updateInput } from '../spec_helpers';
 
 import * as validators from '../../src/helpers/validators';
@@ -11,7 +9,7 @@ import * as validators from '../../src/helpers/validators';
 describe('Validator Functionality', () => {
   describe('Required', () => {
     const wrapper = buildField(mount, 'required', true);
-    let valFunc = validators.required();
+    const valFunc = validators.required();
 
     it('returns true for non-empty input', () => {
       expect(valFunc('Test Input')).to.equal(true);
@@ -29,7 +27,7 @@ describe('Validator Functionality', () => {
       expect(valFunc(() => {})).to.equal(false);
       expect(valFunc(null)).to.equal(false);
       expect(valFunc(undefined)).to.equal(false);
-      expect(valFunc(new Promise((resolve, reject) => {}))).to.equal(false);
+      expect(valFunc(new Promise(() => {}))).to.equal(false);
     });
 
     it('is properly used by a `Field` component to validate', () => {
@@ -48,7 +46,7 @@ describe('Validator Functionality', () => {
 
   describe('Email', () => {
     const wrapper = buildField(mount, 'email', true);
-    let valFunc = validators.email();
+    const valFunc = validators.email();
 
     it('returns `true` for valid email addresses', () => {
       expect(valFunc('test@test.com')).to.equal(true);
@@ -79,25 +77,25 @@ describe('Validator Functionality', () => {
     });
 
     it('can take a custom regular expression for validating', () => {
-      const _wrapper = buildField(mount, 'email', /test\@test\.test/);
+      const newWrapper = buildField(mount, 'email', /test\@test\.test/);
 
-      expect(_wrapper.state()).to.have.property('valid', false);
-      expect(_wrapper.state()).to.have.property('value', '');
+      expect(newWrapper.state()).to.have.property('valid', false);
+      expect(newWrapper.state()).to.have.property('value', '');
 
-      //Updating input to valid email which doesn't match RegEx
-      updateInput(_wrapper, 'valid@email.com');
-      expect(_wrapper.state()).to.have.property('valid', false);
-      expect(_wrapper.state()).to.have.property('value', 'valid@email.com');
+      // Updating input to valid email which doesn't match RegEx
+      updateInput(newWrapper, 'valid@email.com');
+      expect(newWrapper.state()).to.have.property('valid', false);
+      expect(newWrapper.state()).to.have.property('value', 'valid@email.com');
 
-      //Updating input to matching email
-      updateInput(_wrapper, 'test@test.test');
-      expect(_wrapper.state()).to.have.property('valid', true);
-      expect(_wrapper.state()).to.have.property('value', 'test@test.test');
+      // Updating input to matching email
+      updateInput(newWrapper, 'test@test.test');
+      expect(newWrapper.state()).to.have.property('valid', true);
+      expect(newWrapper.state()).to.have.property('value', 'test@test.test');
 
-      //Updating input to valid email which doesn't match RegEx
-      updateInput(_wrapper, 'test@test.tes');
-      expect(_wrapper.state()).to.have.property('valid', false);
-      expect(_wrapper.state()).to.have.property('value', 'test@test.tes');
+      // Updating input to valid email which doesn't match RegEx
+      updateInput(newWrapper, 'test@test.tes');
+      expect(newWrapper.state()).to.have.property('valid', false);
+      expect(newWrapper.state()).to.have.property('value', 'test@test.tes');
     });
   });
 
@@ -110,7 +108,7 @@ describe('Validator Functionality', () => {
      * Length Validator Function
      * @lengthArray {Array} - [minLen, maxLen] OR [maxLen]
      */
-    let valFunc = validators.length([minLen, maxLen]);
+    const valFunc = validators.length([minLen, maxLen]);
 
     it('returns `true` for inputs `>=minLen` and `<=maxLen`', () => {
       expect(valFunc('123456')).to.equal(true);
@@ -155,7 +153,7 @@ describe('Validator Functionality', () => {
     const returnValue = () => 'My input value!';
 
     const wrapper = buildField(mount, 'match', returnValue());
-    let valFunc = validators.match(returnValue);
+    const valFunc = validators.match(returnValue);
 
     it('returns `true` for a matching input', () => {
       expect(valFunc('My input value!')).to.equal(true);
@@ -188,7 +186,7 @@ describe('Validator Functionality', () => {
 
   describe('Alpha', () => {
     const wrapper = buildField(mount, 'alpha', true);
-    let valFunc = validators.alpha();
+    const valFunc = validators.alpha();
 
     // Implemented to only supports english
     it('returns `true` for strings consisting of only alphabet and space characters', () => {
@@ -237,7 +235,7 @@ describe('Validator Functionality', () => {
 
   describe('Number', () => {
     const wrapper = buildField(mount, 'number', true);
-    let valFunc = validators.numeric();
+    const valFunc = validators.numeric();
 
     it('returns `true` for strings consisting of only number and space characters', () => {
       expect(valFunc('')).to.equal(true);
@@ -278,7 +276,7 @@ describe('Validator Functionality', () => {
     const criterion = 6;
 
     const wrapper = buildField(mount, 'max', criterion, 'number');
-    let valFunc = validators.max(criterion);
+    const valFunc = validators.max(criterion);
 
     it('returns `true` for numbers less than or equal to the criterion', () => {
       expect(valFunc(-5000)).to.equal(true);
@@ -333,7 +331,7 @@ describe('Validator Functionality', () => {
     const criterion = 6;
 
     const wrapper = buildField(mount, 'min', criterion);
-    let valFunc = validators.min(criterion);
+    const valFunc = validators.min(criterion);
 
     it('returns `true` for numbers greater than or equal to the criterion', () => {
       expect(valFunc(5000)).to.equal(true);
@@ -388,7 +386,7 @@ describe('Validator Functionality', () => {
   });
 
   describe('Custom', () => {
-    const isPositive = (value) => typeof value === 'number' && value > 0;
+    const isPositive = value => typeof value === 'number' && value > 0;
 
     const wrapper = buildField(mount, 'custom', isPositive, 'number');
 

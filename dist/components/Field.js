@@ -47,7 +47,6 @@ var Field = function (_React$Component) {
     };
 
     _this.finalValue = null;
-    _this.Input = props.Input || _Input2.default;
 
     _this.onChange = _this.onChange.bind(_this);
     _this.broadcastChange = _this.broadcastChange.bind(_this);
@@ -119,13 +118,30 @@ var Field = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      return _react2.default.createElement(this.Input, _extends({}, this.props, {
+      var childCount = _react2.default.Children.count(this.props.children);
+      var inputProps = {
         value: this.state.value,
         valid: this.state.valid,
         pristine: this.state.pristine,
-        onChange: this.onChange,
-        Input: null
-      }));
+        onChange: this.onChange
+      };
+
+      if (!childCount) {
+        return _react2.default.createElement(_Input2.default, _extends({}, this.props, inputProps));
+      } else if (childCount === 1) {
+        return _react2.default.cloneElement(this.props.children, inputProps);
+      }
+
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.Children.map(this.props.children, function (child) {
+          if (child.type.name === 'Input') {
+            return _react2.default.cloneElement(child, inputProps);
+          }
+          return child;
+        })
+      );
     }
   }]);
 
@@ -138,7 +154,7 @@ Field.propTypes = {
   onChange: _react2.default.PropTypes.func,
   debounce: _react2.default.PropTypes.number,
   match: _react2.default.PropTypes.string,
-  Input: _react2.default.PropTypes.func
+  children: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.element)
 };
 
 Field.defaultProps = {
@@ -147,7 +163,7 @@ Field.defaultProps = {
   onChange: undefined,
   debounce: 0,
   match: undefined,
-  Input: undefined
+  children: []
 };
 
 exports.default = Field;

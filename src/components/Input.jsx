@@ -1,17 +1,15 @@
 import React from 'react';
 
-const Input = (props = {}) => (
-  <div>
-    <label htmlFor={props.label}>
-      <input
-        checked={props.checked}
-        type={props.type}
-        name={props.label}
-        value={props.value}
-        onChange={props.onChange}
-      />
-    </label>
-  </div>
+const Input = props => (
+  <label htmlFor={props.label}>
+    <input
+      checked={props.checked}
+      type={props.type}
+      name={props.label}
+      value={props.value}
+      onChange={props.onChange}
+    />
+  </label>
 );
 
 Input.propTypes = {
