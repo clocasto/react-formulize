@@ -26,52 +26,44 @@ Formwizard-react can be used to both quickly compose forms or add validation to 
 ```javascript  
   import React from 'react';
   import { Form, Field } from 'formwizard-react';
-  import { agePickerComponent } from './components/agePicker';
+  import { AgePickerComponent } from './components/agePicker';
+  import { CustomSubmitButton } from './components/SubmitButton';
+  import { SummarizeFormComponent } from './components/SummarizeFormComponent';
   
   export default function (props) { 
     return (
       <Form fields={['name_field', 'email_field', 'age_field']}>
         <Field name="name_field" length={[3, 24]} />
         <Field name="email_field" required email debounce="300" />
-        <Field name="age_field" type="number" Input={agePickerComponent} required min="18" max="150" />
-        <button type="submit" />
+        <Field name="age_field" required min="18" max="150">
+          <Input>
+            <AgePickerComponent />
+          </Input>
+        </Field>
+
+        <CustomSubmitButton />
+
+        <Data>
+          <SummarizeFormComponent />
+        </Data>
       </Form>
      );
   } 
 ```  
-#### Wrapping A Custom Form (Managing Form State)
-```javascript  
-  import React from 'react';
-  import { Form } from 'formwizard-react';
-  import { customForm } from './components/form';
-  /* customForm = (props) => {
-      return (<div>
-        <div><h3>My Custom Form!</h3></div>
-        <input name="field_1" value={props.data['field_1'].value} onChange={props.onChange}/>
-        <input name="field_2" value={props.data['field_2'].value} onChange={props.onChange}/>
-      <div>);
-     }
-  */  
 
-  export default function (props) {
-    // CustomForm receives `data` prop: {'field_1': {value: '', valid: false, pristine: true... }... } 
-    return (<Form Form={CustomForm} fields={['field_name_1', 'field_2']} />);
-  } 
-```  
-
-#### Adding Validation To An Existing Form
+#### Adding Validation To An Existing Form Input
 ```javascript  
   import React from 'react';
   import { Field } from 'formwizard-react';
-  import { agePickerComponent } from './components/agePicker';
+  import { AgePickerComponent } from './components/agePicker';
   
   export class RegistrationForm extends React.Component { 
     constructor(props) {
       super(props);
       this.state = {
-        'name_field': { value: '' },
-        'email_field': { value: '' },
-        'age_field': { value: '' },
+        'name': { value: '' },
+        'email': { value: '' },
+        'age': { value: '' },
       };
     }
     
@@ -83,16 +75,13 @@ Formwizard-react can be used to both quickly compose forms or add validation to 
       return (
         <form>
           <div>
-            <input type="text" name="name_field" onChange={this.onChange}/>
-            <Field
-              name="age_field"
-              type="number"
-              Input={agePickerComponent}
-              onChange={this.onChange}
-              required
-              min="18"
-              max="150"
-            />
+            <input type="text" name="name" onChange={this.onChange}/>  
+            // Fields are controlled! You must pass `value` and `onChange` if you aren't using `Form`
+            <Field name="age" value={this.state.age} onChange={this.onChange} min="18" max="150">
+              <Input>
+                <input type="text" name="name" onChange={this.onChange}/>
+              </Input>
+            </Field>
           </div>
           <button type="submit" />
         </form>
@@ -103,24 +92,21 @@ Formwizard-react can be used to both quickly compose forms or add validation to 
 ## <a href="component-api"></a>Component API  
 
 ### Form  
-The `Form` component is a stateful higher-order-component which wraps a presentational form component consisting of arbitrary input fields. Simply import in the `Form` component, pass it (via `props.fields`) the name of the input fields in an array. Additionally, pass the custom presentational form component in via `props.Form`. Now, `Form` will manage state for all of the specified fields and pass down `props.data` to the custom, presentational form component. If not custom form is provided, `Form` will create a generic form via `Field` and `Input` components. 
+The `Form` component is a stateful higher-order-component which wraps presentational form components consisting of arbitrary input fields. Simply import the `Form` component and nest your custom components inside the `Form` tag. The `Form` component will behave as follows with respect to its *direct* children:  
 
-#### props.Form = formComponent
-> @param {Function} [formComponent=undefined] - Optional. A presentational form component to wrap   
+  1. Any `Field` tag will be passed the state associated with the `Field`'s name (`Form.state[child.props.name]`).  
+  2. Any `Data` tag will be passed the entire `Form`'s state through `props.data`.  
 
-An optional form component to wrap. `Form` will pass down `props.data` to this component.
-
-#### props.fields = fieldNames  
-> @param {String[]} fieldNames - A list of input field names belonging to the form (to be used for indexing state)  
-
-An array of field names belonging to the wrapped form. See the above example for usage.  
+The `Form` component should be passed an `onSubmit` handler if you want to interact with the submission event! 
 
 ### Field  
-The `Field` component is a stateful, higher-order component which wraps a given presentational input component (or creates a default one). Custom input elements can be passed to `Field` via `props.Input`. 
+The `Field` component is a stateful, higher-order component which wraps a given presentational input component (or creates a default one). Each `Field` component will maintain its child's input element's value (`state.value` {String, Number}), validity(`state.valid`{Boolean}), and pristine state (`state.pristine` {Boolean}), as well as provide an onChange handler passed down through `props.onChange`. Input elements should be nested inside of `Field`s, and `Field` will behave as follows with respect to its *direct* children:  
+  
+  1. Any `Input` tag will be passed the current field state (`value`, `valid`, `pristine`).
+  
+*Note:* Only one input element should be nested inside of a field, `formwizard-react` will throw otherwise.
 
-Each `Field` component will maintain its input element's value (`state.value` {String, Number}), validity(`state.valid`{Boolean}), and pristine state (`state.pristine` {Boolean}), as well as provide an onChange handler passed down through `props.onChange`.
-
-There are also a handful of different validators and properties (debounce, length, etc.) that can be attached to the field component. This is done through declaring the properties in the props passed to the field component. See below for the `Field` component's API.  
+There are also a handful of different validators and properties (debounce, length, etc.) that can be attached to the field component. This is done through declaring props passed to the field component. See below for the list of validators.  
 
 #### props.value = value
 > @param {String} [value=''] - The value of the wrapped input component.   

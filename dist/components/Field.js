@@ -42,7 +42,7 @@ var Field = function (_React$Component) {
       value: props.value || '',
       valid: false,
       pristine: true,
-      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
+      debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: (0, _utilities.assembleValidators)(props)
     };
 
@@ -52,7 +52,7 @@ var Field = function (_React$Component) {
     _this.onChange = _this.onChange.bind(_this);
     _this.broadcastChange = _this.broadcastChange.bind(_this);
     _this.cancelBroadcast = _this.cancelBroadcast.bind(_this);
-    _this.debouncedBroadcastChange = _this.state.debounceDuration ? (0, _lodash2.default)(_this.broadcastChange, _this.state.debounceDuration) : _this.broadcastChange;
+    _this.debouncedBroadcastChange = _this.state.debounce ? (0, _lodash2.default)(_this.broadcastChange, _this.state.debounce) : _this.broadcastChange;
     return _this;
   }
 
@@ -99,7 +99,7 @@ var Field = function (_React$Component) {
     value: function broadcastChange() {
       if (this.props.onChange) {
         this.props.onChange({
-          label: this.props.label,
+          name: this.props.name,
           value: this.finalValue,
           status: this.state.valid,
           pristine: this.state.pristine
@@ -134,7 +134,7 @@ var Field = function (_React$Component) {
 
 Field.propTypes = {
   value: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number]),
-  label: _react2.default.PropTypes.string,
+  name: _react2.default.PropTypes.string,
   onChange: _react2.default.PropTypes.func,
   debounce: _react2.default.PropTypes.number,
   match: _react2.default.PropTypes.string,
@@ -143,7 +143,7 @@ Field.propTypes = {
 
 Field.defaultProps = {
   value: '',
-  label: '',
+  name: '',
   onChange: undefined,
   debounce: 0,
   match: undefined,

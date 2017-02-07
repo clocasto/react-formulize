@@ -11,7 +11,7 @@ const Field = class extends React.Component {
       value: props.value || '',
       valid: false,
       pristine: true,
-      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
+      debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: assembleValidators(props),
     };
 
@@ -21,8 +21,8 @@ const Field = class extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.broadcastChange = this.broadcastChange.bind(this);
     this.cancelBroadcast = this.cancelBroadcast.bind(this);
-    this.debouncedBroadcastChange = this.state.debounceDuration ?
-      debounce(this.broadcastChange, this.state.debounceDuration) : this.broadcastChange;
+    this.debouncedBroadcastChange = this.state.debounce ?
+      debounce(this.broadcastChange, this.state.debounce) : this.broadcastChange;
   }
 
   componentWillUpdate(nextProps) {
@@ -61,7 +61,7 @@ const Field = class extends React.Component {
   broadcastChange() {
     if (this.props.onChange) {
       this.props.onChange({
-        label: this.props.label,
+        name: this.props.name,
         value: this.finalValue,
         status: this.state.valid,
         pristine: this.state.pristine,
@@ -92,7 +92,7 @@ const Field = class extends React.Component {
 
 Field.propTypes = {
   value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
-  label: React.PropTypes.string,
+  name: React.PropTypes.string,
   onChange: React.PropTypes.func,
   debounce: React.PropTypes.number,
   match: React.PropTypes.string,
@@ -101,7 +101,7 @@ Field.propTypes = {
 
 Field.defaultProps = {
   value: '',
-  label: '',
+  name: '',
   onChange: undefined,
   debounce: 0,
   match: undefined,

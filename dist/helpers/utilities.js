@@ -9,7 +9,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 exports.assembleValidators = assembleValidators;
 exports.updateValidators = updateValidators;
 exports.isValid = isValid;
-exports.onChange = onChange;
 exports.addFieldToState = addFieldToState;
 exports.getValuesOf = getValuesOf;
 
@@ -18,8 +17,6 @@ var _validators = require('./validators');
 var validatorFunctions = _interopRequireWildcard(_validators);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function assembleValidators(_ref) {
   var email = _ref.email,
@@ -72,16 +69,6 @@ function isValid(value, validators) {
   }, true);
 }
 
-function onChange(changeInfo) {
-  var field = changeInfo.label,
-      value = changeInfo.value,
-      status = changeInfo.status,
-      pristine = changeInfo.pristine;
-
-
-  this.setState(_defineProperty({}, field, { value: value, status: status, pristine: pristine }));
-}
-
 function addFieldToState(field) {
   var _this = this;
 
@@ -94,10 +81,11 @@ function addFieldToState(field) {
   } else if (typeof field === 'string') {
     this.state[field] = { value: '', valid: false, pristine: false };
   } else if ((typeof field === 'undefined' ? 'undefined' : _typeof(field)) === 'object') {
-    var name = field.label,
-        value = field.value,
-        valid = field.valid,
-        pristine = field.pristine;
+    var _field$props = field.props,
+        name = _field$props.name,
+        value = _field$props.value,
+        valid = _field$props.valid,
+        pristine = _field$props.pristine;
 
     var newState = { value: '', valid: false, pristine: false };
 
