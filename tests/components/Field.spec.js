@@ -34,63 +34,44 @@ describe('<Field /> Higher-Order-Component', () => {
   });
 
   describe('Custom Input', () => {
-    let customInputConstructor;
-    let customInputClass;
+    let wrapper;
 
     before('Assemble a custom input element', () => {
-      /* eslint-disable */
-      customInputConstructor = props => (
-        <div>
-          <h4>My Test Input!</h4>
-          <input value={props.value} onChange={props.onChange} />
-        </div>);
-      /* eslint-enable */
-
-      customInputClass = class extends React.Component { // eslint-disable-line
-        render() {
-          return (<div> {customInputConstructor(this.props)} <h5>Class test!</h5></div>);
-        }
-      };
+      wrapper = mount(
+        <Field value={'value!'}>
+          <div>
+            <h4>My Test Input!</h4>
+            {props => <input value={props.value} onChange={props.onChange} />}
+          </div>
+        </Field>);
     });
 
-    it('will wrap a custom form (constructor function) passed through `Input` prop', () => {
-      const wrapper = mount(<Field Input={customInputConstructor} value={'value!'} />);
-
+    it('will wrap a custom input component nested in the `Field` tag', () => {
       expect(wrapper.find(Field)).to.have.length(1);
       expect(wrapper.find('h4')).to.have.length(1);
       expect(wrapper.find('h4').text()).to.equal('My Test Input!');
     });
-
-    it('will wrap a custom form (React Component Subclass) passed through `Form` prop', () => {
-      const wrapper = mount(<Field Input={customInputClass} value={'value!'} />);
-
-      expect(wrapper.find(Field)).to.have.length(1);
-      expect(wrapper.find('h4')).to.have.length(1);
-      expect(wrapper.find('h4').text()).to.equal('My Test Input!');
-      expect(wrapper.find('h5').text()).to.equal('Class test!');
-    });
-
 
     it('passes `props` down to the custom `Input` component', () => {
       const onChange = (e) => { console.log(e.target); }; // eslint-disable-line
-      const newField = (<Field
-        Input={customInputConstructor}
-        label="pass"
-        value="123goodPass"
-        onChange={onChange}
-      />);
-      const wrapper = mount(newField);
+      wrapper = mount(
+        <Field label="pass" value="123goodPass" onChange={onChange}>
+          <h4>My Test Input!</h4>
+          <Input>
+            {props => <input value={props.value} onChange={props.onChange} />}
+          </Input>
+        </Field>,
+        );
 
       expect(wrapper.find(Field)).to.have.length(1);
       expect(wrapper.find('h4')).to.have.length(1);
       expect(wrapper.find('h4').text()).to.equal('My Test Input!');
 
-      const renderedCustomInput = wrapper.find(customInputConstructor);
+      const renderedCustomInput = wrapper.find('Input');
       expect(renderedCustomInput).to.have.length(1);
 
       const renderedCustomInputProps = renderedCustomInput.props();
 
-      expect(renderedCustomInputProps).to.have.property('Input', null);
       expect(renderedCustomInputProps).to.have.property('value', renderedCustomInputProps.value);
       expect(renderedCustomInputProps).to.have.property('label', renderedCustomInputProps.label);
       expect(renderedCustomInputProps).to.have.property('valid', renderedCustomInputProps.valid);

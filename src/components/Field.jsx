@@ -92,6 +92,10 @@ const Field = class extends React.Component {
       return React.cloneElement(this.props.children, inputProps);
     }
 
+    if (!React.Children.toArray(this.props.children).find(child => child.type.name === 'Input')) {
+      throw new Error('No `Input` component provided to `Field`.');
+    }
+
     return (
       <div>
         {React.Children.map(this.props.children, (child) => {
@@ -111,7 +115,10 @@ Field.propTypes = {
   onChange: React.PropTypes.func,
   debounce: React.PropTypes.number,
   match: React.PropTypes.string,
-  children: React.PropTypes.arrayOf(React.PropTypes.element),
+  children: React.PropTypes.oneOfType([
+    React.PropTypes.element,
+    React.PropTypes.arrayOf(React.PropTypes.element),
+  ]),
 };
 
 Field.defaultProps = {

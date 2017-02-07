@@ -132,6 +132,12 @@ var Field = function (_React$Component) {
         return _react2.default.cloneElement(this.props.children, inputProps);
       }
 
+      if (!_react2.default.Children.toArray(this.props.children).find(function (child) {
+        return child.type.name === 'Input';
+      })) {
+        throw new Error('No `Input` component provided to `Field`.');
+      }
+
       return _react2.default.createElement(
         'div',
         null,
@@ -154,7 +160,7 @@ Field.propTypes = {
   onChange: _react2.default.PropTypes.func,
   debounce: _react2.default.PropTypes.number,
   match: _react2.default.PropTypes.string,
-  children: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.element)
+  children: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.element, _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.element)])
 };
 
 Field.defaultProps = {
