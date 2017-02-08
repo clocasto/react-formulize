@@ -61,7 +61,7 @@ describe('<Field /> Higher-Order-Component', () => {
             {props => <input value={props.value} onChange={props.onChange} />}
           </Input>
         </Field>,
-        );
+      );
 
       expect(wrapper.find(Field)).to.have.length(1);
       expect(wrapper.find('h4')).to.have.length(1);
@@ -138,6 +138,70 @@ describe('<Field /> Higher-Order-Component', () => {
 
       expect(wrapper.state()).to.have.property('value', '');
       expect(wrapper.state()).to.have.property('valid', false);
+    });
+  });
+
+  describe.only('`Field` method tests', () => {
+    let wrapper;
+    let shouldUpdateSpy;
+    let willUpdateSpy;
+    let willUnmountSpy;
+
+    before('Set up lifecycle spies', () => {
+      shouldUpdateSpy = sinon.spy(Field.prototype, 'shouldComponentUpdate');
+      willUpdateSpy = sinon.spy(Field.prototype, 'componentWillUpdate');
+      willUnmountSpy = sinon.spy(Field.prototype, 'componentWillUnmount');
+    });
+
+    beforeEach('Assemble a custom input element', () => {
+      wrapper = mount(<Field value="firstValue" />);
+    });
+
+    afterEach('', () => {
+      shouldUpdateSpy.reset();
+      willUpdateSpy.reset();
+      willUnmountSpy.reset();
+    });
+
+    it('Component should call shouldComponentUpdate on update', () => {
+      expect(willUpdateSpy.calledOnce).to.equal(false);
+      expect(shouldUpdateSpy.calledOnce).to.equal(false);
+      expect(willUnmountSpy.calledOnce).to.equal(false);
+      expect(wrapper.state()).to.have.property('value', 'firstValue');
+
+      wrapper.setProps({ value: 'secondValue' });
+
+      expect(willUpdateSpy.called).to.equal(true);
+      expect(shouldUpdateSpy.calledTwice).to.equal(true);
+      expect(willUnmountSpy.called).to.equal(false);
+      expect(wrapper.state()).to.have.property('value', 'secondValue');
+    });
+
+    it('Component should not re-render if `props.value` equals its internal state', () => {
+      expect(willUpdateSpy.calledOnce).to.equal(false);
+      expect(shouldUpdateSpy.callCount).to.equal(0);
+      expect(willUnmountSpy.calledOnce).to.equal(false);
+      expect(wrapper.state()).to.have.property('value', 'firstValue');
+      expect(wrapper.instance()).to.have.property('finalValue', null);
+      console.log(`BEFORE firstValue >>> ${wrapper.state().value}>>>`, shouldUpdateSpy.returnValues);
+      wrapper.find('input').simulate('change', { target: { value: 'firstValue' } });
+      console.log(`AFTER firstValue >>> ${wrapper.state().value}>>>`, shouldUpdateSpy.returnValues);
+
+      expect(shouldUpdateSpy.callCount).to.equal(1);
+      expect(shouldUpdateSpy.calledBefore(willUpdateSpy)).to.equal(true);
+      expect(willUpdateSpy.callCount).to.equal(1);
+      expect(wrapper.state()).to.have.property('value', 'firstValue');
+
+      // willUpdateSpy.reset();
+      console.log(`BEFORE secondValue >>> ${wrapper.state().value}>>>`, shouldUpdateSpy.returnValues);
+      wrapper.find('input').simulate('change', { target: { value: 'secondValue' } });
+      console.log(`AFTER secondValue >>> ${wrapper.state().value}>>>`, shouldUpdateSpy.returnValues);
+
+      // expect(shouldUpdateSpy.callCount).to.equal(2);
+      // expect(shouldUpdateSpy.calledBefore(willUpdateSpy)).to.equal(true);
+      console.log(shouldUpdateSpy.returnValues);
+      // expect(willUpdateSpy.callCount).to.equal(1);
+      // expect(wrapper.state()).to.have.property('value', 'secondValue');
     });
   });
 });

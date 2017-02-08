@@ -56,8 +56,14 @@ var Field = function (_React$Component) {
   }
 
   _createClass(Field, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      console.log('MOUNTED >>>');
+    }
+  }, {
     key: 'componentWillUpdate',
     value: function componentWillUpdate(nextProps) {
+      console.log('UPDATING >>>');
       if (nextProps.value !== this.props.value && nextProps.value !== this.finalValue) {
         this.cancelBroadcast();
         this.setState({ value: nextProps.value });
@@ -71,9 +77,13 @@ var Field = function (_React$Component) {
   }, {
     key: 'shouldComponentUpdate',
     value: function shouldComponentUpdate(nextProps) {
+      console.log('START >>> ?', nextProps.value, this.finalValue);
       if (nextProps.value !== this.finalValue) return true;
+      console.log('1/3 >>> TRUE');
       if (this.state.value !== this.finalValue) return true;
+      console.log('2/3 >>> TRUE');
       if (this.props.match !== nextProps.match) return true;
+      console.log('3/3 >>> FALSE');
       return false;
     }
   }, {
@@ -105,7 +115,7 @@ var Field = function (_React$Component) {
         });
       }
 
-      this.finalValue = null;
+      // this.finalValue = null;
     }
   }, {
     key: 'cancelBroadcast',
@@ -118,6 +128,7 @@ var Field = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      console.log('RENDER >>>');
       var childCount = _react2.default.Children.count(this.props.children);
       var inputProps = {
         value: this.state.value,
@@ -142,6 +153,7 @@ var Field = function (_React$Component) {
         'div',
         null,
         _react2.default.Children.map(this.props.children, function (child) {
+          console.log('child', child);
           if (child.type.name === 'Input') {
             return _react2.default.cloneElement(child, inputProps);
           }
