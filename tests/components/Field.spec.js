@@ -141,7 +141,7 @@ describe('<Field /> Higher-Order-Component', () => {
     });
   });
 
-  describe.only('`Field` method tests', () => {
+  describe('`Field` method tests', () => {
     let wrapper;
     let shouldUpdateSpy;
     let willUpdateSpy;
@@ -177,7 +177,7 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(wrapper.state()).to.have.property('value', 'secondValue');
     });
 
-    it('Component should not re-render if `props.value` equals its internal state', () => {
+    xit('Component should not re-render if `props.value` equals its internal state', () => {
       expect(willUpdateSpy.calledOnce).to.equal(false);
       expect(shouldUpdateSpy.callCount).to.equal(0);
       expect(willUnmountSpy.calledOnce).to.equal(false);
