@@ -2,6 +2,6 @@ node_modules
 tests/test-folder
 coverage
 npm-debug.log
-.nyc-output
-.nyc-output/**
+.nyc_output
+.nyc_output/*
 .coveralls.yml

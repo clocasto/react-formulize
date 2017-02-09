@@ -1,67 +1,49 @@
 import React from 'react';
-import Field from './Field';
-import { onChange, addFieldToState } from '../helpers/utilities';
+import { addFieldToState } from '../helpers/utilities';
 
 const Form = class extends React.Component {
   constructor(props) {
     super(props);
 
     this.addFieldToState = addFieldToState.bind(this);
-    this.onChange = onChange.bind(this);
-    this.produceFieldComponent = this.produceFieldComponent.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {};
-    this.form = props.Form;
-
-    this.addFieldToState(props.fields);
+    const fieldsToAdd = React.Children.toArray(props.children)
+      .filter(child => (child.type.name === 'Field'));
+    this.addFieldToState(fieldsToAdd);
   }
 
-  produceFieldComponent(field, index) {
-    const newProps = {};
-    let name;
-
-    if (typeof field === 'object') {
-      name = field.label;
-      Object.assign(newProps, this.props.fields[index]);
-      delete newProps.pristine;
-      delete newProps.valid;
-    } else {
-      name = field;
-    }
-
-    return (<Field
-      {...newProps}
-      key={name}
-      value={this.state[name].value}
-      onChange={this.onChange}
-      label={name}
-    />);
+  onSubmit(e) {
+    e.preventDefault();
+    if (this.props.onSubmit) this.props.onSubmit(this.state);
   }
 
   render() {
     return (
-      this.form ?
-        <this.form
-          {...this.props}
-          onChange={this.onChange}
-          data={Object.assign({}, this.state)}
-          Form={undefined}
-        /> :
-        <form>
-          {(this.props.fields || []).map(this.produceFieldComponent)}
-        </form>
+      <form onSubmit={this.onSubmit}>
+        {React.Children.count(this.props.children) &&
+          React.Children.map(this.props.children, (child) => {
+            if (child.type.name === 'Field') {
+              const { name } = child.props;
+              const value = this.state[name].value;
+              return React.cloneElement(child, { key: child.props.name, value, name });
+            }
+            return React.cloneElement(child);
+          })}
+      </form>
     );
   }
 };
 
 Form.propTypes = {
-  Form: React.PropTypes.func,
-  fields: React.PropTypes.arrayOf(React.PropTypes.string),
+  children: React.PropTypes.arrayOf(React.PropTypes.element),
+  onSubmit: React.PropTypes.func,
 };
 
 Form.defaultProps = {
-  Form: undefined,
-  fields: [],
+  children: [],
+  onSubmit: null,
 };
 
 export default Form;

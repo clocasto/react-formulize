@@ -1,6 +1,6 @@
 import React from 'react';
 import debounce from 'lodash.debounce';
-import Input from './Input';
+import DefaultInput from './Input';
 import { assembleValidators, isValid, updateValidators, getValuesOf } from '../helpers/utilities';
 
 const Field = class extends React.Component {
@@ -11,18 +11,17 @@ const Field = class extends React.Component {
       value: props.value || '',
       valid: false,
       pristine: true,
-      debounceDuration: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
+      debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: assembleValidators(props),
     };
 
     this.finalValue = null;
-    this.Input = props.Input || Input;
 
     this.onChange = this.onChange.bind(this);
     this.broadcastChange = this.broadcastChange.bind(this);
     this.cancelBroadcast = this.cancelBroadcast.bind(this);
-    this.debouncedBroadcastChange = this.state.debounceDuration ?
-      debounce(this.broadcastChange, this.state.debounceDuration) : this.broadcastChange;
+    this.debouncedBroadcastChange = this.state.debounce ?
+      debounce(this.broadcastChange, this.state.debounce) : this.broadcastChange;
   }
 
   componentWillUpdate(nextProps) {
@@ -61,14 +60,12 @@ const Field = class extends React.Component {
   broadcastChange() {
     if (this.props.onChange) {
       this.props.onChange({
-        label: this.props.label,
+        name: this.props.name,
         value: this.finalValue,
         status: this.state.valid,
         pristine: this.state.pristine,
       });
     }
-
-    this.finalValue = null;
   }
 
   cancelBroadcast() {
@@ -79,33 +76,57 @@ const Field = class extends React.Component {
   }
 
   render() {
-    return (<this.Input
-      {...this.props}
-      value={this.state.value}
-      valid={this.state.valid}
-      pristine={this.state.pristine}
-      onChange={this.onChange}
-      Input={null}
-    />);
+    const childCount = React.Children.count(this.props.children);
+    const inputProps = {
+      name: this.props.name,
+      value: this.state.value,
+      valid: this.state.valid,
+      pristine: this.state.pristine,
+      onChange: this.onChange,
+    };
+
+    if (!childCount) {
+      return <DefaultInput {...this.props} {...inputProps} />;
+    } else if (childCount === 1) {
+      return React.cloneElement(this.props.children, inputProps);
+    }
+
+    if (!React.Children.toArray(this.props.children).find(child => child.type.name === 'Input')) {
+      throw new Error('No `Input` component provided to `Field`.');
+    }
+
+    return (
+      <label htmlFor={this.props.name}>
+        {React.Children.map(this.props.children, (child) => {
+          if (child.type.name === 'Input') {
+            return React.cloneElement(child, inputProps);
+          }
+          return child;
+        })}
+      </label>
+    );
   }
 };
 
 Field.propTypes = {
   value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
-  label: React.PropTypes.string,
+  name: React.PropTypes.string,
   onChange: React.PropTypes.func,
-  debounce: React.PropTypes.number,
+  debounce: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
   match: React.PropTypes.string,
-  Input: React.PropTypes.func,
+  children: React.PropTypes.oneOfType([
+    React.PropTypes.element,
+    React.PropTypes.arrayOf(React.PropTypes.element),
+  ]),
 };
 
 Field.defaultProps = {
   value: '',
-  label: '',
+  name: '',
   onChange: undefined,
   debounce: 0,
   match: undefined,
-  Input: undefined,
+  children: [],
 };
 
 export default Field;

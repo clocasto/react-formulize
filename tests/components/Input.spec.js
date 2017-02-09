@@ -1,8 +1,9 @@
+/* globals describe it before beforeEach after afterEach */
 import React from 'react';
-import { expect } from 'chai';
-import { shallow, mount } from 'enzyme';
+import { expect } from 'chai'; // eslint-disable-line
+import { shallow, mount } from 'enzyme'; // eslint-disable-line
 
-import { Form, Field, Input } from '../../dist/index';
+import { Input } from '../../dist/index';
 
 describe('<Input /> Presentational Component', () => {
   describe('input element behavior', () => {
@@ -13,15 +14,15 @@ describe('<Input /> Presentational Component', () => {
     });
 
     it('will update its value based on the `value` prop passed to it', () => {
-      const wrapper = mount(<Input type="text" value={'I am a value!'} onChange={() => {}}/>);
+      const wrapper = mount(<Input type="text" value={'I am a value!'} onChange={() => {}} />);
 
       expect(wrapper.find('input').getDOMNode().value).to.equal('I am a value!');
     });
 
     it('will update the input\'s type based on the `type` prop passed to it', () => {
-      const emailWrapper = mount(<Input type="email" value={'email@email.com'} onChange={() => {}}/>);
-      const passwordWrapper = mount(<Input type="password" value={'Password123!'} onChange={() => {}}/>);
-      const checkboxWrapper = mount(<Input type="checkbox" checked={true} value={'on'} onChange={() => {}}/>);
+      const emailWrapper = mount(<Input type="email" value={'email@email.com'} onChange={() => {}} />);
+      const passwordWrapper = mount(<Input type="password" value={'Password123!'} onChange={() => {}} />);
+      const checkboxWrapper = mount(<Input type="checkbox" checked value={'on'} onChange={() => {}} />);
 
       const emailInput = emailWrapper.find('input').getDOMNode();
       expect(emailInput.type).to.equal('email');

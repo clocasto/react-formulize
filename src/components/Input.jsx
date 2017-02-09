@@ -1,22 +1,24 @@
 import React from 'react';
 
-const Input = (props = {}) => (
-  <div>
-    <label htmlFor={props.label}>
-      <input
-        checked={props.checked}
-        type={props.type}
-        name={props.label}
-        value={props.value}
-        onChange={props.onChange}
-      />
-    </label>
-  </div>
+const Input = props => (
+  <label htmlFor={props.name}>
+    <input
+      checked={props.checked}
+      type={props.type}
+      name={props.name}
+      value={props.value}
+      onChange={props.onChange}
+      onBlur={props.onBlur}
+      onFocus={props.onFocus}
+    />
+  </label>
 );
 
 Input.propTypes = {
-  label: React.PropTypes.string,
+  name: React.PropTypes.string,
   onChange: React.PropTypes.func,
+  onFocus: React.PropTypes.func,
+  onBlur: React.PropTypes.func,
   type: React.PropTypes.string,
   value: React.PropTypes.oneOfType([
     React.PropTypes.string,
@@ -27,11 +29,13 @@ Input.propTypes = {
 };
 
 Input.defaultProps = {
-  label: '',
-  onChange: undefined,
+  name: null,
+  onChange: null,
+  onFocus: null,
+  onBlur: null,
   type: 'text',
   value: '',
-  checked: false,
+  checked: null,
 };
 
 export default Input;
