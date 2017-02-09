@@ -22,7 +22,7 @@
   "scripts": {
     "lint": "node_modules/eslint/bin/eslint.js \"src/**\"",
     "build": "rm -rf dist && node node_modules/babel-cli/bin/babel.js src --out-dir dist/",
-    "test": "node_modules/.bin/nyc --require babel-core/register ./node_modules/mocha/bin/_mocha tests --recursive",
+    "test": "node_modules/.bin/nyc --require babel-core/register ./node_modules/mocha/bin/_mocha tests/index.js tests --recursive",
     "pack": "npm run lint && npm run build && npm test",
     "run-coverage": "node_modules/.bin/nyc report --reporter=text-lcov | node_modules/coveralls/bin/coveralls.js",
     "clean-coverage": "rm -rf .nyc_output && rm -rf coverage",

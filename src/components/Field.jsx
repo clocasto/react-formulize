@@ -1,6 +1,6 @@
 import React from 'react';
 import debounce from 'lodash.debounce';
-import Input from './Input';
+import DefaultInput from './Input';
 import { assembleValidators, isValid, updateValidators, getValuesOf } from '../helpers/utilities';
 
 const Field = class extends React.Component {
@@ -16,7 +16,6 @@ const Field = class extends React.Component {
     };
 
     this.finalValue = null;
-    this.Input = props.Input || Input;
 
     this.onChange = this.onChange.bind(this);
     this.broadcastChange = this.broadcastChange.bind(this);
@@ -67,8 +66,6 @@ const Field = class extends React.Component {
         pristine: this.state.pristine,
       });
     }
-
-    this.finalValue = null;
   }
 
   cancelBroadcast() {
@@ -79,14 +76,34 @@ const Field = class extends React.Component {
   }
 
   render() {
-    return (<this.Input
-      {...this.props}
-      value={this.state.value}
-      valid={this.state.valid}
-      pristine={this.state.pristine}
-      onChange={this.onChange}
-      Input={null}
-    />);
+    const childCount = React.Children.count(this.props.children);
+    const inputProps = {
+      value: this.state.value,
+      valid: this.state.valid,
+      pristine: this.state.pristine,
+      onChange: this.onChange,
+    };
+
+    if (!childCount) {
+      return <DefaultInput {...this.props} {...inputProps} />;
+    } else if (childCount === 1) {
+      return React.cloneElement(this.props.children, inputProps);
+    }
+
+    if (!React.Children.toArray(this.props.children).find(child => child.type.name === 'Input')) {
+      throw new Error('No `Input` component provided to `Field`.');
+    }
+
+    return (
+      <div>
+        {React.Children.map(this.props.children, (child) => {
+          if (child.type.name === 'Input') {
+            return React.cloneElement(child, inputProps);
+          }
+          return child;
+        })}
+      </div>
+    );
   }
 };
 
@@ -94,9 +111,12 @@ Field.propTypes = {
   value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
   name: React.PropTypes.string,
   onChange: React.PropTypes.func,
-  debounce: React.PropTypes.number,
+  debounce: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
   match: React.PropTypes.string,
-  Input: React.PropTypes.func,
+  children: React.PropTypes.oneOfType([
+    React.PropTypes.element,
+    React.PropTypes.arrayOf(React.PropTypes.element),
+  ]),
 };
 
 Field.defaultProps = {
@@ -105,7 +125,7 @@ Field.defaultProps = {
   onChange: undefined,
   debounce: 0,
   match: undefined,
-  Input: undefined,
+  children: [],
 };
 
 export default Field;

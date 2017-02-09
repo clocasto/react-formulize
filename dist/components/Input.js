@@ -10,22 +10,17 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Input = function Input() {
-  var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+var Input = function Input(props) {
   return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement(
-      'label',
-      { htmlFor: props.label },
-      _react2.default.createElement('input', {
-        checked: props.checked,
-        type: props.type,
-        name: props.label,
-        value: props.value,
-        onChange: props.onChange
-      })
-    )
+    'label',
+    { htmlFor: props.label },
+    _react2.default.createElement('input', {
+      checked: props.checked,
+      type: props.type,
+      name: props.label,
+      value: props.value,
+      onChange: props.onChange
+    })
   );
 };
 

@@ -92,7 +92,9 @@ Formwizard-react can be used to both quickly compose forms or add validation to 
 ## <a href="component-api"></a>Component API  
 
 ### Form  
-The `Form` component is a stateful higher-order-component which wraps presentational form components consisting of arbitrary input fields. Simply import the `Form` component and nest your custom components inside the `Form` tag. The `Form` component will behave as follows with respect to its *direct* children:  
+The `Form` component is a stateful higher-order-component which wraps presentational form components consisting of arbitrary input fields. Simply import the `Form` component and nest your custom components inside the `Form` tag.  
+
+The `Form` component will behave as follows with respect to its *direct* children:  
 
   1. Any `Field` tag will be passed the state associated with the `Field`'s name (`Form.state[child.props.name]`).  
   2. Any `Data` tag will be passed the entire `Form`'s state through `props.data`.  
@@ -100,11 +102,15 @@ The `Form` component is a stateful higher-order-component which wraps presentati
 The `Form` component should be passed an `onSubmit` handler if you want to interact with the submission event! 
 
 ### Field  
-The `Field` component is a stateful, higher-order component which wraps a given presentational input component (or creates a default one). Each `Field` component will maintain its child's input element's value (`state.value` {String, Number}), validity(`state.valid`{Boolean}), and pristine state (`state.pristine` {Boolean}), as well as provide an onChange handler passed down through `props.onChange`. Input elements should be nested inside of `Field`s, and `Field` will behave as follows with respect to its *direct* children:  
+The `Field` component is a stateful, higher-order component which wraps a given presentational input component (or creates a default one). Input elements should be nested inside of `Field` tag. Each `Field` component will maintain its child's input element's value (`state.value` {String, Number}), validity(`state.valid`{Boolean}), and pristine state (`state.pristine` {Boolean}), as well as provide an onChange handler passed down through `props.onChange`.  
+
+The `Field` component will behave as follows with respect to its *direct* children:  
   
-  1. Any `Input` tag will be passed the current field state (`value`, `valid`, `pristine`).
+  1. Any `Input` tag will be passed the current field state (`value`, `valid`, `pristine`).  
+  2. If multiple `Input` tags are passed to `Field`, they would all share a single state (not recommended).
+  3. If no components are nested in a `Field` component, the default `Input` component will be used.  
   
-*Note:* Only one input element should be nested inside of a field, `formwizard-react` will throw otherwise.
+*Note:* Only one input element should be nested inside of a `Field` tag (see #2 above).
 
 There are also a handful of different validators and properties (debounce, length, etc.) that can be attached to the field component. This is done through declaring props passed to the field component. See below for the list of validators.  
 
