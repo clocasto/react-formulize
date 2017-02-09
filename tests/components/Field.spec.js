@@ -35,14 +35,15 @@ describe('<Field /> Higher-Order-Component', () => {
 
   describe('Custom Input', () => {
     let wrapper;
+    let onChange = evt => { console.log(evt.target); }; // eslint-disable-line
 
     before('Assemble a custom input element', () => {
       wrapper = mount(
-        <Field value={'value!'}>
-          <div>
-            <h4>My Test Input!</h4>
+        <Field value={'value!'} onChange={onChange}>
+          <h4>My Test Input!</h4>
+          <Input>
             {props => <input value={props.value} onChange={props.onChange} />}
-          </div>
+          </Input>
         </Field>);
     });
 
@@ -53,16 +54,6 @@ describe('<Field /> Higher-Order-Component', () => {
     });
 
     it('passes `props` down to the custom `Input` component', () => {
-      const onChange = (e) => { console.log(e.target); }; // eslint-disable-line
-      wrapper = mount(
-        <Field name="pass" value="123goodPass" onChange={onChange}>
-          <h4>My Test Input!</h4>
-          <Input>
-            {props => <input value={props.value} onChange={props.onChange} />}
-          </Input>
-        </Field>,
-      );
-
       expect(wrapper.find(Field)).to.have.length(1);
       expect(wrapper.find('h4')).to.have.length(1);
       expect(wrapper.find('h4').text()).to.equal('My Test Input!');
