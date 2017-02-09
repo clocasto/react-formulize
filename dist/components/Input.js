@@ -19,7 +19,9 @@ var Input = function Input(props) {
       type: props.type,
       name: props.name,
       value: props.value,
-      onChange: props.onChange
+      onChange: props.onChange,
+      onBlur: props.onBlur,
+      onFocus: props.onFocus
     })
   );
 };
@@ -27,6 +29,8 @@ var Input = function Input(props) {
 Input.propTypes = {
   name: _react2.default.PropTypes.string,
   onChange: _react2.default.PropTypes.func,
+  onFocus: _react2.default.PropTypes.func,
+  onBlur: _react2.default.PropTypes.func,
   type: _react2.default.PropTypes.string,
   value: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number, _react2.default.PropTypes.bool]),
   checked: _react2.default.PropTypes.bool
@@ -35,9 +39,11 @@ Input.propTypes = {
 Input.defaultProps = {
   name: null,
   onChange: null,
+  onFocus: null,
+  onBlur: null,
   type: 'text',
   value: '',
-  checked: false
+  checked: null
 };
 
 exports.default = Input;
