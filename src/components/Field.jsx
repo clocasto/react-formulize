@@ -24,12 +24,7 @@ const Field = class extends React.Component {
       debounce(this.broadcastChange, this.state.debounce) : this.broadcastChange;
   }
 
-  componentDidMount() {
-    console.log('MOUNTED >>>');
-  }
-
   componentWillUpdate(nextProps) {
-    console.log('UPDATING >>>');
     if ((nextProps.value !== this.props.value) && (nextProps.value !== this.finalValue)) {
       this.cancelBroadcast();
       this.setState({ value: nextProps.value });
@@ -42,13 +37,9 @@ const Field = class extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    console.log('START >>> ?', nextProps.value, this.finalValue);
     if (nextProps.value !== this.finalValue) return true;
-    console.log('1/3 >>> TRUE');
     if (this.state.value !== this.finalValue) return true;
-    console.log('2/3 >>> TRUE');
     if (this.props.match !== nextProps.match) return true;
-    console.log('3/3 >>> FALSE');
     return false;
   }
 
@@ -75,8 +66,6 @@ const Field = class extends React.Component {
         pristine: this.state.pristine,
       });
     }
-
-    // this.finalValue = null;
   }
 
   cancelBroadcast() {
@@ -87,7 +76,6 @@ const Field = class extends React.Component {
   }
 
   render() {
-    console.log('RENDER >>>');
     const childCount = React.Children.count(this.props.children);
     const inputProps = {
       value: this.state.value,
@@ -109,7 +97,6 @@ const Field = class extends React.Component {
     return (
       <div>
         {React.Children.map(this.props.children, (child) => {
-          console.log('child', child);
           if (child.type.name === 'Input') {
             return React.cloneElement(child, inputProps);
           }

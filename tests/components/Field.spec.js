@@ -5,7 +5,7 @@ import { expect } from 'chai'; // eslint-disable-line
 import { shallow, mount } from 'enzyme'; // eslint-disable-line
 
 import { Field, Input } from '../../dist/index';
-import { updateInput } from '../spec_helpers';
+import { updateInput, simulateChange } from '../spec_helpers';
 
 describe('<Field /> Higher-Order-Component', () => {
   const nameField = { label: 'name', value: 'Test Name' };
@@ -141,16 +141,18 @@ describe('<Field /> Higher-Order-Component', () => {
     });
   });
 
-  describe('`Field` method tests', () => {
+  describe('`Field` lifecycle method tests', () => {
     let wrapper;
     let shouldUpdateSpy;
     let willUpdateSpy;
     let willUnmountSpy;
+    let renderSpy;
 
     before('Set up lifecycle spies', () => {
       shouldUpdateSpy = sinon.spy(Field.prototype, 'shouldComponentUpdate');
       willUpdateSpy = sinon.spy(Field.prototype, 'componentWillUpdate');
       willUnmountSpy = sinon.spy(Field.prototype, 'componentWillUnmount');
+      renderSpy = sinon.spy(Field.prototype, 'render');
     });
 
     beforeEach('Assemble a custom input element', () => {
@@ -161,47 +163,142 @@ describe('<Field /> Higher-Order-Component', () => {
       shouldUpdateSpy.reset();
       willUpdateSpy.reset();
       willUnmountSpy.reset();
+      renderSpy.reset();
+    });
+
+    after('unwrap methods', () => {
+      Field.prototype.shouldComponentUpdate.restore();
+      Field.prototype.componentWillUpdate.restore();
+      Field.prototype.componentWillUnmount.restore();
+      Field.prototype.render.restore();
     });
 
     it('Component should call shouldComponentUpdate on update', () => {
-      expect(willUpdateSpy.calledOnce).to.equal(false);
-      expect(shouldUpdateSpy.calledOnce).to.equal(false);
-      expect(willUnmountSpy.calledOnce).to.equal(false);
-      expect(wrapper.state()).to.have.property('value', 'firstValue');
-
-      wrapper.setProps({ value: 'secondValue' });
-
-      expect(willUpdateSpy.called).to.equal(true);
-      expect(shouldUpdateSpy.calledTwice).to.equal(true);
-      expect(willUnmountSpy.called).to.equal(false);
-      expect(wrapper.state()).to.have.property('value', 'secondValue');
-    });
-
-    xit('Component should not re-render if `props.value` equals its internal state', () => {
-      expect(willUpdateSpy.calledOnce).to.equal(false);
       expect(shouldUpdateSpy.callCount).to.equal(0);
-      expect(willUnmountSpy.calledOnce).to.equal(false);
+      expect(willUpdateSpy.callCount).to.equal(0);
+      expect(renderSpy.callCount).to.equal(1);
       expect(wrapper.state()).to.have.property('value', 'firstValue');
-      expect(wrapper.instance()).to.have.property('finalValue', null);
-      console.log(`BEFORE firstValue >>> ${wrapper.state().value}>>>`, shouldUpdateSpy.returnValues);
-      wrapper.find('input').simulate('change', { target: { value: 'firstValue' } });
-      console.log(`AFTER firstValue >>> ${wrapper.state().value}>>>`, shouldUpdateSpy.returnValues);
+
+      simulateChange(wrapper, 'secondValue');
 
       expect(shouldUpdateSpy.callCount).to.equal(1);
       expect(shouldUpdateSpy.calledBefore(willUpdateSpy)).to.equal(true);
       expect(willUpdateSpy.callCount).to.equal(1);
+      expect(renderSpy.callCount).to.equal(2);
+      expect(wrapper.state()).to.have.property('value', 'secondValue');
+    });
+
+    it('Component should not re-render if `props.value` equals its internal state', () => {
+      expect(shouldUpdateSpy.callCount).to.equal(0);
+      expect(willUpdateSpy.callCount).to.equal(0);
+      expect(renderSpy.callCount).to.equal(1);
       expect(wrapper.state()).to.have.property('value', 'firstValue');
+      expect(wrapper.instance()).to.have.property('finalValue', null);
 
-      // willUpdateSpy.reset();
-      console.log(`BEFORE secondValue >>> ${wrapper.state().value}>>>`, shouldUpdateSpy.returnValues);
-      wrapper.find('input').simulate('change', { target: { value: 'secondValue' } });
-      console.log(`AFTER secondValue >>> ${wrapper.state().value}>>>`, shouldUpdateSpy.returnValues);
+      simulateChange(wrapper, 'firstValue');
 
-      // expect(shouldUpdateSpy.callCount).to.equal(2);
-      // expect(shouldUpdateSpy.calledBefore(willUpdateSpy)).to.equal(true);
-      console.log(shouldUpdateSpy.returnValues);
-      // expect(willUpdateSpy.callCount).to.equal(1);
-      // expect(wrapper.state()).to.have.property('value', 'secondValue');
+      expect(shouldUpdateSpy.callCount).to.equal(1);
+      expect(shouldUpdateSpy.calledBefore(willUpdateSpy)).to.equal(true);
+      expect(willUpdateSpy.callCount).to.equal(0);
+      expect(renderSpy.callCount).to.equal(1);
+      expect(wrapper.state()).to.have.property('value', 'firstValue');
+    });
+
+    it('Component should re-render if `props.value` doesn\'t equal its internal state', () => {
+      expect(shouldUpdateSpy.callCount).to.equal(0);
+      expect(willUpdateSpy.callCount).to.equal(0);
+      expect(renderSpy.callCount).to.equal(1);
+      expect(wrapper.state()).to.have.property('value', 'firstValue');
+      expect(wrapper.instance()).to.have.property('finalValue', null);
+
+      simulateChange(wrapper, 'secondValue');
+
+      expect(shouldUpdateSpy.callCount).to.equal(1);
+      expect(shouldUpdateSpy.calledBefore(willUpdateSpy)).to.equal(true);
+
+      expect(willUpdateSpy.callCount).to.equal(1);
+      expect(renderSpy.callCount).to.equal(2);
+      expect(wrapper.state()).to.have.property('value', 'secondValue');
+      expect(wrapper.instance()).to.have.property('finalValue', 'secondValue');
+    });
+
+    it('Upon unmounting, component will broadcast its value and cancel further broadcasts', () => {
+      const cancelBroadcastSpy = sinon.spy(wrapper.instance(), 'cancelBroadcast');
+      const broadcastChangeSpy = sinon.spy(wrapper.instance(), 'broadcastChange');
+
+      expect(willUnmountSpy.callCount).to.equal(0);
+      expect(cancelBroadcastSpy.callCount).to.equal(0);
+      expect(broadcastChangeSpy.callCount).to.equal(0);
+      expect(wrapper.state()).to.have.property('value', 'firstValue');
+      expect(wrapper.instance()).to.have.property('finalValue', null);
+
+      simulateChange(wrapper, 'secondValue');
+
+      expect(willUnmountSpy.callCount).to.equal(0);
+      expect(cancelBroadcastSpy.callCount).to.equal(0);
+      expect(broadcastChangeSpy.callCount).to.equal(0);
+      expect(wrapper.instance()).to.have.property('finalValue', 'secondValue');
+
+      wrapper.unmount();
+
+      expect(willUnmountSpy.callCount).to.equal(1);
+      expect(cancelBroadcastSpy.callCount).to.equal(1);
+      expect(broadcastChangeSpy.callCount).to.equal(1);
+    });
+  });
+
+  describe('Debounce', () => {
+    let wrapper;
+    let willUpdateSpy;
+
+    before('Set up lifecycle spies', () => {
+      willUpdateSpy = sinon.spy(Field.prototype, 'componentWillUpdate');
+    });
+
+    beforeEach('Assemble a custom input element', () => {
+      // eslint-disable-next-line
+      wrapper = mount(<Field debounce="300" value="firstValue" />);
+    });
+
+    afterEach('', () => {
+      willUpdateSpy.reset();
+    });
+
+    after('unwrap methods', () => {
+      Field.prototype.componentWillUpdate.restore();
+    });
+
+    it('Should update its state instantaneously on change', () => {
+      expect(willUpdateSpy.callCount).to.equal(0);
+      expect(wrapper.state()).to.have.property('value', 'firstValue');
+      expect(wrapper.state()).to.have.property('debounce', 300);
+
+      simulateChange(wrapper, 'secondValue');
+
+      expect(wrapper.state()).to.have.property('value', 'secondValue');
+      expect(willUpdateSpy.callCount).to.equal(1);
+    });
+
+    it('Should invoke its `props.onChange` after the debounce amount', (done) => {
+      const debounce = 250;
+      const onChangeSpy = sinon.spy();
+      wrapper = mount(<Field debounce={debounce} value="firstValue" onChange={onChangeSpy} />);
+
+      expect(willUpdateSpy.callCount).to.equal(0);
+      expect(onChangeSpy.callCount).to.equal(0);
+      expect(wrapper.state()).to.have.property('value', 'firstValue');
+      expect(wrapper.state()).to.have.property('debounce', debounce);
+
+      simulateChange(wrapper, 'secondValue');
+
+      expect(wrapper.state()).to.have.property('value', 'secondValue');
+      expect(onChangeSpy.callCount).to.equal(0);
+      expect(willUpdateSpy.callCount).to.equal(1);
+
+      setTimeout(() => {
+        expect(onChangeSpy.callCount).to.equal(1);
+        done();
+      }, 600);
     });
   });
 });

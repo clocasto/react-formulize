@@ -1,5 +1,6 @@
 /* globals describe it before beforeEach after afterEach */
 import { expect } from 'chai'; // eslint-disable-line
+import sinon from 'sinon'; // eslint-disable-line
 import { shallow, mount } from 'enzyme'; // eslint-disable-line
 
 import { buildField, updateInput } from '../spec_helpers';
@@ -96,6 +97,28 @@ describe('Validator Functionality', () => {
       updateInput(newWrapper, 'test@test.tes');
       expect(newWrapper.state()).to.have.property('valid', false);
       expect(newWrapper.state()).to.have.property('value', 'test@test.tes');
+    });
+
+    it('can take a custom function for validating', () => {
+      const newWrapper = buildField(mount, 'email', (emailValue) => {
+        if (emailValue.indexOf('@') >= 0 && emailValue.indexOf('.') >= 0) {
+          return true;
+        }
+        return false;
+      });
+
+      expect(newWrapper.state()).to.have.property('valid', false);
+      expect(newWrapper.state()).to.have.property('value', '');
+
+      // Updating input to valid email which doesn't match RegEx
+      updateInput(newWrapper, 'invalidemail.com');
+      expect(newWrapper.state()).to.have.property('valid', false);
+      expect(newWrapper.state()).to.have.property('value', 'invalidemail.com');
+
+      // Updating input to matching email
+      updateInput(newWrapper, 'test@test.test');
+      expect(newWrapper.state()).to.have.property('valid', true);
+      expect(newWrapper.state()).to.have.property('value', 'test@test.test');
     });
   });
 
