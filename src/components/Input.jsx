@@ -3,6 +3,7 @@ import React from 'react';
 const Input = props => (
   <label htmlFor={props.name}>
     <input
+      {...props}
       checked={props.checked}
       type={props.type}
       name={props.name}
@@ -29,7 +30,7 @@ Input.defaultProps = {
   onChange: null,
   type: 'text',
   value: '',
-  checked: false,
+  checked: null,
 };
 
 export default Input;
