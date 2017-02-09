@@ -13,11 +13,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Input = function Input(props) {
   return _react2.default.createElement(
     'label',
-    { htmlFor: props.label },
+    { htmlFor: props.name },
     _react2.default.createElement('input', {
       checked: props.checked,
       type: props.type,
-      name: props.label,
+      name: props.name,
       value: props.value,
       onChange: props.onChange
     })
@@ -25,7 +25,7 @@ var Input = function Input(props) {
 };
 
 Input.propTypes = {
-  label: _react2.default.PropTypes.string,
+  name: _react2.default.PropTypes.string,
   onChange: _react2.default.PropTypes.func,
   type: _react2.default.PropTypes.string,
   value: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number, _react2.default.PropTypes.bool]),
@@ -33,8 +33,8 @@ Input.propTypes = {
 };
 
 Input.defaultProps = {
-  label: '',
-  onChange: undefined,
+  name: null,
+  onChange: null,
   type: 'text',
   value: '',
   checked: false
