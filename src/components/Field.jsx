@@ -111,7 +111,7 @@ Field.propTypes = {
   value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
   name: React.PropTypes.string,
   onChange: React.PropTypes.func,
-  debounce: React.PropTypes.number,
+  debounce: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
   match: React.PropTypes.string,
   children: React.PropTypes.oneOfType([
     React.PropTypes.element,
