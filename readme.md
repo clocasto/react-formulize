@@ -97,7 +97,7 @@ The `Form` component is a stateful higher-order-component which wraps presentati
 The `Form` component will behave as follows with respect to its *direct* children:  
 
   1. Any `Field` tag will be passed the state associated with the `Field`'s name (`Form.state[child.props.name]`).  
-  2. Any `Data` tag will be passed the entire `Form`'s state through `props.data`.  
+  2. Any other component or element will be rendered with the props it would otherwise be passed.
 
 The `Form` component should be passed an `onSubmit` handler if you want to interact with the submission event! 
 
@@ -106,11 +106,11 @@ The `Field` component is a stateful, higher-order component which wraps a given 
 
 The `Field` component will behave as follows with respect to its *direct* children:  
   
-  1. Any `Input` tag will be passed the current field state (`value`, `valid`, `pristine`).  
-  2. If multiple `Input` tags are passed to `Field`, they would all share a single state (not recommended).
-  3. If no components are nested in a `Field` component, the default `Input` component will be used.  
+  1. Any `Input` tag will be passed the current field state (`value`, `valid`, `pristine`). If multiple `Input` tags are passed to `Field`, they would all share a single state (not recommended).  
+  2. If no components are nested in a `Field` component, the default `Input` component will be used.  
+  3. If only a single direct child is passed to `Field`, it will be passed all of the `Field`'s props.  
   
-*Note:* Only one input element should be nested inside of a `Field` tag (see #2 above).
+*Note:* Only one input element should be nested inside of a `Field` tag (see #1 above).
 
 There are also a handful of different validators and properties (debounce, length, etc.) that can be attached to the field component. This is done through declaring props passed to the field component. See below for the list of validators.  
 
@@ -130,28 +130,28 @@ There are also a handful of different validators and properties (debounce, lengt
   This property will be invoked on a change event in a wrapped `input` element (unless a custom `input` element is provided, then this function will be passed down to the custom component through `props.onChange`).  
 
 #### props.debounce = duration
-> @param {Number} duration - An amount to debounce `props.onChange` invocation   
+> @param {Number} duration - An amount to debounce `props.onChange` invocation.   
 
   This property adds a debounce to the input element broadcasting its state change to the `Field` component.  
 
 #### props.required = required 
-> @param {Boolean} required - Toggles validation for a non-empty input  
+> @param {Boolean} required - Toggles validation for a non-empty input.  
 
   This validates that the input is not empty.  
 
-#### props.length = [minLength, maxLength]  
-> @param {Number} minLength - Validates component for mininum string input length  
-> @param {Number} maxLength - Validates component for maximum string input length  
+#### props.length = [minLength, maxLength] 
+> @param {Number} minLength - Validates component for mininum string input length.  
+> @param {Number} [maxLength] - Optional. Validates component for maximum string input length.  
 
-  This validates that the string input is of a certain length.  
+  This validates that the string input is of a certain length. If `maxLength` is omitted, minLength will be interpreted as `maxLength`. As such, omitting `maxLength` allows the passed in value to be a single number (of type `Number` or `String`).  
 
 #### props.email = emailExpression  
-> @param {RegularExpression} [emailExpression] - Optional. RegEx to validate email inputs against  
+> @param {RegularExpression} [emailExpression] - Optional. RegEx to validate email inputs against.  
 
   This validates that the string input matches either the default or provided regular expression.  
 
 #### props.match = valueToMatch  
-> @param {\*} valueToMatch - A value to validate the input's value against. If passed a function, function will be invoked  
+> @param {\*} valueToMatch - A value to validate the input's value against. If passed a function, function will be invoked.  
 
   This validates that the input matches the value provided. If a function is passed, it will be invoked and its result used to compare with the value.  
 
@@ -166,29 +166,30 @@ There are also a handful of different validators and properties (debounce, lengt
   This validates that the string or number input is comprised only of numeric and space characters.  
 
 #### props.max = maxValue  
-> @param {Number} maxValue - Validates an input field to be less than or equal to the maxValue  
+> @param {Number} maxValue - Validates an input field to be less than or equal to the maxValue.  
 
   This validates that the provided number (or string-coerced-to-number) is less than or equal to the provided `maxValue`.  
 
 #### props.min = minValue   
-> @param {Number} minValue - Validates an input field to be greater than or equal to the minValue  
+> @param {Number} minValue - Validates an input field to be greater than or equal to the minValue.  
 
   This validates that the provided number (or string-coerced-to-number) is greater than or equal to the provided `minValue`.  
 
 #### props.custom = validatingFn 
-> @param {Function}
-  This runs the provided validating function, which should return `true` for valid and `false` for invalid input.  
+> @param {Function} validatingFn - A custom validating function which returns a validity boolean.  
+
+  The passed-in validating function, invoked once per `Field` update with the current component value, should return `true` for valid values and `false` for invalid values.  
 
 ### Input  
-A generic `Input` component which is simply a `label` and `input` element wrapped in a `div` element. The `input` element will invoked `props.onChange` upon change, apply `props.label` appropriately, and set its input type per `props.type`.  
+A generic `Input` component which is simply a `label` and `input` element wrapped in a `div` element. The `input` element will invoked `props.onChange` upon change, apply `props.label` appropriately, and set its input type per `props.type`. All props passed to `Input` will be applied to the `input` element.  
 
 #### props.value = value
 > @param {String} [value=''] - The value of the wrapped input element.   
 
   This property is used to control the value of the wrapped input element.  
 
-#### props.label = label
-> @param {String} [label=''] - The name of the wrapped input element. 
+#### props.name = name
+> @param {String} [name=''] - The name of the wrapped input element. 
 
   The name of the wrapped input element. A label element will be created around the input and the input will be named, both with this value.
 
@@ -201,6 +202,17 @@ A generic `Input` component which is simply a `label` and `input` element wrappe
 > @param {Function} onChangeHandler - A function used to update (control) the state of the input element.  
 
   This property will be invoked on a change event in a wrapped `input` element.  
+
+#### props.onFocus = onFocusHandler
+> @param {Function} onFocusHandler - A function to invoke upon input focus.  
+
+  This property will be invoked on a focus event in the wrapped `input` element.  
+
+
+#### props.onBlur = onBlurHandler
+> @param {Function} onBlurHandler - A function to invoke upon input blur.  
+
+  This property will be invoked on a blur event in the wrapped `input` element.  
 
 ## <a href="tests"></a>Tests
 
