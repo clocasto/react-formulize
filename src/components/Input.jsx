@@ -1,11 +1,11 @@
 import React from 'react';
 
 const Input = props => (
-  <label htmlFor={props.label}>
+  <label htmlFor={props.name}>
     <input
       checked={props.checked}
       type={props.type}
-      name={props.label}
+      name={props.name}
       value={props.value}
       onChange={props.onChange}
     />
@@ -13,7 +13,7 @@ const Input = props => (
 );
 
 Input.propTypes = {
-  label: React.PropTypes.string,
+  name: React.PropTypes.string,
   onChange: React.PropTypes.func,
   type: React.PropTypes.string,
   value: React.PropTypes.oneOfType([
@@ -25,8 +25,8 @@ Input.propTypes = {
 };
 
 Input.defaultProps = {
-  label: '',
-  onChange: undefined,
+  name: null,
+  onChange: null,
   type: 'text',
   value: '',
   checked: false,

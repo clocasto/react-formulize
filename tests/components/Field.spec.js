@@ -8,7 +8,7 @@ import { Field, Input } from '../../dist/index';
 import { updateInput, simulateChange } from '../spec_helpers';
 
 describe('<Field /> Higher-Order-Component', () => {
-  const nameField = { label: 'name', value: 'Test Name' };
+  const nameField = { name: 'name', value: 'Test Name' };
 
   describe('Default Field', () => {
     it('by default renders an `Input` component', () => {
@@ -35,14 +35,15 @@ describe('<Field /> Higher-Order-Component', () => {
 
   describe('Custom Input', () => {
     let wrapper;
+    let onChange = evt => { console.log(evt.target); }; // eslint-disable-line
 
     before('Assemble a custom input element', () => {
       wrapper = mount(
-        <Field value={'value!'}>
-          <div>
-            <h4>My Test Input!</h4>
+        <Field value={'value!'} onChange={onChange}>
+          <h4>My Test Input!</h4>
+          <Input>
             {props => <input value={props.value} onChange={props.onChange} />}
-          </div>
+          </Input>
         </Field>);
     });
 
@@ -53,16 +54,6 @@ describe('<Field /> Higher-Order-Component', () => {
     });
 
     it('passes `props` down to the custom `Input` component', () => {
-      const onChange = (e) => { console.log(e.target); }; // eslint-disable-line
-      wrapper = mount(
-        <Field label="pass" value="123goodPass" onChange={onChange}>
-          <h4>My Test Input!</h4>
-          <Input>
-            {props => <input value={props.value} onChange={props.onChange} />}
-          </Input>
-        </Field>,
-      );
-
       expect(wrapper.find(Field)).to.have.length(1);
       expect(wrapper.find('h4')).to.have.length(1);
       expect(wrapper.find('h4').text()).to.equal('My Test Input!');
@@ -73,7 +64,7 @@ describe('<Field /> Higher-Order-Component', () => {
       const renderedCustomInputProps = renderedCustomInput.props();
 
       expect(renderedCustomInputProps).to.have.property('value', renderedCustomInputProps.value);
-      expect(renderedCustomInputProps).to.have.property('label', renderedCustomInputProps.label);
+      expect(renderedCustomInputProps).to.have.property('name', renderedCustomInputProps.name);
       expect(renderedCustomInputProps).to.have.property('valid', renderedCustomInputProps.valid);
       expect(renderedCustomInputProps).to.have.property('pristine', renderedCustomInputProps.pristine);
 
@@ -104,7 +95,7 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(Field.prototype.componentWillUpdate).to.have.property('callCount', 0);
       expect(Field.prototype.onChange).to.have.property('callCount', 0);
 
-      const wrapper = mount(<Field label={'email'} type="text" />);
+      const wrapper = mount(<Field name={'email'} type="text" />);
 
       expect(wrapper.state()).to.have.property('value', '');
 
@@ -125,7 +116,7 @@ describe('<Field /> Higher-Order-Component', () => {
     });
 
     it('which adjust the component\'s validity', () => {
-      const wrapper = mount(<Field label={'email'} type="text" required />);
+      const wrapper = mount(<Field name={'email'} type="text" required />);
 
       expect(wrapper.state()).to.have.property('valid', false);
 

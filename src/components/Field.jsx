@@ -78,6 +78,7 @@ const Field = class extends React.Component {
   render() {
     const childCount = React.Children.count(this.props.children);
     const inputProps = {
+      name: this.props.name,
       value: this.state.value,
       valid: this.state.valid,
       pristine: this.state.pristine,
@@ -95,14 +96,14 @@ const Field = class extends React.Component {
     }
 
     return (
-      <div>
+      <label htmlFor={this.props.name}>
         {React.Children.map(this.props.children, (child) => {
           if (child.type.name === 'Input') {
             return React.cloneElement(child, inputProps);
           }
           return child;
         })}
-      </div>
+      </label>
     );
   }
 };
