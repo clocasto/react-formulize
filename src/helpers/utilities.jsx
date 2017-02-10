@@ -1,3 +1,4 @@
+import React from 'react';
 import * as validatorFunctions from './validators';
 
 export function assembleValidators({
@@ -58,12 +59,12 @@ export function getValuesOf(obj = {}) {
   return Object.keys(obj).map(key => obj[key]);
 }
 
-export function mapPropsToInput(React, child, props) {
-  if (child.type === 'input') {
+export function mapPropsToChild(child, type, props) {
+  if (child.type === type || child.type.name === type) {
     return React.cloneElement(child, props);
   } else if (child.props && child.props.children) {
     const newChildren = React.Children.map(child.props.children, nestedChild => (
-      mapPropsToInput(React, nestedChild, props)));
+      mapPropsToChild(React, nestedChild, props)));
     return React.cloneElement(child, { children: newChildren });
   }
   return child;

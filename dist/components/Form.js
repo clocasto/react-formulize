@@ -53,14 +53,12 @@ var Form = function (_React$Component) {
       return _react2.default.createElement(
         'form',
         { onSubmit: this.onSubmit },
-        _react2.default.Children.count(this.props.children) && _react2.default.Children.map(this.props.children, function (child) {
-          if (child.type.name === 'Field') {
-            var name = child.props.name;
+        _react2.default.Children.map(this.props.children, function (child) {
+          var name = child.props.name;
 
-            var value = _this2.state[name].value;
-            return _react2.default.cloneElement(child, { key: child.props.name, value: value, name: name });
-          }
-          return _react2.default.cloneElement(child);
+          var value = _this2.state[name].value;
+          var fieldProps = { key: child.props.name, value: value, name: name };
+          return (0, _utilities.mapPropsToChild)(child, 'Field', fieldProps);
         })
       );
     }

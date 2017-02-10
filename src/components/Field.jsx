@@ -6,7 +6,7 @@ import {
   isValid,
   updateValidators,
   getValuesOf,
-  mapPropsToInput,
+  mapPropsToChild,
 } from '../helpers/utilities';
 
 const Field = class extends React.Component {
@@ -87,17 +87,16 @@ const Field = class extends React.Component {
       name: this.props.name,
       value: this.state.value,
       onChange: this.onChange,
+      type: this.props.type,
     };
 
     if (!childCount) {
       return <DefaultInput {...this.props} {...inputProps} />;
-    } else if (childCount === 1) {
-      return React.cloneElement(this.props.children, inputProps);
     }
     return (
       <label htmlFor={this.props.name}>
         {React.Children
-          .map(this.props.children, child => mapPropsToInput(React, child, inputProps))}
+          .map(this.props.children, child => mapPropsToChild(child, 'input', inputProps))}
       </label>
     );
   }
@@ -113,6 +112,7 @@ Field.propTypes = {
     React.PropTypes.element,
     React.PropTypes.arrayOf(React.PropTypes.element),
   ]),
+  type: React.PropTypes.string,
 };
 
 Field.defaultProps = {
@@ -122,6 +122,7 @@ Field.defaultProps = {
   debounce: 0,
   match: undefined,
   children: [],
+  type: 'text',
 };
 
 export default Field;

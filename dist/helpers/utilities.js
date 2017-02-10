@@ -11,13 +11,19 @@ exports.updateValidators = updateValidators;
 exports.isValid = isValid;
 exports.addFieldToState = addFieldToState;
 exports.getValuesOf = getValuesOf;
-exports.mapPropsToInput = mapPropsToInput;
+exports.mapPropsToChild = mapPropsToChild;
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
 
 var _validators = require('./validators');
 
 var validatorFunctions = _interopRequireWildcard(_validators);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function assembleValidators(_ref) {
   var email = _ref.email,
@@ -106,14 +112,14 @@ function getValuesOf() {
   });
 }
 
-function mapPropsToInput(React, child, props) {
-  if (child.type === 'input') {
-    return React.cloneElement(child, props);
+function mapPropsToChild(child, type, props) {
+  if (child.type === type || child.type.name === type) {
+    return _react2.default.cloneElement(child, props);
   } else if (child.props && child.props.children) {
-    var newChildren = React.Children.map(child.props.children, function (nestedChild) {
-      return mapPropsToInput(React, nestedChild, props);
+    var newChildren = _react2.default.Children.map(child.props.children, function (nestedChild) {
+      return mapPropsToChild(_react2.default, nestedChild, props);
     });
-    return React.cloneElement(child, { children: newChildren });
+    return _react2.default.cloneElement(child, { children: newChildren });
   }
   return child;
 }
