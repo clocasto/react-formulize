@@ -57,3 +57,14 @@ export function addFieldToState(field) {
 export function getValuesOf(obj = {}) {
   return Object.keys(obj).map(key => obj[key]);
 }
+
+export function mapPropsToInput(React, child, props) {
+  if (child.type === 'input') {
+    return React.cloneElement(child, props);
+  } else if (child.props.children) {
+    const newChildren = React.Children.map(child.props.children, nestedChild => (
+      mapPropsToInput(React, nestedChild, props)));
+    return React.cloneElement(child, { children: newChildren });
+  }
+  return child;
+}
