@@ -1,7 +1,13 @@
 import React from 'react';
 import debounce from 'lodash.debounce';
 import DefaultInput from './Input';
-import { assembleValidators, isValid, updateValidators, getValuesOf } from '../helpers/utilities';
+import {
+  assembleValidators,
+  isValid,
+  updateValidators,
+  getValuesOf,
+  mapPropsToInput,
+} from '../helpers/utilities';
 
 const Field = class extends React.Component {
   constructor(props) {
@@ -97,12 +103,8 @@ const Field = class extends React.Component {
 
     return (
       <label htmlFor={this.props.name}>
-        {React.Children.map(this.props.children, (child) => {
-          if (child.type.name === 'Input') {
-            return React.cloneElement(child, inputProps);
-          }
-          return child;
-        })}
+        {React.Children
+          .map(this.props.children, child => mapPropsToInput(React, child, inputProps))}
       </label>
     );
   }
