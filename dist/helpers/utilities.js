@@ -11,6 +11,7 @@ exports.updateValidators = updateValidators;
 exports.isValid = isValid;
 exports.addFieldToState = addFieldToState;
 exports.getValuesOf = getValuesOf;
+exports.mapPropsToInput = mapPropsToInput;
 
 var _validators = require('./validators');
 
@@ -103,4 +104,16 @@ function getValuesOf() {
   return Object.keys(obj).map(function (key) {
     return obj[key];
   });
+}
+
+function mapPropsToInput(React, child, props) {
+  if (child.type === 'input') {
+    return React.cloneElement(child, props);
+  } else if (child.props && child.props.children) {
+    var newChildren = React.Children.map(child.props.children, function (nestedChild) {
+      return mapPropsToInput(React, nestedChild, props);
+    });
+    return React.cloneElement(child, { children: newChildren });
+  }
+  return child;
 }

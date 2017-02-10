@@ -41,9 +41,7 @@ describe('<Field /> Higher-Order-Component', () => {
       wrapper = mount(
         <Field value={'value!'} onChange={onChange}>
           <h4>My Test Input!</h4>
-          <Input>
-            {props => <input value={props.value} onChange={props.onChange} />}
-          </Input>
+          <input />
         </Field>);
     });
 
@@ -58,15 +56,13 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(wrapper.find('h4')).to.have.length(1);
       expect(wrapper.find('h4').text()).to.equal('My Test Input!');
 
-      const renderedCustomInput = wrapper.find('Input');
+      const renderedCustomInput = wrapper.find('input');
       expect(renderedCustomInput).to.have.length(1);
 
       const renderedCustomInputProps = renderedCustomInput.props();
 
       expect(renderedCustomInputProps).to.have.property('value', renderedCustomInputProps.value);
       expect(renderedCustomInputProps).to.have.property('name', renderedCustomInputProps.name);
-      expect(renderedCustomInputProps).to.have.property('valid', renderedCustomInputProps.valid);
-      expect(renderedCustomInputProps).to.have.property('pristine', renderedCustomInputProps.pristine);
 
       expect(renderedCustomInputProps).to.have.property('onChange');
       expect(typeof renderedCustomInputProps.onChange).to.eql('function');

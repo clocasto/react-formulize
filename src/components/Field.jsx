@@ -86,8 +86,6 @@ const Field = class extends React.Component {
     const inputProps = {
       name: this.props.name,
       value: this.state.value,
-      valid: this.state.valid,
-      pristine: this.state.pristine,
       onChange: this.onChange,
     };
 
@@ -96,11 +94,6 @@ const Field = class extends React.Component {
     } else if (childCount === 1) {
       return React.cloneElement(this.props.children, inputProps);
     }
-
-    if (!React.Children.toArray(this.props.children).find(child => child.type.name === 'Input')) {
-      throw new Error('No `Input` component provided to `Field`.');
-    }
-
     return (
       <label htmlFor={this.props.name}>
         {React.Children
