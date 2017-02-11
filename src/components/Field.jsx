@@ -119,6 +119,7 @@ Field.propTypes = {
   children: React.PropTypes.oneOfType([
     React.PropTypes.element,
     React.PropTypes.arrayOf(React.PropTypes.element),
+    React.PropTypes.object,
   ]),
   type: React.PropTypes.string,
 };
