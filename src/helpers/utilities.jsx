@@ -57,10 +57,10 @@ export function getValuesOf(obj = {}) {
   return Object.keys(obj).map(key => obj[key]);
 }
 
-export function makeFieldProps(child, state) {
+export function makeFieldProps(child, onChange, state) {
   if (typeof child.type === 'function' && child.type.name === 'Field') {
     const name = child.props.name;
-    return { key: name, name, value: state[name].value };
+    return { name, onChange, key: name, value: state[name].value };
   }
   return null;
 }

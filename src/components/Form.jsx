@@ -7,6 +7,7 @@ const Form = class extends React.Component {
 
     this.addFieldToState = addFieldToState.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onFieldChange = this.onFieldChange.bind(this);
 
     this.state = {};
     const fieldsToAdd = React.Children.toArray(props.children)
@@ -24,7 +25,7 @@ const Form = class extends React.Component {
       <form onSubmit={this.onSubmit}>
         {React.Children
           .map(this.props.children, child =>
-            mapPropsToChild(child, 'Field', makeFieldProps(child, this.state)))}
+            mapPropsToChild(child, 'Field', makeFieldProps(child, this.onFieldChange, this.state)))}
       </form>
     );
   }

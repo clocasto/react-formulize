@@ -58,5 +58,9 @@ describe('<Form /> Higher-Order-Component', () => {
       expect(nameProps).to.have.property('value', 'Enter your name');
       expect(emailProps).to.have.property('value', 'test@example.com');
     });
+
+    xit('updates its state upon a Field\'s input changing', () => {
+
+    });
   });
 });

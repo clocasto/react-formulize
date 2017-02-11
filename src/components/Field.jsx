@@ -94,13 +94,15 @@ const Field = class extends React.Component {
 
     if (!childCount) {
       return (
-        <label htmlFor={this.props.name}>
-          <input {...inputProps} />
-        </label>
+        <div>
+          <label htmlFor={this.props.name}>
+            <input {...inputProps} />
+          </label>
+        </div>
       );
     }
     return (
-      <div htmlFor={this.props.name}>
+      <div>
         {React.Children
           .map(this.props.children, child => mapPropsToChild(child, 'input', inputProps))}
       </div>
