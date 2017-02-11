@@ -1,7 +1,7 @@
-formwizard-react [![Build Status](https://travis-ci.org/clocasto/formwizard-react.svg?branch=master)](https://travis-ci.org/clocasto/formwizard-react) [![Coverage Status](https://coveralls.io/repos/github/clocasto/formwizard-react/badge.svg?branch=master&version=0_0_1)](https://coveralls.io/github/clocasto/formwizard-react?branch=master&version=0_0_1)
+formulize-react [![Build Status](https://travis-ci.org/clocasto/formulize-react.svg?branch=master)](https://travis-ci.org/clocasto/formulize-react) [![Coverage Status](https://coveralls.io/repos/github/clocasto/formulize-react/badge.svg?branch=master&version=0_1_0)](https://coveralls.io/github/clocasto/formulize-react?branch=master&version=0_1_0)
 =========
 
-A simple form validation library for React.js which wires up custom, controlled inputs through a declarative API.  
+A simple form validation library for React.js which wires up custom, controlled inputs through a declarative API.
 
 ## Table of Contents  
   1. [Installation](#installation)
@@ -16,18 +16,18 @@ A simple form validation library for React.js which wires up custom, controlled 
   
 ## <a href="installation"></a>Installation
 
-  ```
-  npm install formwizard-react --save  
+  ```javascript  
+  npm install formulize-react --save  
   ```  
 
 ## <a href="usage"></a>Usage
 
-Formwizard-react can be used to both quickly compose forms or add validation to existing input components.  
+Formulize-react can be used to both quickly compose forms or add validation to existing input components.  
 
 #### Composing A New Form With Custom Input Component(s)
 ```javascript  
   import React from 'react';
-  import { Form, Field } from 'formwizard-react';
+  import { Form, Field } from 'formulize-react';
   import { AgePickerComponent } from './components/agePicker';
   import { CustomSubmitButton } from './components/SubmitButton';
   import { SummarizeFormComponent } from './components/SummarizeFormComponent';
@@ -56,7 +56,7 @@ Formwizard-react can be used to both quickly compose forms or add validation to 
 #### Adding Validation To An Existing Form Input
 ```javascript  
   import React from 'react';
-  import { Field } from 'formwizard-react';
+  import { Field } from 'formulize-react';
   import { AgePickerComponent } from './components/agePicker';
   
   export class RegistrationForm extends React.Component { 
@@ -234,4 +234,4 @@ MIT (See license.txt)
 
 ## <a href="release-history"></a>Release History
 
-* 0.0.1
+* 0.1.0
