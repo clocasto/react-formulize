@@ -17,8 +17,8 @@ A simple form validation library for React.js which wires up custom, controlled 
 ## <a href="installation"></a>Installation
 
   ```javascript  
-  npm install formulize-react --save  
-  ```  
+  npm install formulize-react --save
+  ```
 
 ## <a href="usage"></a>Usage
 
@@ -51,7 +51,7 @@ Formulize-react can be used to both quickly compose forms or add validation to e
       </Form>
      );
   } 
-```  
+```
 
 #### Adding Validation To An Existing Form Input
 ```javascript  
