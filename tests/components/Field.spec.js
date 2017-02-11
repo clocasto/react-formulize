@@ -4,7 +4,7 @@ import sinon from 'sinon'; // eslint-disable-line
 import { expect } from 'chai'; // eslint-disable-line
 import { shallow, mount } from 'enzyme'; // eslint-disable-line
 
-import { Field, Input } from '../../dist/index';
+import { Field } from '../../dist/index';
 import { updateInput, simulateChange } from '../spec_helpers';
 
 describe('<Field /> Higher-Order-Component', () => {
@@ -13,7 +13,7 @@ describe('<Field /> Higher-Order-Component', () => {
   describe('Default Field', () => {
     it('by default renders an `Input` component', () => {
       const wrapper = shallow(<Field />); // eslint-disable-line
-      expect(wrapper.find(Input)).to.have.length(1);
+      expect(wrapper.find('input')).to.have.length(1);
     });
 
     it('passes all props down', () => {
@@ -207,6 +207,28 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(renderSpy.callCount).to.equal(2);
       expect(wrapper.state()).to.have.property('value', 'secondValue');
       expect(wrapper.instance()).to.have.property('finalValue', 'secondValue');
+    });
+
+    it('Component should reset its state if passed a `value` prop during update', () => {
+      const cancelBroadcastSpy = sinon.spy(wrapper.instance(), 'cancelBroadcast');
+
+      expect(willUpdateSpy.callCount).to.equal(0);
+      expect(renderSpy.callCount).to.equal(1);
+      expect(wrapper.state()).to.have.property('value', 'firstValue');
+      expect(wrapper.instance()).to.have.property('finalValue', null);
+
+      simulateChange(wrapper, 'secondValue');
+
+      expect(renderSpy.callCount).to.equal(2);
+      expect(willUpdateSpy.callCount).to.equal(1);
+      expect(wrapper.instance()).to.have.property('finalValue', 'secondValue');
+
+      wrapper.setProps({ value: 'thirdValue' });
+
+      expect(willUpdateSpy.callCount).to.equal(3);
+      expect(renderSpy.callCount).to.equal(4);
+      expect(cancelBroadcastSpy.callCount).to.equal(1);
+      expect(wrapper.instance()).to.have.property('finalValue', 'thirdValue');
     });
 
     it('Upon unmounting, component will broadcast its value and cancel further broadcasts', () => {

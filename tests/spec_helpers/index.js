@@ -10,6 +10,7 @@ export function buildField(mountingFunction, validator, value, type) {
   const validatorToObj = {
     [validator]: value,
   };
+  // eslint-disable-next-line
   return mountingFunction(<Field {...validatorToObj} type={type} />);
 }
 

@@ -114,22 +114,39 @@ The `Field` component will behave as follows with respect to its children:
   
 *Note:* Only one input element should be nested inside of a `Field` tag (see #4 above).
 
-There are also a handful of different validators and properties (debounce, length, etc.) that can be attached to the field component. This is done by declaring props on the `Field` component. See below for the list of validators.  
+#### props.name = name
+> @param {String} [name=''] - The name of the wrapped input component. 
+
+  The name of the wrapped input component. If no custom input component is passed in (via `props.Input`), then a label element will be created around the input and the input will be named, both with this value.
 
 #### props.value = value
 > @param {String} [value=''] - The value of the wrapped input component.   
 
   This property is used to control the value of the wrapped input component.  
 
-#### props.label = label
-> @param {String} [label=''] - The name of the wrapped input component. 
+#### props.type = type
+> @param {String} [type='text'] - The input type of the wrapped input element.  
 
-  The name of the wrapped input component. If no custom input component is passed in (via `props.Input`), then a label element will be created around the input and the input will be named, both with this value.
+  The input type for the wrapped input element. Defaults to `text`.  
 
 #### props.onChange = onChangeHandler
 > @param {Function} onChangeHandler - A function used to update (control) the state of the input element.  
 
   This property will be invoked on a change event in a wrapped `input` element (unless a custom `input` element is provided, then this function will be passed down to the custom component through `props.onChange`).  
+
+#### props.onFocus = onFocusHandler
+> @param {Function} onFocusHandler - A function to invoke upon input focus.  
+
+  This property will be invoked on a focus event in the wrapped `input` element.  
+
+#### props.onBlur = onBlurHandler
+> @param {Function} onBlurHandler - A function to invoke upon input blur.  
+
+  This property will be invoked on a blur event in the wrapped `input` element.  
+  
+___  
+
+There are also a handful of different validators and properties (debounce, length, etc.) that can be attached to the field component. This is done by declaring props on the `Field` component. See below for the list of validators.  
 
 #### props.debounce = duration
 > @param {Number} duration - An amount to debounce `props.onChange` invocation.   
@@ -181,40 +198,6 @@ There are also a handful of different validators and properties (debounce, lengt
 > @param {Function} validatingFn - A custom validating function which returns a validity boolean.  
 
   The passed-in validating function, invoked once per `Field` update with the current component value, should return `true` for valid values and `false` for invalid values.  
-
-### Input  
-A generic `Input` component which is simply a `label` and `input` element wrapped in a `div` element. The `input` element will invoked `props.onChange` upon change, apply `props.label` appropriately, and set its input type per `props.type`. All props passed to `Input` will be applied to the `input` element.  
-
-#### props.value = value
-> @param {String} [value=''] - The value of the wrapped input element.   
-
-  This property is used to control the value of the wrapped input element.  
-
-#### props.name = name
-> @param {String} [name=''] - The name of the wrapped input element. 
-
-  The name of the wrapped input element. A label element will be created around the input and the input will be named, both with this value.
-
-#### props.type = type
-> @param {String} [type='text'] - The input type of the wrapped input element. 
-
-  The input type for the wrapped input element. Defaults to `text`.
-
-#### props.onChange = onChangeHandler
-> @param {Function} onChangeHandler - A function used to update (control) the state of the input element.  
-
-  This property will be invoked on a change event in a wrapped `input` element.  
-
-#### props.onFocus = onFocusHandler
-> @param {Function} onFocusHandler - A function to invoke upon input focus.  
-
-  This property will be invoked on a focus event in the wrapped `input` element.  
-
-
-#### props.onBlur = onBlurHandler
-> @param {Function} onBlurHandler - A function to invoke upon input blur.  
-
-  This property will be invoked on a blur event in the wrapped `input` element.  
 
 ## <a href="tests"></a>Tests
 

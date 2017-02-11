@@ -1,9 +1,7 @@
 import Field from './components/Field';
 import Form from './components/Form';
-import Input from './components/Input';
 
-export default { Form, Field, Input };
+export default { Form, Field };
 
 export { Field };
 export { Form };
-export { Input };
