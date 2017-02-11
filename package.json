@@ -1,5 +1,5 @@
 {
-  "name": "formwizard-react",
+  "name": "formulize-react",
   "version": "0.0.1",
   "description": "A simple form validation library for React.js which wires up custom, controlled inputs through a declarative API.",
   "main": "dist/index",
@@ -14,10 +14,10 @@
   ],
   "author": "@clocasto",
   "license": "MIT",
-  "bugs": "https://github.com/clocasto/formwizard-react/issues",
+  "bugs": "https://github.com/clocasto/formulize-react/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/clocasto/formwizard-react.git"
+    "url": "https://github.com/clocasto/formulize-react.git"
   },
   "scripts": {
     "lint": "node_modules/eslint/bin/eslint.js \"src/**\"",
@@ -41,7 +41,6 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^3.0.2",
     "eslint-plugin-react": "^6.9.0",
-    "istanbul": "^0.4.5",
     "jsdom": "^9.9.1",
     "mocha": "^3.1.2",
     "nyc": "^10.1.2",
