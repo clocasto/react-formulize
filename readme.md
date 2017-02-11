@@ -34,18 +34,16 @@ Formwizard-react can be used to both quickly compose forms or add validation to 
     return (
       <Form fields={['name_field', 'email_field', 'age_field']}>
         <Field name="name_field" length={[3, 24]} />
-        <Field name="email_field" required email debounce="300" />
         <Field name="age_field" required min="18" max="150">
-          <Input>
-            <AgePickerComponent />
-          </Input>
+          <AgePickerComponent />
         </Field>
-
+        <Field name="email_field" required email debounce="300">
+          <label>
+            Email: <input />
+          </label>
+          <span>Email Address must use a '.edu' domain!</span>
+        </Field>
         <CustomSubmitButton />
-
-        <Data>
-          <SummarizeFormComponent />
-        </Data>
       </Form>
      );
   } 
@@ -76,12 +74,15 @@ Formwizard-react can be used to both quickly compose forms or add validation to 
         <form>
           <div>
             <input type="text" name="name" onChange={this.onChange}/>  
-            // Fields are controlled! You must pass `value` and `onChange` if you aren't using `Form`
-            <Field name="age" value={this.state.age} onChange={this.onChange} min="18" max="150">
-              <Input>
-                <input type="text" name="name" onChange={this.onChange}/>
-              </Input>
+            
+            <Field name="email" type="email" value={this.state.age} onChange={this.onChange} length={[6, 16]} email>
+              <label>
+                // The input is controlled! `Field` passes `name`, `value`, `type`, and `onChange` props for you!
+                Enter Email: <input />
+              </label>
+              <span>Email Address must use a '.edu' domain!</span>
             </Field>
+            
           </div>
           <button type="submit" />
         </form>
@@ -94,7 +95,7 @@ Formwizard-react can be used to both quickly compose forms or add validation to 
 ### Form  
 The `Form` component is a stateful higher-order-component which wraps presentational form components consisting of arbitrary input fields. Simply import the `Form` component and nest your custom components inside the `Form` tag.  
 
-The `Form` component will behave as follows with respect to its *direct* children:  
+The `Form` component will behave as follows with respect to its children:  
 
   1. Any `Field` tag will be passed the state associated with the `Field`'s name (`Form.state[child.props.name]`).  
   2. Any other component or element will be rendered with the props it would otherwise be passed.
@@ -104,15 +105,16 @@ The `Form` component should be passed an `onSubmit` handler if you want to inter
 ### Field  
 The `Field` component is a stateful, higher-order component which wraps a given presentational input component (or creates a default one). Input elements should be nested inside of `Field` tag. Each `Field` component will maintain its child's input element's value (`state.value` {String, Number}), validity(`state.valid`{Boolean}), and pristine state (`state.pristine` {Boolean}), as well as provide an onChange handler passed down through `props.onChange`.  
 
-The `Field` component will behave as follows with respect to its *direct* children:  
+The `Field` component will behave as follows with respect to its children:  
   
-  1. Any `Input` tag will be passed the current field state (`value`, `valid`, `pristine`). If multiple `Input` tags are passed to `Field`, they would all share a single state (not recommended).  
-  2. If no components are nested in a `Field` component, the default `Input` component will be used.  
-  3. If only a single direct child is passed to `Field`, it will be passed all of the `Field`'s props.  
+  1. If no components are nested in a `Field` component, a default label and input element will be used.  
+  2. Any `input` tag will be passed `name`, `type`, `value`, and `onChange` props.  
+  3. If only a single direct child is passed to `Field`, it will be passed all of the relevant input props.  
+  4. If multiple `input` tags are nested in a single `Field`, they would all share a single state (not recommended).  
   
-*Note:* Only one input element should be nested inside of a `Field` tag (see #1 above).
+*Note:* Only one input element should be nested inside of a `Field` tag (see #4 above).
 
-There are also a handful of different validators and properties (debounce, length, etc.) that can be attached to the field component. This is done through declaring props passed to the field component. See below for the list of validators.  
+There are also a handful of different validators and properties (debounce, length, etc.) that can be attached to the field component. This is done by declaring props on the `Field` component. See below for the list of validators.  
 
 #### props.value = value
 > @param {String} [value=''] - The value of the wrapped input component.   

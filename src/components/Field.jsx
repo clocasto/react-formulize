@@ -1,7 +1,13 @@
 import React from 'react';
 import debounce from 'lodash.debounce';
 import DefaultInput from './Input';
-import { assembleValidators, isValid, updateValidators, getValuesOf } from '../helpers/utilities';
+import {
+  assembleValidators,
+  isValid,
+  updateValidators,
+  getValuesOf,
+  mapPropsToChild,
+} from '../helpers/utilities';
 
 const Field = class extends React.Component {
   constructor(props) {
@@ -80,29 +86,17 @@ const Field = class extends React.Component {
     const inputProps = {
       name: this.props.name,
       value: this.state.value,
-      valid: this.state.valid,
-      pristine: this.state.pristine,
       onChange: this.onChange,
+      type: this.props.type,
     };
 
     if (!childCount) {
       return <DefaultInput {...this.props} {...inputProps} />;
-    } else if (childCount === 1) {
-      return React.cloneElement(this.props.children, inputProps);
     }
-
-    if (!React.Children.toArray(this.props.children).find(child => child.type.name === 'Input')) {
-      throw new Error('No `Input` component provided to `Field`.');
-    }
-
     return (
       <label htmlFor={this.props.name}>
-        {React.Children.map(this.props.children, (child) => {
-          if (child.type.name === 'Input') {
-            return React.cloneElement(child, inputProps);
-          }
-          return child;
-        })}
+        {React.Children
+          .map(this.props.children, child => mapPropsToChild(child, 'input', inputProps))}
       </label>
     );
   }
@@ -118,6 +112,7 @@ Field.propTypes = {
     React.PropTypes.element,
     React.PropTypes.arrayOf(React.PropTypes.element),
   ]),
+  type: React.PropTypes.string,
 };
 
 Field.defaultProps = {
@@ -127,6 +122,7 @@ Field.defaultProps = {
   debounce: 0,
   match: undefined,
   children: [],
+  type: 'text',
 };
 
 export default Field;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { addFieldToState } from '../helpers/utilities';
+import { addFieldToState, mapPropsToChild } from '../helpers/utilities';
 
 const Form = class extends React.Component {
   constructor(props) {
@@ -22,14 +22,12 @@ const Form = class extends React.Component {
   render() {
     return (
       <form onSubmit={this.onSubmit}>
-        {React.Children.count(this.props.children) &&
-          React.Children.map(this.props.children, (child) => {
-            if (child.type.name === 'Field') {
-              const { name } = child.props;
-              const value = this.state[name].value;
-              return React.cloneElement(child, { key: child.props.name, value, name });
-            }
-            return React.cloneElement(child);
+        {React.Children
+          .map(this.props.children, (child) => {
+            const { name } = child.props;
+            const value = this.state[name].value;
+            const fieldProps = { key: child.props.name, value, name };
+            return mapPropsToChild(child, 'Field', fieldProps);
           })}
       </form>
     );

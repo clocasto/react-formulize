@@ -1,3 +1,4 @@
+import React from 'react';
 import * as validatorFunctions from './validators';
 
 export function assembleValidators({
@@ -40,8 +41,6 @@ export function addFieldToState(field) {
 
   if (Array.isArray(field)) {
     field.forEach(name => this.addFieldToState(name));
-  } else if (typeof field === 'string') {
-    this.state[field] = { value: '', valid: false, pristine: false };
   } else if (typeof field === 'object') {
     const { name, value, valid, pristine } = field.props;
     const newState = { value: '', valid: false, pristine: false };
@@ -56,4 +55,15 @@ export function addFieldToState(field) {
 
 export function getValuesOf(obj = {}) {
   return Object.keys(obj).map(key => obj[key]);
+}
+
+export function mapPropsToChild(child, type, props) {
+  if (child.type === type || (typeof child.type === 'function' && child.type.name === type)) {
+    return React.cloneElement(child, props);
+  } else if (child.props && child.props.children) {
+    const newChildren = React.Children.map(child.props.children, nestedChild => (
+      mapPropsToChild(nestedChild, type, props)));
+    return React.cloneElement(child, null, newChildren);
+  }
+  return child;
 }

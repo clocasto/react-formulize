@@ -120,31 +120,18 @@ var Field = function (_React$Component) {
       var inputProps = {
         name: this.props.name,
         value: this.state.value,
-        valid: this.state.valid,
-        pristine: this.state.pristine,
-        onChange: this.onChange
+        onChange: this.onChange,
+        type: this.props.type
       };
 
       if (!childCount) {
         return _react2.default.createElement(_Input2.default, _extends({}, this.props, inputProps));
-      } else if (childCount === 1) {
-        return _react2.default.cloneElement(this.props.children, inputProps);
       }
-
-      if (!_react2.default.Children.toArray(this.props.children).find(function (child) {
-        return child.type.name === 'Input';
-      })) {
-        throw new Error('No `Input` component provided to `Field`.');
-      }
-
       return _react2.default.createElement(
         'label',
         { htmlFor: this.props.name },
         _react2.default.Children.map(this.props.children, function (child) {
-          if (child.type.name === 'Input') {
-            return _react2.default.cloneElement(child, inputProps);
-          }
-          return child;
+          return (0, _utilities.mapPropsToChild)(child, 'input', inputProps);
         })
       );
     }
@@ -159,7 +146,8 @@ Field.propTypes = {
   onChange: _react2.default.PropTypes.func,
   debounce: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number]),
   match: _react2.default.PropTypes.string,
-  children: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.element, _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.element)])
+  children: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.element, _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.element)]),
+  type: _react2.default.PropTypes.string
 };
 
 Field.defaultProps = {
@@ -168,7 +156,8 @@ Field.defaultProps = {
   onChange: undefined,
   debounce: 0,
   match: undefined,
-  children: []
+  children: [],
+  type: 'text'
 };
 
 exports.default = Field;
