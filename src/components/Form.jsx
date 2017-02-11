@@ -15,6 +15,12 @@ const Form = class extends React.Component {
     this.addFieldToState(fieldsToAdd);
   }
 
+  onFieldChange({ name, value, status, pristine }) {
+    this.setState({
+      [name]: { name, value, status, pristine },
+    });
+  }
+
   onSubmit(e) {
     e.preventDefault();
     if (this.props.onSubmit) this.props.onSubmit({ ...this.state });
