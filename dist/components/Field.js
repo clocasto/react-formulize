@@ -51,14 +51,7 @@ var Field = function (_React$Component) {
 
   _createClass(Field, [{
     key: 'componentWillUpdate',
-    value: function componentWillUpdate(nextProps, nextState) {
-      console.log('\nnextProps >>>');
-      console.dir(nextProps, { depth: 3, colors: true });
-      console.log('\nnextState >>>');
-      console.dir(nextState, { depth: 3, colors: true });
-      console.log('\nfinalValue >>>');
-      console.dir(this.finalValue, { depth: 3, colors: true });
-      console.log('\n\n');
+    value: function componentWillUpdate(nextProps) {
       if (nextProps.value !== this.props.value && nextProps.value !== this.finalValue) {
         this.cancelBroadcast();
         this.setState({ value: nextProps.value });
