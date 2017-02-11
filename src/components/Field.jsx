@@ -1,6 +1,5 @@
 import React from 'react';
 import debounce from 'lodash.debounce';
-import DefaultInput from './Input';
 import {
   assembleValidators,
   isValid,
@@ -86,18 +85,24 @@ const Field = class extends React.Component {
     const inputProps = {
       name: this.props.name,
       value: this.state.value,
-      onChange: this.onChange,
       type: this.props.type,
+      onChange: this.onChange,
+      onFocus: this.props.onFocus,
+      onBlur: this.props.onBlur,
     };
 
     if (!childCount) {
-      return <DefaultInput {...this.props} {...inputProps} />;
+      return (
+        <label htmlFor={this.props.name}>
+          <input {...inputProps} />
+        </label>
+      );
     }
     return (
-      <label htmlFor={this.props.name}>
+      <div htmlFor={this.props.name}>
         {React.Children
           .map(this.props.children, child => mapPropsToChild(child, 'input', inputProps))}
-      </label>
+      </div>
     );
   }
 };
@@ -106,6 +111,8 @@ Field.propTypes = {
   value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
   name: React.PropTypes.string,
   onChange: React.PropTypes.func,
+  onFocus: React.PropTypes.func,
+  onBlur: React.PropTypes.func,
   debounce: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
   match: React.PropTypes.string,
   children: React.PropTypes.oneOfType([
@@ -119,6 +126,8 @@ Field.defaultProps = {
   value: '',
   name: '',
   onChange: undefined,
+  onFocus: undefined,
+  onBlur: undefined,
   debounce: 0,
   match: undefined,
   children: [],

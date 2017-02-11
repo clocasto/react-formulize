@@ -4,8 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
@@ -15,10 +13,6 @@ var _react2 = _interopRequireDefault(_react);
 var _lodash = require('lodash.debounce');
 
 var _lodash2 = _interopRequireDefault(_lodash);
-
-var _Input = require('./Input');
-
-var _Input2 = _interopRequireDefault(_Input);
 
 var _utilities = require('../helpers/utilities');
 
@@ -120,15 +114,21 @@ var Field = function (_React$Component) {
       var inputProps = {
         name: this.props.name,
         value: this.state.value,
+        type: this.props.type,
         onChange: this.onChange,
-        type: this.props.type
+        onFocus: this.props.onFocus,
+        onBlur: this.props.onBlur
       };
 
       if (!childCount) {
-        return _react2.default.createElement(_Input2.default, _extends({}, this.props, inputProps));
+        return _react2.default.createElement(
+          'label',
+          { htmlFor: this.props.name },
+          _react2.default.createElement('input', inputProps)
+        );
       }
       return _react2.default.createElement(
-        'label',
+        'div',
         { htmlFor: this.props.name },
         _react2.default.Children.map(this.props.children, function (child) {
           return (0, _utilities.mapPropsToChild)(child, 'input', inputProps);
@@ -144,6 +144,8 @@ Field.propTypes = {
   value: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number]),
   name: _react2.default.PropTypes.string,
   onChange: _react2.default.PropTypes.func,
+  onFocus: _react2.default.PropTypes.func,
+  onBlur: _react2.default.PropTypes.func,
   debounce: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number]),
   match: _react2.default.PropTypes.string,
   children: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.element, _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.element)]),
@@ -154,6 +156,8 @@ Field.defaultProps = {
   value: '',
   name: '',
   onChange: undefined,
+  onFocus: undefined,
+  onBlur: undefined,
   debounce: 0,
   match: undefined,
   children: [],

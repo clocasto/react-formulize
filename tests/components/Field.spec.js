@@ -4,7 +4,7 @@ import sinon from 'sinon'; // eslint-disable-line
 import { expect } from 'chai'; // eslint-disable-line
 import { shallow, mount } from 'enzyme'; // eslint-disable-line
 
-import { Field, Input } from '../../dist/index';
+import { Field } from '../../dist/index';
 import { updateInput, simulateChange } from '../spec_helpers';
 
 describe('<Field /> Higher-Order-Component', () => {
@@ -13,7 +13,7 @@ describe('<Field /> Higher-Order-Component', () => {
   describe('Default Field', () => {
     it('by default renders an `Input` component', () => {
       const wrapper = shallow(<Field />); // eslint-disable-line
-      expect(wrapper.find(Input)).to.have.length(1);
+      expect(wrapper.find('input')).to.have.length(1);
     });
 
     it('passes all props down', () => {

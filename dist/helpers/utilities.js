@@ -85,8 +85,6 @@ function addFieldToState(field) {
     field.forEach(function (name) {
       return _this.addFieldToState(name);
     });
-  } else if (typeof field === 'string') {
-    this.state[field] = { value: '', valid: false, pristine: false };
   } else if ((typeof field === 'undefined' ? 'undefined' : _typeof(field)) === 'object') {
     var _field$props = field.props,
         name = _field$props.name,
