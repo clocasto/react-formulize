@@ -57,6 +57,14 @@ export function getValuesOf(obj = {}) {
   return Object.keys(obj).map(key => obj[key]);
 }
 
+export function makeFieldProps(child, state) {
+  if (typeof child.type === 'function' && child.type.name === 'Field') {
+    const name = child.props.name;
+    return { key: name, name, value: state[name].value };
+  }
+  return null;
+}
+
 export function mapPropsToChild(child, type, props) {
   if (child.type === type || (typeof child.type === 'function' && child.type.name === type)) {
     return React.cloneElement(child, props);
