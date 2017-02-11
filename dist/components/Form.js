@@ -56,11 +56,7 @@ var Form = function (_React$Component) {
         'form',
         { onSubmit: this.onSubmit },
         _react2.default.Children.map(this.props.children, function (child) {
-          var name = child.props.name;
-
-          var value = _this2.state[name].value;
-          var fieldProps = { key: child.props.name, value: value, name: name };
-          return (0, _utilities.mapPropsToChild)(child, 'Field', fieldProps);
+          return (0, _utilities.mapPropsToChild)(child, 'Field', (0, _utilities.makeFieldProps)(child, _this2.state));
         })
       );
     }

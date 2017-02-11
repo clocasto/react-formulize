@@ -11,6 +11,7 @@ exports.updateValidators = updateValidators;
 exports.isValid = isValid;
 exports.addFieldToState = addFieldToState;
 exports.getValuesOf = getValuesOf;
+exports.makeFieldProps = makeFieldProps;
 exports.mapPropsToChild = mapPropsToChild;
 
 var _react = require('react');
@@ -108,6 +109,14 @@ function getValuesOf() {
   return Object.keys(obj).map(function (key) {
     return obj[key];
   });
+}
+
+function makeFieldProps(child, state) {
+  if (typeof child.type === 'function' && child.type.name === 'Field') {
+    var name = child.props.name;
+    return { key: name, name: name, value: state[name].value };
+  }
+  return null;
 }
 
 function mapPropsToChild(child, type, props) {
