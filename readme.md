@@ -6,11 +6,13 @@ A simple form validation library for React.js which wires up custom, controlled 
 ## Table of Contents  
   1. [Installation](#installation)
   2. [Usage](#usage)
-  3. [Component API](#component-api)
-  4. [Tests](#tests)
-  5. [Contributing](#contributing)
-  6. [License](#license)
-  7. [Release History](#release-history)
+  3. [`Form` Component](#form-component)
+  4. [`Field` Component](#field-component)
+  5. [`Field` Validators](#field-validators)
+  6. [Tests](#tests)
+  7. [Contributing](#contributing)
+  8. [License](#license)
+  9. [Release History](#release-history)
   
 ## <a href="installation"></a>Installation
 
@@ -30,9 +32,11 @@ Formwizard-react can be used to both quickly compose forms or add validation to 
   import { CustomSubmitButton } from './components/SubmitButton';
   import { SummarizeFormComponent } from './components/SummarizeFormComponent';
   
+  const onSubmit = event => console.log(event);
+  
   export default function (props) { 
     return (
-      <Form fields={['name_field', 'email_field', 'age_field']}>
+      <Form onSubmit={onSubmit}>
         <Field name="name_field" length={[3, 24]} />
         <Field name="age_field" required min="18" max="150">
           <AgePickerComponent />
@@ -90,9 +94,9 @@ Formwizard-react can be used to both quickly compose forms or add validation to 
      }
   } 
 ```  
-## <a href="component-api"></a>Component API  
+## <a href="form-component"></a>Form Component  
 
-### Form  
+### Description
 The `Form` component is a stateful higher-order-component which wraps presentational form components consisting of arbitrary input fields. Simply import the `Form` component and nest your custom components inside the `Form` tag.  
 
 The `Form` component will behave as follows with respect to its children:  
@@ -100,9 +104,17 @@ The `Form` component will behave as follows with respect to its children:
   1. Any `Field` tag will be passed the state associated with the `Field`'s name (`Form.state[child.props.name]`).  
   2. Any other component or element will be rendered with the props it would otherwise be passed.
 
-The `Form` component should be passed an `onSubmit` handler if you want to interact with the submission event! 
+The `Form` component should be passed an `onSubmit` handler if you want to interact with the submission event!  
 
-### Field  
+### Props
+#### props.onSubmit = onSubmitHandler(event, formState)
+> @param {Function} onSubmitHandler - A function used to interact with form submission.  
+
+  This property will be invoked on a form submission event and passed the event and the event and current state.  
+
+## <a href="field-component"></a>Field Component  
+
+### Description
 The `Field` component is a stateful, higher-order component which wraps a given presentational input component (or creates a default one). Input elements should be nested inside of `Field` tag. Each `Field` component will maintain its child's input element's value (`state.value` {String, Number}), validity(`state.valid`{Boolean}), and pristine state (`state.pristine` {Boolean}), as well as provide an onChange handler passed down through `props.onChange`.  
 
 The `Field` component will behave as follows with respect to its children:  
@@ -114,6 +126,7 @@ The `Field` component will behave as follows with respect to its children:
   
 *Note:* Only one input element should be nested inside of a `Field` tag (see #4 above).
 
+### Props
 #### props.name = name
 > @param {String} [name=''] - The name of the wrapped input component. 
 
@@ -128,7 +141,12 @@ The `Field` component will behave as follows with respect to its children:
 > @param {String} [type='text'] - The input type of the wrapped input element.  
 
   The input type for the wrapped input element. Defaults to `text`.  
+  
+#### props[validator] = [validator]
+> @param {\?} [validator=\?] - Optional. One or more validators to apply to the `Field`'s state.  
 
+  The `Field` component accepts different validators as props. See the <a href="field-validators">Validators</a> section for full list of validators to pass as props.    
+  
 #### props.onChange = onChangeHandler
 > @param {Function} onChangeHandler - A function used to update (control) the state of the input element.  
 
@@ -144,9 +162,9 @@ The `Field` component will behave as follows with respect to its children:
 
   This property will be invoked on a blur event in the wrapped `input` element.  
   
-___  
+## <a href="field-validators"></a>Field Validators   
 
-There are also a handful of different validators and properties (debounce, length, etc.) that can be attached to the field component. This is done by declaring props on the `Field` component. See below for the list of validators.  
+There are also a handful of different validators and properties (debounce, length, etc.) that can be attached to the field component. This is done by declaring the validators as props on the `Field` component. See below for the list of validators.  
 
 #### props.debounce = duration
 > @param {Number} duration - An amount to debounce `props.onChange` invocation.   
