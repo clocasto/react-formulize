@@ -32,7 +32,7 @@ Formulize-react can be used to both quickly compose forms or add validation to e
   import { CustomSubmitButton } from './components/SubmitButton';
   import { SummarizeFormComponent } from './components/SummarizeFormComponent';
   
-  const onSubmit = event => console.log(event);
+  const onSubmit = formState => console.log(formState);
   
   export default function (props) { 
     return (
@@ -67,15 +67,22 @@ Formulize-react can be used to both quickly compose forms or add validation to e
         'email': { value: '' },
         'age': { value: '' },
       };
+
+      this.onChange = this.onChange.bind(this);
     }
     
+    onSubmit(e, formState) {
+      e.preventDefault();
+      console.log(formState);
+    }
+
     onChange(e) {
       this.setState({ [e.target.name]: e.target.value });
     }
     
     render() {
       return (
-        <form>
+        <form onSubmit={(e) => this.onSubmit(e, { ...this.state })}>
           <div>
             <input type="text" name="name" onChange={this.onChange}/>  
             
@@ -103,8 +110,9 @@ The `Form` component will behave as follows with respect to its children:
 
   1. Any `Field` tag will be passed the state associated with the `Field`'s name (`Form.state[child.props.name]`).
   2. Any other component or element will be rendered with the props it would otherwise be passed.
+  3. Upon submission, `Form` will pass its `onSubmit` callback a clone of its current state.
 
-The `Form` component should be passed an `onSubmit` handler if you want to interact with the submission event!
+*Note:* The `Form` component should be passed an `onSubmit` handler if you want to interact with the submission event!
 
 ### Props
 #### `props.onSubmit = onSubmitHandler(event, formState)`

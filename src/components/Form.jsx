@@ -16,7 +16,7 @@ const Form = class extends React.Component {
 
   onSubmit(e) {
     e.preventDefault();
-    if (this.props.onSubmit) this.props.onSubmit(this.state);
+    if (this.props.onSubmit) this.props.onSubmit({ ...this.state });
   }
 
   render() {
@@ -35,7 +35,11 @@ const Form = class extends React.Component {
 };
 
 Form.propTypes = {
-  children: React.PropTypes.arrayOf(React.PropTypes.element),
+  children: React.PropTypes.oneOfType([
+    React.PropTypes.element,
+    React.PropTypes.arrayOf(React.PropTypes.element),
+    React.PropTypes.object,
+  ]),
   onSubmit: React.PropTypes.func,
 };
 
