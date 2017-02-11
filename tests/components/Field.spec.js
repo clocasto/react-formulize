@@ -5,7 +5,7 @@ import { expect } from 'chai'; // eslint-disable-line
 import { shallow, mount } from 'enzyme'; // eslint-disable-line
 
 import { Field } from '../../dist/index';
-import { updateInput, simulateChange } from '../spec_helpers';
+import { updateInput } from '../spec_helpers';
 
 describe('<Field /> Higher-Order-Component', () => {
   const nameField = { name: 'name', value: 'Test Name' };
@@ -166,7 +166,7 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(renderSpy.callCount).to.equal(1);
       expect(wrapper.state()).to.have.property('value', 'firstValue');
 
-      simulateChange(wrapper, 'secondValue');
+      updateInput(wrapper, 'secondValue');
 
       expect(shouldUpdateSpy.callCount).to.equal(1);
       expect(shouldUpdateSpy.calledBefore(willUpdateSpy)).to.equal(true);
@@ -182,7 +182,7 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(wrapper.state()).to.have.property('value', 'firstValue');
       expect(wrapper.instance()).to.have.property('finalValue', null);
 
-      simulateChange(wrapper, 'firstValue');
+      updateInput(wrapper, 'firstValue');
 
       expect(shouldUpdateSpy.callCount).to.equal(1);
       expect(shouldUpdateSpy.calledBefore(willUpdateSpy)).to.equal(true);
@@ -198,7 +198,7 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(wrapper.state()).to.have.property('value', 'firstValue');
       expect(wrapper.instance()).to.have.property('finalValue', null);
 
-      simulateChange(wrapper, 'secondValue');
+      updateInput(wrapper, 'secondValue');
 
       expect(shouldUpdateSpy.callCount).to.equal(1);
       expect(shouldUpdateSpy.calledBefore(willUpdateSpy)).to.equal(true);
@@ -217,7 +217,7 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(wrapper.state()).to.have.property('value', 'firstValue');
       expect(wrapper.instance()).to.have.property('finalValue', null);
 
-      simulateChange(wrapper, 'secondValue');
+      updateInput(wrapper, 'secondValue');
 
       expect(renderSpy.callCount).to.equal(2);
       expect(willUpdateSpy.callCount).to.equal(1);
@@ -241,7 +241,7 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(wrapper.state()).to.have.property('value', 'firstValue');
       expect(wrapper.instance()).to.have.property('finalValue', null);
 
-      simulateChange(wrapper, 'secondValue');
+      updateInput(wrapper, 'secondValue');
 
       expect(willUnmountSpy.callCount).to.equal(0);
       expect(cancelBroadcastSpy.callCount).to.equal(0);
@@ -282,7 +282,7 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(wrapper.state()).to.have.property('value', 'firstValue');
       expect(wrapper.state()).to.have.property('debounce', 300);
 
-      simulateChange(wrapper, 'secondValue');
+      updateInput(wrapper, 'secondValue');
 
       expect(wrapper.state()).to.have.property('value', 'secondValue');
       expect(willUpdateSpy.callCount).to.equal(1);
@@ -298,7 +298,7 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(wrapper.state()).to.have.property('value', 'firstValue');
       expect(wrapper.state()).to.have.property('debounce', debounce);
 
-      simulateChange(wrapper, 'secondValue');
+      updateInput(wrapper, 'secondValue');
 
       expect(wrapper.state()).to.have.property('value', 'secondValue');
       expect(onChangeSpy.callCount).to.equal(0);

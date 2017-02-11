@@ -32,6 +32,7 @@ var Form = function (_React$Component) {
 
     _this.addFieldToState = _utilities.addFieldToState.bind(_this);
     _this.onSubmit = _this.onSubmit.bind(_this);
+    _this.onFieldChange = _this.onFieldChange.bind(_this);
 
     _this.state = {};
     var fieldsToAdd = _react2.default.Children.toArray(props.children).filter(function (child) {
@@ -56,7 +57,7 @@ var Form = function (_React$Component) {
         'form',
         { onSubmit: this.onSubmit },
         _react2.default.Children.map(this.props.children, function (child) {
-          return (0, _utilities.mapPropsToChild)(child, 'Field', (0, _utilities.makeFieldProps)(child, _this2.state));
+          return (0, _utilities.mapPropsToChild)(child, 'Field', (0, _utilities.makeFieldProps)(child, _this2.onFieldChange, _this2.state));
         })
       );
     }

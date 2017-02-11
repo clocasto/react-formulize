@@ -123,14 +123,18 @@ var Field = function (_React$Component) {
 
       if (!childCount) {
         return _react2.default.createElement(
-          'label',
-          { htmlFor: this.props.name },
-          _react2.default.createElement('input', inputProps)
+          'div',
+          null,
+          _react2.default.createElement(
+            'label',
+            { htmlFor: this.props.name },
+            _react2.default.createElement('input', inputProps)
+          )
         );
       }
       return _react2.default.createElement(
         'div',
-        { htmlFor: this.props.name },
+        null,
         _react2.default.Children.map(this.props.children, function (child) {
           return (0, _utilities.mapPropsToChild)(child, 'input', inputProps);
         })

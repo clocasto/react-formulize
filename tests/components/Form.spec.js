@@ -4,6 +4,7 @@ import { expect } from 'chai'; // eslint-disable-line
 import { shallow, mount } from 'enzyme'; // eslint-disable-line
 
 import { Form, Field } from '../../dist/index';
+import { updateInput } from '../spec_helpers';
 
 describe('<Form /> Higher-Order-Component', () => {
   describe('Default Form', () => {
@@ -59,7 +60,7 @@ describe('<Form /> Higher-Order-Component', () => {
       expect(emailProps).to.have.property('value', 'test@example.com');
     });
 
-    xit('updates its state upon a Field\'s input changing', () => {
+    it('updates its state upon a Field\'s input changing', () => {
 
     });
   });

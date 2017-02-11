@@ -111,10 +111,10 @@ function getValuesOf() {
   });
 }
 
-function makeFieldProps(child, state) {
+function makeFieldProps(child, onChange, state) {
   if (typeof child.type === 'function' && child.type.name === 'Field') {
     var name = child.props.name;
-    return { key: name, name: name, value: state[name].value };
+    return { name: name, onChange: onChange, key: name, value: state[name].value };
   }
   return null;
 }
