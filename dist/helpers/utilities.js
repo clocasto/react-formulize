@@ -113,13 +113,13 @@ function getValuesOf() {
 }
 
 function mapPropsToChild(child, type, props) {
-  if (child.type === type || child.type.name === type) {
+  if (child.type === type || typeof child.type === 'function' && child.type.name === type) {
     return _react2.default.cloneElement(child, props);
   } else if (child.props && child.props.children) {
     var newChildren = _react2.default.Children.map(child.props.children, function (nestedChild) {
-      return mapPropsToChild(_react2.default, nestedChild, props);
+      return mapPropsToChild(nestedChild, type, props);
     });
-    return _react2.default.cloneElement(child, { children: newChildren });
+    return _react2.default.cloneElement(child, null, newChildren);
   }
   return child;
 }

@@ -60,12 +60,12 @@ export function getValuesOf(obj = {}) {
 }
 
 export function mapPropsToChild(child, type, props) {
-  if (child.type === type || child.type.name === type) {
+  if (child.type === type || (typeof child.type === 'function' && child.type.name === type)) {
     return React.cloneElement(child, props);
   } else if (child.props && child.props.children) {
     const newChildren = React.Children.map(child.props.children, nestedChild => (
-      mapPropsToChild(React, nestedChild, props)));
-    return React.cloneElement(child, { children: newChildren });
+      mapPropsToChild(nestedChild, type, props)));
+    return React.cloneElement(child, null, newChildren);
   }
   return child;
 }
