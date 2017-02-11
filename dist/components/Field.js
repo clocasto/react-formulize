@@ -149,7 +149,7 @@ Field.propTypes = {
   onBlur: _react2.default.PropTypes.func,
   debounce: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number]),
   match: _react2.default.PropTypes.string,
-  children: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.element, _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.element)]),
+  children: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.element, _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.element), _react2.default.PropTypes.object]),
   type: _react2.default.PropTypes.string
 };
 
