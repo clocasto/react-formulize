@@ -41,8 +41,6 @@ export function addFieldToState(field) {
 
   if (Array.isArray(field)) {
     field.forEach(name => this.addFieldToState(name));
-  } else if (typeof field === 'string') {
-    this.state[field] = { value: '', valid: false, pristine: false };
   } else if (typeof field === 'object') {
     const { name, value, valid, pristine } = field.props;
     const newState = { value: '', valid: false, pristine: false };
