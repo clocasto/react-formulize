@@ -209,6 +209,28 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(wrapper.instance()).to.have.property('finalValue', 'secondValue');
     });
 
+    it('Component should reset its state if passed a `value` prop during update', () => {
+      const cancelBroadcastSpy = sinon.spy(wrapper.instance(), 'cancelBroadcast');
+
+      expect(willUpdateSpy.callCount).to.equal(0);
+      expect(renderSpy.callCount).to.equal(1);
+      expect(wrapper.state()).to.have.property('value', 'firstValue');
+      expect(wrapper.instance()).to.have.property('finalValue', null);
+
+      simulateChange(wrapper, 'secondValue');
+
+      expect(renderSpy.callCount).to.equal(2);
+      expect(willUpdateSpy.callCount).to.equal(1);
+      expect(wrapper.instance()).to.have.property('finalValue', 'secondValue');
+
+      wrapper.setProps({ value: 'thirdValue' });
+
+      expect(willUpdateSpy.callCount).to.equal(3);
+      expect(renderSpy.callCount).to.equal(4);
+      expect(cancelBroadcastSpy.callCount).to.equal(1);
+      expect(wrapper.instance()).to.have.property('finalValue', 'thirdValue');
+    });
+
     it('Upon unmounting, component will broadcast its value and cancel further broadcasts', () => {
       const cancelBroadcastSpy = sinon.spy(wrapper.instance(), 'cancelBroadcast');
       const broadcastChangeSpy = sinon.spy(wrapper.instance(), 'broadcastChange');

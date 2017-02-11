@@ -33,6 +33,7 @@ const Field = class extends React.Component {
     if ((nextProps.value !== this.props.value) && (nextProps.value !== this.finalValue)) {
       this.cancelBroadcast();
       this.setState({ value: nextProps.value });
+      this.finalValue = nextProps.value;
     }
 
     if (this.props.match !== nextProps.match) {
