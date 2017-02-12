@@ -43,7 +43,7 @@ export function addFieldToState(field) {
     field.forEach(name => this.addFieldToState(name));
   } else if (typeof field === 'object') {
     const { name, value, valid, pristine } = field.props;
-    const newState = { value: '', valid: false, pristine: false };
+    const newState = { value: '', valid: false, pristine: true };
 
     if (value !== undefined) Object.assign(newState, { value });
     if (valid !== undefined) Object.assign(newState, { valid });
@@ -55,6 +55,14 @@ export function addFieldToState(field) {
 
 export function getValuesOf(obj = {}) {
   return Object.keys(obj).map(key => obj[key]);
+}
+
+export function makeFieldProps(child, onChange, state) {
+  if (typeof child.type === 'function' && child.type.name === 'Field') {
+    const name = child.props.name;
+    return { name, onChange, key: name, value: state[name].value };
+  }
+  return null;
 }
 
 export function mapPropsToChild(child, type, props) {

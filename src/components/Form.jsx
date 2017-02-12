@@ -1,5 +1,5 @@
 import React from 'react';
-import { addFieldToState, mapPropsToChild } from '../helpers/utilities';
+import { addFieldToState, mapPropsToChild, makeFieldProps } from '../helpers/utilities';
 
 const Form = class extends React.Component {
   constructor(props) {
@@ -7,11 +7,18 @@ const Form = class extends React.Component {
 
     this.addFieldToState = addFieldToState.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onFieldChange = this.onFieldChange.bind(this);
 
     this.state = {};
     const fieldsToAdd = React.Children.toArray(props.children)
       .filter(child => (child.type.name === 'Field'));
     this.addFieldToState(fieldsToAdd);
+  }
+
+  onFieldChange({ name, value, valid, pristine }) {
+    this.setState({
+      [name]: { value, valid, pristine },
+    });
   }
 
   onSubmit(e) {
@@ -23,12 +30,8 @@ const Form = class extends React.Component {
     return (
       <form onSubmit={this.onSubmit}>
         {React.Children
-          .map(this.props.children, (child) => {
-            const { name } = child.props;
-            const value = this.state[name].value;
-            const fieldProps = { key: child.props.name, value, name };
-            return mapPropsToChild(child, 'Field', fieldProps);
-          })}
+          .map(this.props.children, child =>
+            mapPropsToChild(child, 'Field', makeFieldProps(child, this.onFieldChange, this.state)))}
       </form>
     );
   }

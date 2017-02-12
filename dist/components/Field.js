@@ -39,7 +39,6 @@ var Field = function (_React$Component) {
       debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: (0, _utilities.assembleValidators)(props)
     };
-
     _this.finalValue = null;
 
     _this.onChange = _this.onChange.bind(_this);
@@ -81,12 +80,15 @@ var Field = function (_React$Component) {
     key: 'onChange',
     value: function onChange(e) {
       var value = e.target.value;
+      this.finalValue = value;
 
       var validators = (0, _utilities.getValuesOf)(this.state.validators);
 
-      this.setState({ value: value, valid: (0, _utilities.isValid)(value, validators), pristine: false });
-      this.finalValue = value;
-      this.debouncedBroadcastChange();
+      this.setState({
+        value: value,
+        valid: (0, _utilities.isValid)(value, validators),
+        pristine: false
+      }, this.debouncedBroadcastChange);
     }
   }, {
     key: 'broadcastChange',
@@ -94,8 +96,8 @@ var Field = function (_React$Component) {
       if (this.props.onChange) {
         this.props.onChange({
           name: this.props.name,
-          value: this.finalValue,
-          status: this.state.valid,
+          value: this.state.value,
+          valid: this.state.valid,
           pristine: this.state.pristine
         });
       }
@@ -123,14 +125,18 @@ var Field = function (_React$Component) {
 
       if (!childCount) {
         return _react2.default.createElement(
-          'label',
-          { htmlFor: this.props.name },
-          _react2.default.createElement('input', inputProps)
+          'div',
+          null,
+          _react2.default.createElement(
+            'label',
+            { htmlFor: this.props.name },
+            _react2.default.createElement('input', inputProps)
+          )
         );
       }
       return _react2.default.createElement(
         'div',
-        { htmlFor: this.props.name },
+        null,
         _react2.default.Children.map(this.props.children, function (child) {
           return (0, _utilities.mapPropsToChild)(child, 'input', inputProps);
         })

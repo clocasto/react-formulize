@@ -16,6 +16,8 @@ var _utilities = require('../helpers/utilities');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -32,6 +34,7 @@ var Form = function (_React$Component) {
 
     _this.addFieldToState = _utilities.addFieldToState.bind(_this);
     _this.onSubmit = _this.onSubmit.bind(_this);
+    _this.onFieldChange = _this.onFieldChange.bind(_this);
 
     _this.state = {};
     var fieldsToAdd = _react2.default.Children.toArray(props.children).filter(function (child) {
@@ -42,6 +45,16 @@ var Form = function (_React$Component) {
   }
 
   _createClass(Form, [{
+    key: 'onFieldChange',
+    value: function onFieldChange(_ref) {
+      var name = _ref.name,
+          value = _ref.value,
+          valid = _ref.valid,
+          pristine = _ref.pristine;
+
+      this.setState(_defineProperty({}, name, { value: value, valid: valid, pristine: pristine }));
+    }
+  }, {
     key: 'onSubmit',
     value: function onSubmit(e) {
       e.preventDefault();
@@ -56,11 +69,7 @@ var Form = function (_React$Component) {
         'form',
         { onSubmit: this.onSubmit },
         _react2.default.Children.map(this.props.children, function (child) {
-          var name = child.props.name;
-
-          var value = _this2.state[name].value;
-          var fieldProps = { key: child.props.name, value: value, name: name };
-          return (0, _utilities.mapPropsToChild)(child, 'Field', fieldProps);
+          return (0, _utilities.mapPropsToChild)(child, 'Field', (0, _utilities.makeFieldProps)(child, _this2.onFieldChange, _this2.state));
         })
       );
     }

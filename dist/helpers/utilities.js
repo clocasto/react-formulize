@@ -11,6 +11,7 @@ exports.updateValidators = updateValidators;
 exports.isValid = isValid;
 exports.addFieldToState = addFieldToState;
 exports.getValuesOf = getValuesOf;
+exports.makeFieldProps = makeFieldProps;
 exports.mapPropsToChild = mapPropsToChild;
 
 var _react = require('react');
@@ -92,7 +93,7 @@ function addFieldToState(field) {
         valid = _field$props.valid,
         pristine = _field$props.pristine;
 
-    var newState = { value: '', valid: false, pristine: false };
+    var newState = { value: '', valid: false, pristine: true };
 
     if (value !== undefined) Object.assign(newState, { value: value });
     if (valid !== undefined) Object.assign(newState, { valid: valid });
@@ -108,6 +109,14 @@ function getValuesOf() {
   return Object.keys(obj).map(function (key) {
     return obj[key];
   });
+}
+
+function makeFieldProps(child, onChange, state) {
+  if (typeof child.type === 'function' && child.type.name === 'Field') {
+    var name = child.props.name;
+    return { name: name, onChange: onChange, key: name, value: state[name].value };
+  }
+  return null;
 }
 
 function mapPropsToChild(child, type, props) {
