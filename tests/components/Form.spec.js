@@ -60,7 +60,7 @@ describe('<Form /> Higher-Order-Component', () => {
       expect(emailProps).to.have.property('value', 'test@example.com');
     });
 
-    it.only('updates its state upon a Field\'s input changing', () => {
+    it('updates its state upon a Field\'s input changing', () => {
       wrapper = mount((
         <Form>
           <Field name="name" value="Enter your name" length={[6, 12]} alpha />
