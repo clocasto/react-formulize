@@ -1,4 +1,4 @@
-formulize-react [![Build Status](https://travis-ci.org/clocasto/formulize-react.svg?branch=master)](https://travis-ci.org/clocasto/formulize-react) [![Coverage Status](https://coveralls.io/repos/github/clocasto/formulize-react/badge.svg?branch=master&version=0_1_0)](https://coveralls.io/github/clocasto/formulize-react?branch=master&version=0_1_0)
+formulize-react [![Build Status](https://travis-ci.org/clocasto/formulize-react.svg?branch=master)](https://travis-ci.org/clocasto/formulize-react) [![Coverage Status](https://coveralls.io/repos/github/clocasto/formulize-react/badge.svg?branch=master&version=1_0_0)](https://coveralls.io/github/clocasto/formulize-react?branch=master&version=1_0_0)
 =========
 
 Formulize-react is a simple form validation library for React.js which wires up custom, controlled inputs through a declarative API. The library strives to be minimal, and as such, does most component communication implicity. The end result is a legible form which clearly states the rules of its behavior.
@@ -297,4 +297,4 @@ MIT (See license.txt)
 
 ## <a href="release-history"></a>Release History
 
-* 0.1.0
+* [1.0.0](https://github.com/clocasto/formulize-react/pull/25)
