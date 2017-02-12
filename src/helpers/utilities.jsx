@@ -36,11 +36,11 @@ export function isValid(value, validators) {
   }, true);
 }
 
-export function addFieldToState(field) {
+export function addFieldsToState(field, mounted = false) {
   if (!field) return;
 
   if (Array.isArray(field)) {
-    field.forEach(name => this.addFieldToState(name));
+    field.forEach(name => this.addFieldsToState(name));
   } else if (typeof field === 'object') {
     const { name, value, valid, pristine } = field.props;
     const newState = { value: '', valid: false, pristine: true };
@@ -49,7 +49,13 @@ export function addFieldToState(field) {
     if (valid !== undefined) Object.assign(newState, { valid });
     if (pristine !== undefined) Object.assign(newState, { pristine });
 
-    this.state[name] = newState;
+    if (mounted) {
+      this.setState({
+        [name]: newState,
+      });
+    } else {
+      this.state[name] = newState;
+    }
   }
 }
 

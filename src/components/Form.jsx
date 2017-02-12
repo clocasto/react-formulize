@@ -8,11 +8,12 @@ const Form = class extends React.Component {
     this.addFieldToState = addFieldToState.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.onFieldChange = this.onFieldChange.bind(this);
+    this.reset = this.reset.bind(this);
 
     this.state = {};
     const fieldsToAdd = React.Children.toArray(props.children)
       .filter(child => (child.type.name === 'Field'));
-    this.addFieldToState(fieldsToAdd);
+    this.addFieldsToState(fieldsToAdd);
   }
 
   onFieldChange({ name, value, valid, pristine }) {
@@ -24,6 +25,12 @@ const Form = class extends React.Component {
   onSubmit(e) {
     e.preventDefault();
     if (this.props.onSubmit) this.props.onSubmit({ ...this.state });
+  }
+
+  reset() {
+    const fieldsToAdd = React.Children.toArray(this.props.children)
+      .filter(child => (child.type.name === 'Field'));
+    this.addFieldsToState(fieldsToAdd);
   }
 
   render() {
