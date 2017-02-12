@@ -1,14 +1,13 @@
 formulize-react [![Build Status](https://travis-ci.org/clocasto/formulize-react.svg?branch=master)](https://travis-ci.org/clocasto/formulize-react) [![Coverage Status](https://coveralls.io/repos/github/clocasto/formulize-react/badge.svg?branch=master&version=0_1_0)](https://coveralls.io/github/clocasto/formulize-react?branch=master&version=0_1_0)
 =========
 
-A simple form validation library for React.js which wires up custom, controlled inputs through a declarative API.
+Formulize-react is a simple form validation library for React.js which wires up custom, controlled inputs through a declarative API. The library strives to be minimal, and as such, does most component communication implicity. The end result is a legible form which clearly states the rules of its behavior.
 
 ## Table of Contents  
   1. [Installation](#installation)
   2. [Usage](#usage)
   3. [`Form` Component](#form-component)
   4. [`Field` Component](#field-component)
-  5. [`Field` Validators](#field-validators)
   6. [Tests](#tests)
   7. [Contributing](#contributing)
   8. [License](#license)
@@ -122,7 +121,53 @@ The `Form` component will behave as follows with respect to its children:
 
 ### Methods
 #### `instance.reset()`
-> @description - Resets the `Form` instance by re-instating the default state. Does not unmount the instance.  
+> @description - Resets the `Form` instance by reinstating the default state. Does not unmount the instance.  
+
+  The `Form` instance must be captured in a reference in order to be able to later invoke its `reset` method. This means that:
+  1. A `ref` function must be passed to `Form` in order to receive the class component reference.
+  2. `Form` must be used within a class component to enable the `ref` callback being invoked.
+
+```javascript  
+import React from 'react';
+import { Form, Field } from 'formulize-react';
+
+export default class extends React.Component {
+  constructor() {
+    this.updateValue = this.updateValue.bind(this);
+    this.registerForm = this.registerForm.bind(this);
+    this.resetForm = this.resetForm.bind(this);
+  }
+
+  addFormRef(form) {
+    this.form = form;
+  }
+
+  updateValue(field, data) {
+    this.setState({ [field]: data });
+  }
+
+  onSubmit(state) {
+    console.log('SUBMITTING >>>', state);
+  }
+
+  resetForm(e) {
+    e.preventDefault();
+    this.form.reset(); // Instance method on `Form` component!
+  }
+
+  render() {
+    return (
+      <Form onSubmit={this.onSubmit} ref={this.addFormRef}>
+        <Field name="name" length={[6, 20]} alpha />
+        <Field name="email" email required />
+        <Field name="age" type="number" min="18" max="100" />
+        <button type="submit">Submit</button>
+        <button onClick={this.reset}>Reset</button>
+      </Form>
+    );
+  }
+}
+```  
 
 ## <a href="field-component"></a>Field Component
 
@@ -176,7 +221,7 @@ The `Field` component will behave as follows with respect to its children:
 
   This property will be invoked on a blur event in the wrapped `input` element.  
   
-## <a href="field-validators"></a>Field Validators   
+### Validators  
 
 There are also a handful of different validators and properties (debounce, length, etc.) that can be attached to the field component. This is done by declaring the validators as props on the `Field` component. See below for the list of validators.
 
