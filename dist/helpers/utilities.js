@@ -124,13 +124,13 @@ function makeFieldProps(child, onChange, state) {
   return null;
 }
 
-function mapPropsToChild(child, type, props) {
+function mapPropsToChild(child, type, propFunction) {
   if (child.type === type || typeof child.type === 'function' && child.type.name === type) {
-    return _react2.default.cloneElement(child, props);
+    return _react2.default.cloneElement(child, propFunction(child));
   }
   if (child.props && child.props.children) {
     var newChildren = _react2.default.Children.map(child.props.children, function (nestedChild) {
-      return mapPropsToChild(nestedChild, type, props);
+      return mapPropsToChild(nestedChild, type, propFunction(nestedChild));
     });
     return _react2.default.cloneElement(child, null, newChildren);
   }

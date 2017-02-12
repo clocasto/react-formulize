@@ -138,7 +138,9 @@ var Field = function (_React$Component) {
         'div',
         null,
         _react2.default.Children.map(this.props.children, function (child) {
-          return (0, _utilities.mapPropsToChild)(child, 'input', inputProps);
+          return (0, _utilities.mapPropsToChild)(child, 'input', function () {
+            return inputProps;
+          });
         })
       );
     }
