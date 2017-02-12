@@ -51,12 +51,14 @@ export function addFieldsToState(component, child, mounted = false) {
     const name = child.props.name;
     const fieldState = buildStateForField(child.props);
     if (mounted) {
-      this.setState({ [name]: fieldState });
+      component.setState({
+        [name]: fieldState });
     } else {
-      this.state[name] = fieldState;
+      component.state[name] = fieldState; // eslint-disable-line
     }
   } else if (child.props && child.props.children) {
-    React.Children.forEach(child.props.children, nextChild => addFieldsToState(nextChild, mounted));
+    React.Children.forEach(child.props.children,
+      nextChild => addFieldsToState(component, nextChild, mounted));
   }
 }
 
