@@ -73,6 +73,14 @@ describe('<Form /> Higher-Order-Component', () => {
         pristine: true,
       });
 
+      updateInput(wrapper, 'Way too long of a name');
+
+      expect(wrapper.state().name).to.eql({
+        value: 'Way too long of a name',
+        valid: false,
+        pristine: false,
+      });
+
       updateInput(wrapper, 'Good Name');
 
       expect(wrapper.state().name).to.eql({
@@ -80,14 +88,6 @@ describe('<Form /> Higher-Order-Component', () => {
         valid: true,
         pristine: false,
       });
-
-      // updateInput(wrapper, 'Good Name');
-
-      // expect(wrapper.state().name).to.eql({
-      //   value: 'Good Name',
-      //   valid: true,
-      //   pristine: false,
-      // });
     });
   });
 });
