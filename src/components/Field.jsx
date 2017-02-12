@@ -15,12 +15,12 @@ const Field = class extends React.Component {
 
     this.state = {
       value: props.value || '',
+      valid: false,
+      pristine: true,
       debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: assembleValidators(props),
     };
     this.finalValue = null;
-    this.valid = false;
-    this.pristine = true;
 
     this.onChange = this.onChange.bind(this);
     this.broadcastChange = this.broadcastChange.bind(this);
@@ -38,7 +38,7 @@ const Field = class extends React.Component {
 
     if (this.props.match !== nextProps.match) {
       const validators = updateValidators({ match: nextProps.match }, this.state.validators);
-      this.valid = isValid(this.state.value, getValuesOf(validators));
+      this.setState({ valid: isValid(this.state.value, getValuesOf(validators)), validators });
     }
   }
 
@@ -55,23 +55,25 @@ const Field = class extends React.Component {
   }
 
   onChange(e) {
-    const { value } = e.target;
-    this.setState({ value });
+    const value = e.target.value;
+    this.finalValue = value;
 
     const validators = getValuesOf(this.state.validators);
-    this.valid = isValid(value, validators);
-    this.finalValue = value;
-    this.pristine = false;
-    this.debouncedBroadcastChange();
+
+    this.setState({
+      value,
+      valid: isValid(value, validators),
+      pristine: false,
+    }, this.debouncedBroadcastChange);
   }
 
   broadcastChange() {
     if (this.props.onChange) {
       this.props.onChange({
         name: this.props.name,
-        value: this.finalValue,
-        valid: this.valid,
-        pristine: this.pristine,
+        value: this.state.value,
+        valid: this.state.valid,
+        pristine: this.state.pristine,
       });
     }
   }

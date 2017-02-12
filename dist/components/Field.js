@@ -35,12 +35,12 @@ var Field = function (_React$Component) {
 
     _this.state = {
       value: props.value || '',
+      valid: false,
+      pristine: true,
       debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: (0, _utilities.assembleValidators)(props)
     };
     _this.finalValue = null;
-    _this.valid = false;
-    _this.pristine = true;
 
     _this.onChange = _this.onChange.bind(_this);
     _this.broadcastChange = _this.broadcastChange.bind(_this);
@@ -60,7 +60,7 @@ var Field = function (_React$Component) {
 
       if (this.props.match !== nextProps.match) {
         var validators = (0, _utilities.updateValidators)({ match: nextProps.match }, this.state.validators);
-        this.valid = (0, _utilities.isValid)(this.state.value, (0, _utilities.getValuesOf)(validators));
+        this.setState({ valid: (0, _utilities.isValid)(this.state.value, (0, _utilities.getValuesOf)(validators)), validators: validators });
       }
     }
   }, {
@@ -81,14 +81,15 @@ var Field = function (_React$Component) {
     key: 'onChange',
     value: function onChange(e) {
       var value = e.target.value;
-
-      this.setState({ value: value });
+      this.finalValue = value;
 
       var validators = (0, _utilities.getValuesOf)(this.state.validators);
-      this.valid = (0, _utilities.isValid)(value, validators);
-      this.finalValue = value;
-      this.pristine = false;
-      this.debouncedBroadcastChange();
+
+      this.setState({
+        value: value,
+        valid: (0, _utilities.isValid)(value, validators),
+        pristine: false
+      }, this.debouncedBroadcastChange);
     }
   }, {
     key: 'broadcastChange',
@@ -96,9 +97,9 @@ var Field = function (_React$Component) {
       if (this.props.onChange) {
         this.props.onChange({
           name: this.props.name,
-          value: this.finalValue,
-          valid: this.valid,
-          pristine: this.pristine
+          value: this.state.value,
+          valid: this.state.valid,
+          pristine: this.state.pristine
         });
       }
     }
