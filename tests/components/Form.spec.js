@@ -2,6 +2,7 @@
 import React from 'react';
 import { expect } from 'chai'; // eslint-disable-line
 import { shallow, mount } from 'enzyme'; // eslint-disable-line
+import sinon from 'sinon'; // eslint-disable-line
 
 import { Form, Field } from '../../dist/index';
 import { updateInput } from '../spec_helpers';
@@ -88,6 +89,23 @@ describe('<Form /> Higher-Order-Component', () => {
         valid: true,
         pristine: false,
       });
+    });
+
+    it('invoked an onSubmit callback upon form submission', () => {
+      const onSubmitSpy = sinon.spy();
+      wrapper = mount(
+        <Form onSubmit={onSubmitSpy}>
+          <Field name="name" value="firstValue" />
+          <button type="submit" />
+        </Form>,
+      );
+
+      expect(onSubmitSpy.callCount).to.eql(0);
+
+      wrapper.find('form').simulate('submit');
+
+      expect(onSubmitSpy.callCount).to.eql(1);
+      expect(onSubmitSpy.calledWith(wrapper.state())).to.eql(true);
     });
   });
 });
