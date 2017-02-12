@@ -1,3 +1,4 @@
+/* globals window */
 import React from 'react';
 import debounce from 'lodash.debounce';
 import {
@@ -14,13 +15,12 @@ const Field = class extends React.Component {
 
     this.state = {
       value: props.value || '',
-      valid: false,
-      pristine: true,
       debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: assembleValidators(props),
     };
-
     this.finalValue = null;
+    this.valid = false;
+    this.pristine = true;
 
     this.onChange = this.onChange.bind(this);
     this.broadcastChange = this.broadcastChange.bind(this);
@@ -38,7 +38,7 @@ const Field = class extends React.Component {
 
     if (this.props.match !== nextProps.match) {
       const validators = updateValidators({ match: nextProps.match }, this.state.validators);
-      this.setState({ valid: isValid(this.state.value, getValuesOf(validators)), validators });
+      this.valid = isValid(this.state.value, getValuesOf(validators));
     }
   }
 
@@ -56,10 +56,12 @@ const Field = class extends React.Component {
 
   onChange(e) {
     const { value } = e.target;
-    const validators = getValuesOf(this.state.validators);
+    this.setState({ value });
 
-    this.setState({ value, valid: isValid(value, validators), pristine: false });
+    const validators = getValuesOf(this.state.validators);
+    this.valid = isValid(value, validators);
     this.finalValue = value;
+    this.pristine = false;
     this.debouncedBroadcastChange();
   }
 
@@ -68,8 +70,8 @@ const Field = class extends React.Component {
       this.props.onChange({
         name: this.props.name,
         value: this.finalValue,
-        status: this.state.valid,
-        pristine: this.state.pristine,
+        valid: this.valid,
+        pristine: this.pristine,
       });
     }
   }

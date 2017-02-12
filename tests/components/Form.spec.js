@@ -60,8 +60,34 @@ describe('<Form /> Higher-Order-Component', () => {
       expect(emailProps).to.have.property('value', 'test@example.com');
     });
 
-    it('updates its state upon a Field\'s input changing', () => {
+    it.only('updates its state upon a Field\'s input changing', () => {
+      wrapper = mount((
+        <Form>
+          <Field name="name" value="Enter your name" length={[6, 12]} alpha />
+        </Form>
+      ));
 
+      expect(wrapper.state().name).to.eql({
+        value: 'Enter your name',
+        valid: false,
+        pristine: true,
+      });
+
+      updateInput(wrapper, 'Good Name');
+
+      expect(wrapper.state().name).to.eql({
+        value: 'Good Name',
+        valid: true,
+        pristine: false,
+      });
+
+      // updateInput(wrapper, 'Good Name');
+
+      // expect(wrapper.state().name).to.eql({
+      //   value: 'Good Name',
+      //   valid: true,
+      //   pristine: false,
+      // });
     });
   });
 });

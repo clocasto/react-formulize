@@ -22,7 +22,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* globals window */
+
 
 var Field = function (_React$Component) {
   _inherits(Field, _React$Component);
@@ -34,13 +35,12 @@ var Field = function (_React$Component) {
 
     _this.state = {
       value: props.value || '',
-      valid: false,
-      pristine: true,
       debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: (0, _utilities.assembleValidators)(props)
     };
-
     _this.finalValue = null;
+    _this.valid = false;
+    _this.pristine = true;
 
     _this.onChange = _this.onChange.bind(_this);
     _this.broadcastChange = _this.broadcastChange.bind(_this);
@@ -60,7 +60,7 @@ var Field = function (_React$Component) {
 
       if (this.props.match !== nextProps.match) {
         var validators = (0, _utilities.updateValidators)({ match: nextProps.match }, this.state.validators);
-        this.setState({ valid: (0, _utilities.isValid)(this.state.value, (0, _utilities.getValuesOf)(validators)), validators: validators });
+        this.valid = (0, _utilities.isValid)(this.state.value, (0, _utilities.getValuesOf)(validators));
       }
     }
   }, {
@@ -82,10 +82,12 @@ var Field = function (_React$Component) {
     value: function onChange(e) {
       var value = e.target.value;
 
-      var validators = (0, _utilities.getValuesOf)(this.state.validators);
+      this.setState({ value: value });
 
-      this.setState({ value: value, valid: (0, _utilities.isValid)(value, validators), pristine: false });
+      var validators = (0, _utilities.getValuesOf)(this.state.validators);
+      this.valid = (0, _utilities.isValid)(value, validators);
       this.finalValue = value;
+      this.pristine = false;
       this.debouncedBroadcastChange();
     }
   }, {
@@ -95,8 +97,8 @@ var Field = function (_React$Component) {
         this.props.onChange({
           name: this.props.name,
           value: this.finalValue,
-          status: this.state.valid,
-          pristine: this.state.pristine
+          valid: this.valid,
+          pristine: this.pristine
         });
       }
     }

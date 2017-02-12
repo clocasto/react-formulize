@@ -93,7 +93,7 @@ function addFieldToState(field) {
         valid = _field$props.valid,
         pristine = _field$props.pristine;
 
-    var newState = { value: '', valid: false, pristine: false };
+    var newState = { value: '', valid: false, pristine: true };
 
     if (value !== undefined) Object.assign(newState, { value: value });
     if (valid !== undefined) Object.assign(newState, { valid: valid });

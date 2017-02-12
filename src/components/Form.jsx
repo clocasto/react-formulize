@@ -15,9 +15,9 @@ const Form = class extends React.Component {
     this.addFieldToState(fieldsToAdd);
   }
 
-  onFieldChange({ name, value, status, pristine }) {
+  onFieldChange({ name, value, valid, pristine }) {
     this.setState({
-      [name]: { name, value, status, pristine },
+      [name]: { value, valid, pristine },
     });
   }
 

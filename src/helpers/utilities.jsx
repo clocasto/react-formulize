@@ -43,7 +43,7 @@ export function addFieldToState(field) {
     field.forEach(name => this.addFieldToState(name));
   } else if (typeof field === 'object') {
     const { name, value, valid, pristine } = field.props;
-    const newState = { value: '', valid: false, pristine: false };
+    const newState = { value: '', valid: false, pristine: true };
 
     if (value !== undefined) Object.assign(newState, { value });
     if (valid !== undefined) Object.assign(newState, { valid });
