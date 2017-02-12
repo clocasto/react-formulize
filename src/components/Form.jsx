@@ -34,11 +34,11 @@ const Form = class extends React.Component {
     return (
       <form onSubmit={this.onSubmit}>
         {React.Children
-          .map(this.props.children, directChild =>
+          .map(this.props.children, child =>
             mapPropsToChild(
-              directChild,
+              child,
               'Field',
-              child => makeFieldProps(child, this.onFieldChange, this.state),
+              grandChild => makeFieldProps(grandChild, this.onFieldChange, this.state),
         ))}
       </form>
     );

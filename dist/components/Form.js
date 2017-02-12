@@ -78,9 +78,9 @@ var Form = function (_React$Component) {
       return _react2.default.createElement(
         'form',
         { onSubmit: this.onSubmit },
-        _react2.default.Children.map(this.props.children, function (directChild) {
-          return (0, _utilities.mapPropsToChild)(directChild, 'Field', function (child) {
-            return (0, _utilities.makeFieldProps)(child, _this3.onFieldChange, _this3.state);
+        _react2.default.Children.map(this.props.children, function (child) {
+          return (0, _utilities.mapPropsToChild)(child, 'Field', function (grandChild) {
+            return (0, _utilities.makeFieldProps)(grandChild, _this3.onFieldChange, _this3.state);
           });
         })
       );

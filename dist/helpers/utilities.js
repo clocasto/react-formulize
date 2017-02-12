@@ -130,7 +130,7 @@ function mapPropsToChild(child, type, propFunction) {
   }
   if (child.props && child.props.children) {
     var newChildren = _react2.default.Children.map(child.props.children, function (nestedChild) {
-      return mapPropsToChild(nestedChild, type, propFunction(nestedChild));
+      return mapPropsToChild(nestedChild, type, propFunction);
     });
     return _react2.default.cloneElement(child, null, newChildren);
   }
