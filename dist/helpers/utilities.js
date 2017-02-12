@@ -97,13 +97,13 @@ function addFieldsToState(component, child) {
     var name = child.props.name;
     var fieldState = buildStateForField(child.props);
     if (mounted) {
-      this.setState(_defineProperty({}, name, fieldState));
+      component.setState(_defineProperty({}, name, fieldState));
     } else {
-      this.state[name] = fieldState;
+      component.state[name] = fieldState; // eslint-disable-line
     }
   } else if (child.props && child.props.children) {
     _react2.default.Children.forEach(child.props.children, function (nextChild) {
-      return addFieldsToState(nextChild, mounted);
+      return addFieldsToState(component, nextChild, mounted);
     });
   }
 }
@@ -127,7 +127,8 @@ function makeFieldProps(child, onChange, state) {
 function mapPropsToChild(child, type, props) {
   if (child.type === type || typeof child.type === 'function' && child.type.name === type) {
     return _react2.default.cloneElement(child, props);
-  } else if (child.props && child.props.children) {
+  }
+  if (child.props && child.props.children) {
     var newChildren = _react2.default.Children.map(child.props.children, function (nestedChild) {
       return mapPropsToChild(nestedChild, type, props);
     });

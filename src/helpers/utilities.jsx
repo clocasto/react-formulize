@@ -52,7 +52,8 @@ export function addFieldsToState(component, child, mounted = false) {
     const fieldState = buildStateForField(child.props);
     if (mounted) {
       component.setState({
-        [name]: fieldState });
+        [name]: fieldState,
+      });
     } else {
       component.state[name] = fieldState; // eslint-disable-line
     }
@@ -77,7 +78,8 @@ export function makeFieldProps(child, onChange, state) {
 export function mapPropsToChild(child, type, props) {
   if (child.type === type || (typeof child.type === 'function' && child.type.name === type)) {
     return React.cloneElement(child, props);
-  } else if (child.props && child.props.children) {
+  }
+  if (child.props && child.props.children) {
     const newChildren = React.Children.map(child.props.children, nestedChild => (
       mapPropsToChild(nestedChild, type, props)));
     return React.cloneElement(child, null, newChildren);
