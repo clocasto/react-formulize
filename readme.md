@@ -23,13 +23,17 @@ Formulize-react is a simple form validation library for React.js which wires up 
 
 Formulize-react can be used to both quickly compose forms or add validation to existing input components.
 
-#### Composing A New Form With Custom Input Component(s)
+#### Rules to follow:
+  1. A `Form` component can wrap (nested JSX) a set of `Field` components or `input` elements (or fragments containing them) and automatically manage the state of them. All `Field`s and `input`s *must* have `name` props assigned to them.
+  2. A `Field` component can wrap (nested JSX) an `input` element (or a fragment containing an `input`) and control its underlying state automatically.
+  3. Pass validator props to the `Field` components. A `Field` component will keep track of its own validity.
+  4. Pass an `onSubmit` handler to `Form` in order to interact with the submission event. The callback will be passed a clone of the `Form`'s state.
+
+#### Example: Composing A New Form With Custom Input Component(s)
 ```javascript  
   import React from 'react';
   import { Form, Field } from 'formulize-react';
   import { AgePickerComponent } from './components/agePicker';
-  import { CustomSubmitButton } from './components/SubmitButton';
-  import { SummarizeFormComponent } from './components/SummarizeFormComponent';
   
   const onSubmit = formState => console.log(formState);
   
@@ -46,13 +50,13 @@ Formulize-react can be used to both quickly compose forms or add validation to e
           </label>
           <span>Email Address must use a '.edu' domain!</span>
         </Field>
-        <CustomSubmitButton />
+        <button type="submit" />
       </Form>
      );
   } 
 ```
 
-#### Adding Validation To An Existing Form Input
+#### Example: Adding Validation To An Existing Form Input
 ```javascript  
   import React from 'react';
   import { Field } from 'formulize-react';
@@ -278,14 +282,14 @@ There are also a handful of different validators and properties (debounce, lengt
 
 ## <a href="tests"></a>Tests
 
-  Run `npm run pack` for full linting, transpiling, and testing.
+  Run `npm run pack` for full linting, transpiling, and testing.  
   Run `npm test` for just tests.
 
 ## <a href="contributing"></a>Contributing
 
 Implement any changes in the src/ files and use `npm run build` to build the dist/ directory.
   
-Please use the AirBNB style guide for consistency. Add unit tests for any new or changed functionality. Lint and test your code. Thanks!
+Please use the AirBNB style guide for consistency. Add unit tests for any new or changed functionality. Lint and test your code. Thanks!!
 
 ## <a href="license"></a>License
 
