@@ -36,20 +36,27 @@ export function isValid(value, validators) {
   }, true);
 }
 
-export function addFieldToState(field) {
-  if (!field) return;
+export function buildStateForField(fieldProps) {
+  const { value, valid, pristine } = fieldProps;
+  const newState = { value: '', valid: false, pristine: true };
 
-  if (Array.isArray(field)) {
-    field.forEach(name => this.addFieldToState(name));
-  } else if (typeof field === 'object') {
-    const { name, value, valid, pristine } = field.props;
-    const newState = { value: '', valid: false, pristine: true };
+  if (value !== undefined) Object.assign(newState, { value });
+  if (valid !== undefined) Object.assign(newState, { valid });
+  if (pristine !== undefined) Object.assign(newState, { pristine });
+  return newState;
+}
 
-    if (value !== undefined) Object.assign(newState, { value });
-    if (valid !== undefined) Object.assign(newState, { valid });
-    if (pristine !== undefined) Object.assign(newState, { pristine });
-
-    this.state[name] = newState;
+export function addFieldsToState(child, mounted = false) {
+  if (typeof child.type === 'function' && child.type.name === 'Field') {
+    const name = child.props.name;
+    const fieldState = buildStateForField(child.props);
+    if (mounted) {
+      this.setState({ [name]: fieldState });
+    } else {
+      this.state[name] = fieldState;
+    }
+  } else if (child.props && child.props.children) {
+    React.Children.forEach(child.props.children, nextChild => addFieldsToState(nextChild, mounted));
   }
 }
 
@@ -60,7 +67,7 @@ export function getValuesOf(obj = {}) {
 export function makeFieldProps(child, onChange, state) {
   if (typeof child.type === 'function' && child.type.name === 'Field') {
     const name = child.props.name;
-    return { name, onChange, key: name, value: state[name].value };
+    return { name, onChange, key: name, value: state[name] ? state[name].value : null };
   }
   return null;
 }

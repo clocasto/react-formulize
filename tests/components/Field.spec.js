@@ -310,4 +310,49 @@ describe('<Field /> Higher-Order-Component', () => {
       }, 600);
     });
   });
+
+  describe('Match', () => {
+    let wrapper;
+    let willUpdateSpy;
+
+    before('Set up lifecycle spies', () => {
+      willUpdateSpy = sinon.spy(Field.prototype, 'componentWillUpdate');
+    });
+
+    beforeEach('Assemble a custom input element', () => {
+      // eslint-disable-next-line
+      wrapper = mount(<Field match="300" value="firstValue" />);
+    });
+
+    afterEach('', () => {
+      willUpdateSpy.reset();
+    });
+
+    after('unwrap methods', () => {
+      Field.prototype.componentWillUpdate.restore();
+    });
+
+    it('Should update its match value upon change', () => {
+      expect(willUpdateSpy.callCount).to.equal(0);
+      expect(wrapper.state()).to.have.property('value', 'firstValue');
+
+      updateInput(wrapper, '300');
+
+      expect(wrapper.state()).to.have.property('value', '300');
+      expect(wrapper.state()).to.have.property('valid', true);
+      expect(willUpdateSpy.callCount).to.equal(1);
+
+      wrapper.setProps({ match: 400 });
+
+      expect(wrapper.state()).to.have.property('value', '300');
+      expect(wrapper.state()).to.have.property('valid', false);
+      expect(willUpdateSpy.callCount).to.equal(3);
+
+      updateInput(wrapper, 400);
+
+      expect(wrapper.state()).to.have.property('value', 400);
+      expect(wrapper.state()).to.have.property('valid', true);
+      expect(willUpdateSpy.callCount).to.equal(4);
+    });
+  });
 });

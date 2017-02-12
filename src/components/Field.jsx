@@ -120,7 +120,7 @@ Field.propTypes = {
   onFocus: React.PropTypes.func,
   onBlur: React.PropTypes.func,
   debounce: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
-  match: React.PropTypes.string,
+  match: React.PropTypes.any, // eslint-disable-line
   children: React.PropTypes.oneOfType([
     React.PropTypes.element,
     React.PropTypes.arrayOf(React.PropTypes.element),

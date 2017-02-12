@@ -1,18 +1,18 @@
 import React from 'react';
-import { addFieldToState, mapPropsToChild, makeFieldProps } from '../helpers/utilities';
+import { addFieldsToState, mapPropsToChild, makeFieldProps } from '../helpers/utilities';
 
 const Form = class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.addFieldToState = addFieldToState.bind(this);
+    this.addFieldsToState = addFieldsToState.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.onFieldChange = this.onFieldChange.bind(this);
+    this.reset = this.reset.bind(this);
 
     this.state = {};
-    const fieldsToAdd = React.Children.toArray(props.children)
-      .filter(child => (child.type.name === 'Field'));
-    this.addFieldToState(fieldsToAdd);
+
+    React.Children.map(props.children, child => this.addFieldsToState(child, false));
   }
 
   onFieldChange({ name, value, valid, pristine }) {
@@ -24,6 +24,10 @@ const Form = class extends React.Component {
   onSubmit(e) {
     e.preventDefault();
     if (this.props.onSubmit) this.props.onSubmit({ ...this.state });
+  }
+
+  reset() {
+    React.Children.map(this.props.children, child => this.addFieldsToState(child, true));
   }
 
   render() {
