@@ -81,7 +81,7 @@ export function mapPropsToChild(child, type, propFunction) {
   }
   if (child.props && child.props.children) {
     const newChildren = React.Children.map(child.props.children, nestedChild => (
-      mapPropsToChild(nestedChild, type, propFunction(nestedChild))));
+      mapPropsToChild(nestedChild, type, propFunction)));
     return React.cloneElement(child, null, newChildren);
   }
   return child;
