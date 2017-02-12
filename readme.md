@@ -120,6 +120,10 @@ The `Form` component will behave as follows with respect to its children:
 
   This property will be invoked on a form submission event and passed the event and the event and current state.  
 
+### Methods
+#### `instance.reset()`
+> @description - Resets the `Form` instance by re-instating the default state. Does not unmount the instance.  
+
 ## <a href="field-component"></a>Field Component
 
 ### Description
