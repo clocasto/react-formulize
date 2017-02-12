@@ -107,5 +107,42 @@ describe('<Form /> Higher-Order-Component', () => {
       expect(onSubmitSpy.callCount).to.eql(1);
       expect(onSubmitSpy.calledWith(wrapper.state())).to.eql(true);
     });
+
+    it('can be reset through invoking the `reset` method on the instance', () => {
+      const formResetSpy = sinon.spy(Form.prototype, 'reset');
+
+      wrapper = mount(
+        <Form>
+          <Field name="name" value="firstValue" />
+          <button type="submit" />
+        </Form>,
+      );
+
+      expect(formResetSpy.callCount).to.eql(0);
+      expect(wrapper.state().name).to.eql({
+        value: 'firstValue',
+        valid: false,
+        pristine: true,
+      });
+
+      updateInput(wrapper, 'secondValue');
+
+      expect(wrapper.state().name).to.eql({
+        value: 'secondValue',
+        valid: true,
+        pristine: false,
+      });
+
+      wrapper.instance().reset();
+
+      expect(formResetSpy.callCount).to.eql(1);
+      expect(wrapper.state().name).to.eql({
+        value: 'firstValue',
+        valid: false,
+        pristine: true,
+      });
+
+      Form.prototype.reset.restore();
+    });
   });
 });

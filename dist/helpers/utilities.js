@@ -9,7 +9,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 exports.assembleValidators = assembleValidators;
 exports.updateValidators = updateValidators;
 exports.isValid = isValid;
-exports.addFieldToState = addFieldToState;
+exports.addFieldsToState = addFieldsToState;
 exports.getValuesOf = getValuesOf;
 exports.makeFieldProps = makeFieldProps;
 exports.mapPropsToChild = mapPropsToChild;
@@ -25,6 +25,8 @@ var validatorFunctions = _interopRequireWildcard(_validators);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function assembleValidators(_ref) {
   var email = _ref.email,
@@ -77,14 +79,16 @@ function isValid(value, validators) {
   }, true);
 }
 
-function addFieldToState(field) {
+function addFieldsToState(field) {
   var _this = this;
+
+  var mounted = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
   if (!field) return;
 
   if (Array.isArray(field)) {
     field.forEach(function (name) {
-      return _this.addFieldToState(name);
+      return _this.addFieldsToState(name);
     });
   } else if ((typeof field === 'undefined' ? 'undefined' : _typeof(field)) === 'object') {
     var _field$props = field.props,
@@ -99,7 +103,11 @@ function addFieldToState(field) {
     if (valid !== undefined) Object.assign(newState, { valid: valid });
     if (pristine !== undefined) Object.assign(newState, { pristine: pristine });
 
-    this.state[name] = newState;
+    if (mounted) {
+      this.setState(_defineProperty({}, name, newState));
+    } else {
+      this.state[name] = newState;
+    }
   }
 }
 

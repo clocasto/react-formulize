@@ -1,11 +1,11 @@
 import React from 'react';
-import { addFieldToState, mapPropsToChild, makeFieldProps } from '../helpers/utilities';
+import { addFieldsToState, mapPropsToChild, makeFieldProps } from '../helpers/utilities';
 
 const Form = class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.addFieldToState = addFieldToState.bind(this);
+    this.addFieldsToState = addFieldsToState.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.onFieldChange = this.onFieldChange.bind(this);
     this.reset = this.reset.bind(this);

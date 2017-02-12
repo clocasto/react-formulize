@@ -32,15 +32,16 @@ var Form = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Form.__proto__ || Object.getPrototypeOf(Form)).call(this, props));
 
-    _this.addFieldToState = _utilities.addFieldToState.bind(_this);
+    _this.addFieldsToState = _utilities.addFieldsToState.bind(_this);
     _this.onSubmit = _this.onSubmit.bind(_this);
     _this.onFieldChange = _this.onFieldChange.bind(_this);
+    _this.reset = _this.reset.bind(_this);
 
     _this.state = {};
     var fieldsToAdd = _react2.default.Children.toArray(props.children).filter(function (child) {
       return child.type.name === 'Field';
     });
-    _this.addFieldToState(fieldsToAdd);
+    _this.addFieldsToState(fieldsToAdd);
     return _this;
   }
 
@@ -59,6 +60,14 @@ var Form = function (_React$Component) {
     value: function onSubmit(e) {
       e.preventDefault();
       if (this.props.onSubmit) this.props.onSubmit(_extends({}, this.state));
+    }
+  }, {
+    key: 'reset',
+    value: function reset() {
+      var fieldsToAdd = _react2.default.Children.toArray(this.props.children).filter(function (child) {
+        return child.type.name === 'Field';
+      });
+      this.addFieldsToState(fieldsToAdd);
     }
   }, {
     key: 'render',
