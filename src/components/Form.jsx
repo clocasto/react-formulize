@@ -30,7 +30,7 @@ const Form = class extends React.Component {
   reset() {
     const fieldsToAdd = React.Children.toArray(this.props.children)
       .filter(child => (child.type.name === 'Field'));
-    this.addFieldsToState(fieldsToAdd);
+    this.addFieldsToState(fieldsToAdd, true);
   }
 
   render() {
