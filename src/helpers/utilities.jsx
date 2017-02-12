@@ -46,7 +46,7 @@ export function buildStateForField(fieldProps) {
   return newState;
 }
 
-export function addFieldsToState(child, mounted = false) {
+export function addFieldsToState(component, child, mounted = false) {
   if (typeof child.type === 'function' && child.type.name === 'Field') {
     const name = child.props.name;
     const fieldState = buildStateForField(child.props);

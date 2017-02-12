@@ -40,7 +40,7 @@ var Form = function (_React$Component) {
     _this.state = {};
 
     _react2.default.Children.map(props.children, function (child) {
-      return _this.addFieldsToState(child, false);
+      return _this.addFieldsToState(_this, child, false);
     });
     return _this;
   }
@@ -67,7 +67,7 @@ var Form = function (_React$Component) {
       var _this2 = this;
 
       _react2.default.Children.map(this.props.children, function (child) {
-        return _this2.addFieldsToState(child, true);
+        return _this2.addFieldsToState(_this2, child, true);
       });
     }
   }, {

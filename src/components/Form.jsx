@@ -12,7 +12,7 @@ const Form = class extends React.Component {
 
     this.state = {};
 
-    React.Children.map(props.children, child => this.addFieldsToState(child, false));
+    React.Children.map(props.children, child => this.addFieldsToState(this, child, false));
   }
 
   onFieldChange({ name, value, valid, pristine }) {
@@ -27,7 +27,7 @@ const Form = class extends React.Component {
   }
 
   reset() {
-    React.Children.map(this.props.children, child => this.addFieldsToState(child, true));
+    React.Children.map(this.props.children, child => this.addFieldsToState(this, child, true));
   }
 
   render() {

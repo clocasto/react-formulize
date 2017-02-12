@@ -90,8 +90,8 @@ function buildStateForField(fieldProps) {
   return newState;
 }
 
-function addFieldsToState(child) {
-  var mounted = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+function addFieldsToState(component, child) {
+  var mounted = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
   if (typeof child.type === 'function' && child.type.name === 'Field') {
     var name = child.props.name;
