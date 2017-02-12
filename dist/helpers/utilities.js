@@ -3,12 +3,10 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 exports.assembleValidators = assembleValidators;
 exports.updateValidators = updateValidators;
 exports.isValid = isValid;
+exports.buildStateForField = buildStateForField;
 exports.addFieldsToState = addFieldsToState;
 exports.getValuesOf = getValuesOf;
 exports.makeFieldProps = makeFieldProps;
@@ -79,35 +77,34 @@ function isValid(value, validators) {
   }, true);
 }
 
-function addFieldsToState(field) {
-  var _this = this;
+function buildStateForField(fieldProps) {
+  var value = fieldProps.value,
+      valid = fieldProps.valid,
+      pristine = fieldProps.pristine;
 
+  var newState = { value: '', valid: false, pristine: true };
+
+  if (value !== undefined) Object.assign(newState, { value: value });
+  if (valid !== undefined) Object.assign(newState, { valid: valid });
+  if (pristine !== undefined) Object.assign(newState, { pristine: pristine });
+  return newState;
+}
+
+function addFieldsToState(child) {
   var mounted = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-  if (!field) return;
-
-  if (Array.isArray(field)) {
-    field.forEach(function (name) {
-      return _this.addFieldsToState(name);
-    });
-  } else if ((typeof field === 'undefined' ? 'undefined' : _typeof(field)) === 'object') {
-    var _field$props = field.props,
-        name = _field$props.name,
-        value = _field$props.value,
-        valid = _field$props.valid,
-        pristine = _field$props.pristine;
-
-    var newState = { value: '', valid: false, pristine: true };
-
-    if (value !== undefined) Object.assign(newState, { value: value });
-    if (valid !== undefined) Object.assign(newState, { valid: valid });
-    if (pristine !== undefined) Object.assign(newState, { pristine: pristine });
-
+  if (typeof child.type === 'function' && child.type.name === 'Field') {
+    var name = child.props.name;
+    var fieldState = buildStateForField(child.props);
     if (mounted) {
-      this.setState(_defineProperty({}, name, newState));
+      this.setState(_defineProperty({}, name, fieldState));
     } else {
-      this.state[name] = newState;
+      this.state[name] = fieldState;
     }
+  } else if (child.props && child.props.children) {
+    _react2.default.Children.forEach(child.props.children, function (nextChild) {
+      return addFieldsToState(nextChild, mounted);
+    });
   }
 }
 
@@ -122,7 +119,7 @@ function getValuesOf() {
 function makeFieldProps(child, onChange, state) {
   if (typeof child.type === 'function' && child.type.name === 'Field') {
     var name = child.props.name;
-    return { name: name, onChange: onChange, key: name, value: state[name].value };
+    return { name: name, onChange: onChange, key: name, value: state[name] ? state[name].value : null };
   }
   return null;
 }

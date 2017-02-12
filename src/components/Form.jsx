@@ -11,9 +11,8 @@ const Form = class extends React.Component {
     this.reset = this.reset.bind(this);
 
     this.state = {};
-    const fieldsToAdd = React.Children.toArray(props.children)
-      .filter(child => (child.type.name === 'Field'));
-    this.addFieldsToState(fieldsToAdd);
+
+    React.Children.map(props.children, child => this.addFieldsToState(child, false));
   }
 
   onFieldChange({ name, value, valid, pristine }) {
@@ -28,9 +27,7 @@ const Form = class extends React.Component {
   }
 
   reset() {
-    const fieldsToAdd = React.Children.toArray(this.props.children)
-      .filter(child => (child.type.name === 'Field'));
-    this.addFieldsToState(fieldsToAdd, true);
+    React.Children.map(this.props.children, child => this.addFieldsToState(child, true));
   }
 
   render() {

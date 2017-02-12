@@ -38,10 +38,10 @@ var Form = function (_React$Component) {
     _this.reset = _this.reset.bind(_this);
 
     _this.state = {};
-    var fieldsToAdd = _react2.default.Children.toArray(props.children).filter(function (child) {
-      return child.type.name === 'Field';
+
+    _react2.default.Children.map(props.children, function (child) {
+      return _this.addFieldsToState(child, false);
     });
-    _this.addFieldsToState(fieldsToAdd);
     return _this;
   }
 
@@ -64,21 +64,22 @@ var Form = function (_React$Component) {
   }, {
     key: 'reset',
     value: function reset() {
-      var fieldsToAdd = _react2.default.Children.toArray(this.props.children).filter(function (child) {
-        return child.type.name === 'Field';
+      var _this2 = this;
+
+      _react2.default.Children.map(this.props.children, function (child) {
+        return _this2.addFieldsToState(child, true);
       });
-      this.addFieldsToState(fieldsToAdd);
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       return _react2.default.createElement(
         'form',
         { onSubmit: this.onSubmit },
         _react2.default.Children.map(this.props.children, function (child) {
-          return (0, _utilities.mapPropsToChild)(child, 'Field', (0, _utilities.makeFieldProps)(child, _this2.onFieldChange, _this2.state));
+          return (0, _utilities.mapPropsToChild)(child, 'Field', (0, _utilities.makeFieldProps)(child, _this3.onFieldChange, _this3.state));
         })
       );
     }

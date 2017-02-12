@@ -14,12 +14,12 @@ describe('<Form /> Higher-Order-Component', () => {
     let fields;
 
     beforeEach('mount a testing form', () => {
-      wrapper = mount((
+      wrapper = mount(
         <Form>
           <Field name="name" value="Test Name" />
           <Field name="email" value="user@company.com" />
-        </Form>
-      ));
+        </Form>,
+      );
       inputs = wrapper.find('input');
       fields = wrapper.find(Field);
     });
