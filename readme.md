@@ -1,14 +1,13 @@
-formulize-react [![Build Status](https://travis-ci.org/clocasto/formulize-react.svg?branch=master)](https://travis-ci.org/clocasto/formulize-react) [![Coverage Status](https://coveralls.io/repos/github/clocasto/formulize-react/badge.svg?branch=master&version=0_1_0)](https://coveralls.io/github/clocasto/formulize-react?branch=master&version=0_1_0)
+formulize-react [![Build Status](https://travis-ci.org/clocasto/formulize-react.svg?branch=master)](https://travis-ci.org/clocasto/formulize-react) [![Coverage Status](https://coveralls.io/repos/github/clocasto/formulize-react/badge.svg?branch=master&version=1_0_0)](https://coveralls.io/github/clocasto/formulize-react?branch=master&version=1_0_0)
 =========
 
-A simple form validation library for React.js which wires up custom, controlled inputs through a declarative API.
+Formulize-react is a simple form validation library for React.js which wires up custom, controlled inputs through a declarative API. The library strives to be minimal, and as such, does most component communication implicity. The end result is a legible form which clearly states the rules of its behavior.
 
 ## Table of Contents  
   1. [Installation](#installation)
   2. [Usage](#usage)
   3. [`Form` Component](#form-component)
   4. [`Field` Component](#field-component)
-  5. [`Field` Validators](#field-validators)
   6. [Tests](#tests)
   7. [Contributing](#contributing)
   8. [License](#license)
@@ -24,13 +23,17 @@ A simple form validation library for React.js which wires up custom, controlled 
 
 Formulize-react can be used to both quickly compose forms or add validation to existing input components.
 
-#### Composing A New Form With Custom Input Component(s)
+#### Rules to follow:
+  1. A `Form` component can wrap (nested JSX) a set of `Field` components or `input` elements (or fragments containing them) and automatically manage the state of them. All `Field`s and `input`s *must* have `name` props assigned to them.
+  2. A `Field` component can wrap (nested JSX) an `input` element (or a fragment containing an `input`) and control its underlying state automatically.
+  3. Pass validator props to the `Field` components. A `Field` component will keep track of its own validity.
+  4. Pass an `onSubmit` handler to `Form` in order to interact with the submission event. The callback will be passed a clone of the `Form`'s state.
+
+#### Example: Composing A New Form With Custom Input Component(s)
 ```javascript  
   import React from 'react';
   import { Form, Field } from 'formulize-react';
   import { AgePickerComponent } from './components/agePicker';
-  import { CustomSubmitButton } from './components/SubmitButton';
-  import { SummarizeFormComponent } from './components/SummarizeFormComponent';
   
   const onSubmit = formState => console.log(formState);
   
@@ -47,13 +50,13 @@ Formulize-react can be used to both quickly compose forms or add validation to e
           </label>
           <span>Email Address must use a '.edu' domain!</span>
         </Field>
-        <CustomSubmitButton />
+        <button type="submit" />
       </Form>
      );
   } 
 ```
 
-#### Adding Validation To An Existing Form Input
+#### Example: Adding Validation To An Existing Form Input
 ```javascript  
   import React from 'react';
   import { Field } from 'formulize-react';
@@ -120,6 +123,56 @@ The `Form` component will behave as follows with respect to its children:
 
   This property will be invoked on a form submission event and passed the event and the event and current state.  
 
+### Methods
+#### `instance.reset()`
+> @description - Resets the `Form` instance by reinstating the default state. Does not unmount the instance.  
+
+  The `Form` instance must be captured in a reference in order to be able to later invoke its `reset` method. This means that:
+  1. A `ref` function must be passed to `Form` in order to receive the class component reference.
+  2. `Form` must be used within a class component to enable the `ref` callback being invoked.
+
+```javascript  
+import React from 'react';
+import { Form, Field } from 'formulize-react';
+
+export default class extends React.Component {
+  constructor() {
+    this.updateValue = this.updateValue.bind(this);
+    this.registerForm = this.registerForm.bind(this);
+    this.resetForm = this.resetForm.bind(this);
+  }
+
+  addFormRef(form) {
+    this.form = form;
+  }
+
+  updateValue(field, data) {
+    this.setState({ [field]: data });
+  }
+
+  onSubmit(state) {
+    console.log('SUBMITTING >>>', state);
+  }
+
+  resetForm(e) {
+    e.preventDefault();
+    this.form.reset(); // Instance method on `Form` component!
+  }
+
+  render() {
+    return (
+      <Form onSubmit={this.onSubmit} ref={this.addFormRef}>
+        <Field name="name" length={[6, 20]} alpha />
+        <Field name="email" email required />
+        <Field name="age" type="number" min="18" max="100" />
+        <button type="submit">Submit</button>
+        <button onClick={this.reset}>Reset</button>
+      </Form>
+    );
+  }
+}
+```  
+
 ## <a href="field-component"></a>Field Component
 
 ### Description
@@ -149,6 +202,8 @@ The `Field` component will behave as follows with respect to its children:
 > @param {String} [type='text'] - The input type of the wrapped input element.
 
   The input type for the wrapped input element. Defaults to `text`.  
+
+  *Note:* When number input is desired, it is preferred to use 'text' inputs with a `number` validator if it is expected that the user will enter `+`, `-`, or `e` characters. See `https://github.com/facebook/react/issues/1549`.
   
 #### `props[validator] = [validator]`
 > @param {\?} [validator=\?] - Optional. One or more validators to apply to the `Field`'s state.
@@ -172,7 +227,7 @@ The `Field` component will behave as follows with respect to its children:
 
   This property will be invoked on a blur event in the wrapped `input` element.  
   
-## <a href="field-validators"></a>Field Validators   
+### Validators  
 
 There are also a handful of different validators and properties (debounce, length, etc.) that can be attached to the field component. This is done by declaring the validators as props on the `Field` component. See below for the list of validators.
 
@@ -208,9 +263,9 @@ There are also a handful of different validators and properties (debounce, lengt
   This validates that the string input is comprised only of english alphabet characters and space characters.  
 
 #### `props.number = numericValidation`
-> @param {Boolean} [numericValidation=true] Optional. Will toggle validation for only numeric and space characters.
+> @param {Boolean} [numericValidation=true] Optional. Will toggle validation for only numeric characters.
 
-  This validates that the string or number input is comprised only of numeric and space characters.  
+  This validates that the string or number input is comprised only of numeric characters. This will allow appropriately placed `+`, `-`, `e`, and `.` characters.
 
 #### `props.max = maxValue`
 > @param {Number} maxValue - Validates an input field to be less than or equal to the maxValue.
@@ -229,14 +284,14 @@ There are also a handful of different validators and properties (debounce, lengt
 
 ## <a href="tests"></a>Tests
 
-  Run `npm run pack` for full linting, transpiling, and testing.
+  Run `npm run pack` for full linting, transpiling, and testing.  
   Run `npm test` for just tests.
 
 ## <a href="contributing"></a>Contributing
 
 Implement any changes in the src/ files and use `npm run build` to build the dist/ directory.
   
-Please use the AirBNB style guide for consistency. Add unit tests for any new or changed functionality. Lint and test your code. Thanks!
+Please use the AirBNB style guide for consistency. Add unit tests for any new or changed functionality. Lint and test your code. Thanks!!
 
 ## <a href="license"></a>License
 
@@ -244,4 +299,4 @@ MIT (See license.txt)
 
 ## <a href="release-history"></a>Release History
 
-* 0.1.0
+* [1.0.0](https://github.com/clocasto/formulize-react/pull/25)

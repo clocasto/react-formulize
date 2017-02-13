@@ -19,7 +19,6 @@ const Field = class extends React.Component {
       debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: assembleValidators(props),
     };
-
     this.finalValue = null;
 
     this.onChange = this.onChange.bind(this);
@@ -30,7 +29,7 @@ const Field = class extends React.Component {
   }
 
   componentWillUpdate(nextProps) {
-    if ((nextProps.value !== this.props.value) && (nextProps.value !== this.finalValue)) {
+    if ((nextProps.value !== this.props.value) && (nextProps.value !== this.state.value)) {
       this.cancelBroadcast();
       this.setState({ value: nextProps.value });
       this.finalValue = nextProps.value;
@@ -43,7 +42,7 @@ const Field = class extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    if (nextProps.value !== this.finalValue) return true;
+    if (nextProps.value !== this.state.value) return true;
     if (this.state.value !== this.finalValue) return true;
     if (this.props.match !== nextProps.match) return true;
     return false;
@@ -55,20 +54,24 @@ const Field = class extends React.Component {
   }
 
   onChange(e) {
-    const { value } = e.target;
+    const value = e.target.value;
+    this.finalValue = value;
+
     const validators = getValuesOf(this.state.validators);
 
-    this.setState({ value, valid: isValid(value, validators), pristine: false });
-    this.finalValue = value;
-    this.debouncedBroadcastChange();
+    this.setState({
+      value,
+      valid: isValid(value, validators),
+      pristine: false,
+    }, this.debouncedBroadcastChange);
   }
 
   broadcastChange() {
     if (this.props.onChange) {
       this.props.onChange({
         name: this.props.name,
-        value: this.finalValue,
-        status: this.state.valid,
+        value: this.state.value,
+        valid: this.state.valid,
         pristine: this.state.pristine,
       });
     }
@@ -94,15 +97,17 @@ const Field = class extends React.Component {
 
     if (!childCount) {
       return (
-        <label htmlFor={this.props.name}>
-          <input {...inputProps} />
-        </label>
+        <div>
+          <label htmlFor={this.props.name}>
+            <input {...inputProps} />
+          </label>
+        </div>
       );
     }
     return (
-      <div htmlFor={this.props.name}>
+      <div>
         {React.Children
-          .map(this.props.children, child => mapPropsToChild(child, 'input', inputProps))}
+          .map(this.props.children, child => mapPropsToChild(child, 'input', () => inputProps))}
       </div>
     );
   }
@@ -115,7 +120,7 @@ Field.propTypes = {
   onFocus: React.PropTypes.func,
   onBlur: React.PropTypes.func,
   debounce: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
-  match: React.PropTypes.string,
+  match: React.PropTypes.any, // eslint-disable-line
   children: React.PropTypes.oneOfType([
     React.PropTypes.element,
     React.PropTypes.arrayOf(React.PropTypes.element),

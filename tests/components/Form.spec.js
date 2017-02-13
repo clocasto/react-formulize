@@ -2,8 +2,10 @@
 import React from 'react';
 import { expect } from 'chai'; // eslint-disable-line
 import { shallow, mount } from 'enzyme'; // eslint-disable-line
+import sinon from 'sinon'; // eslint-disable-line
 
 import { Form, Field } from '../../dist/index';
+import { updateInput } from '../spec_helpers';
 
 describe('<Form /> Higher-Order-Component', () => {
   describe('Default Form', () => {
@@ -12,12 +14,12 @@ describe('<Form /> Higher-Order-Component', () => {
     let fields;
 
     beforeEach('mount a testing form', () => {
-      wrapper = mount((
+      wrapper = mount(
         <Form>
           <Field name="name" value="Test Name" />
           <Field name="email" value="user@company.com" />
-        </Form>
-      ));
+        </Form>,
+      );
       inputs = wrapper.find('input');
       fields = wrapper.find(Field);
     });
@@ -57,6 +59,90 @@ describe('<Form /> Higher-Order-Component', () => {
       expect(nameProps).to.have.property('required', true);
       expect(nameProps).to.have.property('value', 'Enter your name');
       expect(emailProps).to.have.property('value', 'test@example.com');
+    });
+
+    it('updates its state upon a Field\'s input changing', () => {
+      wrapper = mount((
+        <Form>
+          <Field name="name" value="Enter your name" length={[6, 12]} alpha />
+        </Form>
+      ));
+
+      expect(wrapper.state().name).to.eql({
+        value: 'Enter your name',
+        valid: false,
+        pristine: true,
+      });
+
+      updateInput(wrapper, 'Way too long of a name');
+
+      expect(wrapper.state().name).to.eql({
+        value: 'Way too long of a name',
+        valid: false,
+        pristine: false,
+      });
+
+      updateInput(wrapper, 'Good Name');
+
+      expect(wrapper.state().name).to.eql({
+        value: 'Good Name',
+        valid: true,
+        pristine: false,
+      });
+    });
+
+    it('invoked an onSubmit callback upon form submission', () => {
+      const onSubmitSpy = sinon.spy();
+      wrapper = mount(
+        <Form onSubmit={onSubmitSpy}>
+          <Field name="name" value="firstValue" />
+          <button type="submit" />
+        </Form>,
+      );
+
+      expect(onSubmitSpy.callCount).to.eql(0);
+
+      wrapper.find('form').simulate('submit');
+
+      expect(onSubmitSpy.callCount).to.eql(1);
+      expect(onSubmitSpy.calledWith(wrapper.state())).to.eql(true);
+    });
+
+    it('can be reset through invoking the `reset` method on the instance', () => {
+      const formResetSpy = sinon.spy(Form.prototype, 'reset');
+
+      wrapper = mount(
+        <Form>
+          <Field name="name" value="firstValue" />
+          <button type="submit" />
+        </Form>,
+      );
+
+      expect(formResetSpy.callCount).to.eql(0);
+      expect(wrapper.state().name).to.eql({
+        value: 'firstValue',
+        valid: false,
+        pristine: true,
+      });
+
+      updateInput(wrapper, 'secondValue');
+
+      expect(wrapper.state().name).to.eql({
+        value: 'secondValue',
+        valid: true,
+        pristine: false,
+      });
+
+      wrapper.instance().reset();
+
+      expect(formResetSpy.callCount).to.eql(1);
+      expect(wrapper.state().name).to.eql({
+        value: 'firstValue',
+        valid: false,
+        pristine: true,
+      });
+
+      Form.prototype.reset.restore();
     });
   });
 });

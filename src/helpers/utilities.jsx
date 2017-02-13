@@ -36,20 +36,30 @@ export function isValid(value, validators) {
   }, true);
 }
 
-export function addFieldToState(field) {
-  if (!field) return;
+export function buildStateForField(fieldProps) {
+  const { value, valid, pristine } = fieldProps;
+  const newState = { value: '', valid: false, pristine: true };
 
-  if (Array.isArray(field)) {
-    field.forEach(name => this.addFieldToState(name));
-  } else if (typeof field === 'object') {
-    const { name, value, valid, pristine } = field.props;
-    const newState = { value: '', valid: false, pristine: false };
+  if (value !== undefined) Object.assign(newState, { value });
+  if (valid !== undefined) Object.assign(newState, { valid });
+  if (pristine !== undefined) Object.assign(newState, { pristine });
+  return newState;
+}
 
-    if (value !== undefined) Object.assign(newState, { value });
-    if (valid !== undefined) Object.assign(newState, { valid });
-    if (pristine !== undefined) Object.assign(newState, { pristine });
-
-    this.state[name] = newState;
+export function addFieldsToState(component, child, mounted = false) {
+  if (typeof child.type === 'function' && child.type.name === 'Field') {
+    const name = child.props.name;
+    const fieldState = buildStateForField(child.props);
+    if (mounted) {
+      component.setState({
+        [name]: fieldState,
+      });
+    } else {
+      component.state[name] = fieldState; // eslint-disable-line
+    }
+  } else if (child.props && child.props.children) {
+    React.Children.forEach(child.props.children,
+      nextChild => addFieldsToState(component, nextChild, mounted));
   }
 }
 
@@ -57,12 +67,21 @@ export function getValuesOf(obj = {}) {
   return Object.keys(obj).map(key => obj[key]);
 }
 
-export function mapPropsToChild(child, type, props) {
+export function makeFieldProps(child, onChange, state) {
+  if (typeof child.type === 'function' && child.type.name === 'Field') {
+    const name = child.props.name;
+    return { name, onChange, key: name, value: state[name] ? state[name].value : null };
+  }
+  return null;
+}
+
+export function mapPropsToChild(child, type, propFunction) {
   if (child.type === type || (typeof child.type === 'function' && child.type.name === type)) {
-    return React.cloneElement(child, props);
-  } else if (child.props && child.props.children) {
+    return React.cloneElement(child, propFunction(child));
+  }
+  if (child.props && child.props.children) {
     const newChildren = React.Children.map(child.props.children, nestedChild => (
-      mapPropsToChild(nestedChild, type, props)));
+      mapPropsToChild(nestedChild, type, propFunction)));
     return React.cloneElement(child, null, newChildren);
   }
   return child;

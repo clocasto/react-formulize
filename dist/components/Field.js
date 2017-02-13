@@ -39,7 +39,6 @@ var Field = function (_React$Component) {
       debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
       validators: (0, _utilities.assembleValidators)(props)
     };
-
     _this.finalValue = null;
 
     _this.onChange = _this.onChange.bind(_this);
@@ -52,7 +51,7 @@ var Field = function (_React$Component) {
   _createClass(Field, [{
     key: 'componentWillUpdate',
     value: function componentWillUpdate(nextProps) {
-      if (nextProps.value !== this.props.value && nextProps.value !== this.finalValue) {
+      if (nextProps.value !== this.props.value && nextProps.value !== this.state.value) {
         this.cancelBroadcast();
         this.setState({ value: nextProps.value });
         this.finalValue = nextProps.value;
@@ -66,7 +65,7 @@ var Field = function (_React$Component) {
   }, {
     key: 'shouldComponentUpdate',
     value: function shouldComponentUpdate(nextProps) {
-      if (nextProps.value !== this.finalValue) return true;
+      if (nextProps.value !== this.state.value) return true;
       if (this.state.value !== this.finalValue) return true;
       if (this.props.match !== nextProps.match) return true;
       return false;
@@ -81,12 +80,15 @@ var Field = function (_React$Component) {
     key: 'onChange',
     value: function onChange(e) {
       var value = e.target.value;
+      this.finalValue = value;
 
       var validators = (0, _utilities.getValuesOf)(this.state.validators);
 
-      this.setState({ value: value, valid: (0, _utilities.isValid)(value, validators), pristine: false });
-      this.finalValue = value;
-      this.debouncedBroadcastChange();
+      this.setState({
+        value: value,
+        valid: (0, _utilities.isValid)(value, validators),
+        pristine: false
+      }, this.debouncedBroadcastChange);
     }
   }, {
     key: 'broadcastChange',
@@ -94,8 +96,8 @@ var Field = function (_React$Component) {
       if (this.props.onChange) {
         this.props.onChange({
           name: this.props.name,
-          value: this.finalValue,
-          status: this.state.valid,
+          value: this.state.value,
+          valid: this.state.valid,
           pristine: this.state.pristine
         });
       }
@@ -123,16 +125,22 @@ var Field = function (_React$Component) {
 
       if (!childCount) {
         return _react2.default.createElement(
-          'label',
-          { htmlFor: this.props.name },
-          _react2.default.createElement('input', inputProps)
+          'div',
+          null,
+          _react2.default.createElement(
+            'label',
+            { htmlFor: this.props.name },
+            _react2.default.createElement('input', inputProps)
+          )
         );
       }
       return _react2.default.createElement(
         'div',
-        { htmlFor: this.props.name },
+        null,
         _react2.default.Children.map(this.props.children, function (child) {
-          return (0, _utilities.mapPropsToChild)(child, 'input', inputProps);
+          return (0, _utilities.mapPropsToChild)(child, 'input', function () {
+            return inputProps;
+          });
         })
       );
     }
@@ -148,7 +156,7 @@ Field.propTypes = {
   onFocus: _react2.default.PropTypes.func,
   onBlur: _react2.default.PropTypes.func,
   debounce: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number]),
-  match: _react2.default.PropTypes.string,
+  match: _react2.default.PropTypes.any, // eslint-disable-line
   children: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.element, _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.element), _react2.default.PropTypes.object]),
   type: _react2.default.PropTypes.string
 };

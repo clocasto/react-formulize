@@ -1,17 +1,24 @@
 import React from 'react';
-import { addFieldToState, mapPropsToChild } from '../helpers/utilities';
+import { addFieldsToState, mapPropsToChild, makeFieldProps } from '../helpers/utilities';
 
 const Form = class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.addFieldToState = addFieldToState.bind(this);
+    this.addFieldsToState = addFieldsToState.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onFieldChange = this.onFieldChange.bind(this);
+    this.reset = this.reset.bind(this);
 
     this.state = {};
-    const fieldsToAdd = React.Children.toArray(props.children)
-      .filter(child => (child.type.name === 'Field'));
-    this.addFieldToState(fieldsToAdd);
+
+    React.Children.map(props.children, child => this.addFieldsToState(this, child, false));
+  }
+
+  onFieldChange({ name, value, valid, pristine }) {
+    this.setState({
+      [name]: { value, valid, pristine },
+    });
   }
 
   onSubmit(e) {
@@ -19,16 +26,20 @@ const Form = class extends React.Component {
     if (this.props.onSubmit) this.props.onSubmit({ ...this.state });
   }
 
+  reset() {
+    React.Children.map(this.props.children, child => this.addFieldsToState(this, child, true));
+  }
+
   render() {
     return (
       <form onSubmit={this.onSubmit}>
         {React.Children
-          .map(this.props.children, (child) => {
-            const { name } = child.props;
-            const value = this.state[name].value;
-            const fieldProps = { key: child.props.name, value, name };
-            return mapPropsToChild(child, 'Field', fieldProps);
-          })}
+          .map(this.props.children, child =>
+            mapPropsToChild(
+              child,
+              'Field',
+              grandChild => makeFieldProps(grandChild, this.onFieldChange, this.state),
+        ))}
       </form>
     );
   }

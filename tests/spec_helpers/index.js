@@ -6,14 +6,10 @@ export function updateInput(DOM, value = '', type = 'text') {
   DOM.find('input').simulate('change', { target: { value }, type });
 }
 
-export function buildField(mountingFunction, validator, value, type) {
+export function buildField(mountingFunction, validator, value, type="text") {
   const validatorToObj = {
     [validator]: value,
   };
   // eslint-disable-next-line
   return mountingFunction(<Field {...validatorToObj} type={type} />);
-}
-
-export function simulateChange(wrapper, value) {
-  return wrapper.find('input').simulate('change', { target: { value } });
 }

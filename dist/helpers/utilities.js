@@ -3,14 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 exports.assembleValidators = assembleValidators;
 exports.updateValidators = updateValidators;
 exports.isValid = isValid;
-exports.addFieldToState = addFieldToState;
+exports.buildStateForField = buildStateForField;
+exports.addFieldsToState = addFieldsToState;
 exports.getValuesOf = getValuesOf;
+exports.makeFieldProps = makeFieldProps;
 exports.mapPropsToChild = mapPropsToChild;
 
 var _react = require('react');
@@ -24,6 +23,8 @@ var validatorFunctions = _interopRequireWildcard(_validators);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function assembleValidators(_ref) {
   var email = _ref.email,
@@ -76,29 +77,34 @@ function isValid(value, validators) {
   }, true);
 }
 
-function addFieldToState(field) {
-  var _this = this;
+function buildStateForField(fieldProps) {
+  var value = fieldProps.value,
+      valid = fieldProps.valid,
+      pristine = fieldProps.pristine;
 
-  if (!field) return;
+  var newState = { value: '', valid: false, pristine: true };
 
-  if (Array.isArray(field)) {
-    field.forEach(function (name) {
-      return _this.addFieldToState(name);
+  if (value !== undefined) Object.assign(newState, { value: value });
+  if (valid !== undefined) Object.assign(newState, { valid: valid });
+  if (pristine !== undefined) Object.assign(newState, { pristine: pristine });
+  return newState;
+}
+
+function addFieldsToState(component, child) {
+  var mounted = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+  if (typeof child.type === 'function' && child.type.name === 'Field') {
+    var name = child.props.name;
+    var fieldState = buildStateForField(child.props);
+    if (mounted) {
+      component.setState(_defineProperty({}, name, fieldState));
+    } else {
+      component.state[name] = fieldState; // eslint-disable-line
+    }
+  } else if (child.props && child.props.children) {
+    _react2.default.Children.forEach(child.props.children, function (nextChild) {
+      return addFieldsToState(component, nextChild, mounted);
     });
-  } else if ((typeof field === 'undefined' ? 'undefined' : _typeof(field)) === 'object') {
-    var _field$props = field.props,
-        name = _field$props.name,
-        value = _field$props.value,
-        valid = _field$props.valid,
-        pristine = _field$props.pristine;
-
-    var newState = { value: '', valid: false, pristine: false };
-
-    if (value !== undefined) Object.assign(newState, { value: value });
-    if (valid !== undefined) Object.assign(newState, { valid: valid });
-    if (pristine !== undefined) Object.assign(newState, { pristine: pristine });
-
-    this.state[name] = newState;
   }
 }
 
@@ -110,12 +116,21 @@ function getValuesOf() {
   });
 }
 
-function mapPropsToChild(child, type, props) {
+function makeFieldProps(child, onChange, state) {
+  if (typeof child.type === 'function' && child.type.name === 'Field') {
+    var name = child.props.name;
+    return { name: name, onChange: onChange, key: name, value: state[name] ? state[name].value : null };
+  }
+  return null;
+}
+
+function mapPropsToChild(child, type, propFunction) {
   if (child.type === type || typeof child.type === 'function' && child.type.name === type) {
-    return _react2.default.cloneElement(child, props);
-  } else if (child.props && child.props.children) {
+    return _react2.default.cloneElement(child, propFunction(child));
+  }
+  if (child.props && child.props.children) {
     var newChildren = _react2.default.Children.map(child.props.children, function (nestedChild) {
-      return mapPropsToChild(nestedChild, type, props);
+      return mapPropsToChild(nestedChild, type, propFunction);
     });
     return _react2.default.cloneElement(child, null, newChildren);
   }
