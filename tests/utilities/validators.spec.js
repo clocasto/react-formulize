@@ -1,4 +1,4 @@
-/* globals describe it before beforeEach after afterEach */
+/* globals describe it before beforeEach after afterEach xit */
 import { expect } from 'chai'; // eslint-disable-line
 import sinon from 'sinon'; // eslint-disable-line
 import { shallow, mount } from 'enzyme'; // eslint-disable-line
@@ -260,38 +260,47 @@ describe('Validator Functionality', () => {
     const wrapper = buildField(mount, 'number', true);
     const valFunc = validators.numeric();
 
-    it('returns `true` for strings consisting of only number and space characters', () => {
+    it('returns `true` for strings consisting of only number characters', () => {
       expect(valFunc('')).to.equal(true);
+      expect(valFunc('4e-10')).to.equal(true);
+      expect(valFunc('0.5E+10')).to.equal(true);
       expect(valFunc('0123')).to.equal(true);
+      expect(valFunc(123e-10)).to.equal(true);
+      expect(valFunc(456e-10)).to.equal(true);
       expect(valFunc(123)).to.equal(true);
-      expect(valFunc('123 123 123')).to.equal(true);
-      expect(valFunc('\t\n ')).to.equal(true);
     });
 
     it('returns `false` for text inputs with non-numeric/non-space characters', () => {
+      expect(valFunc('\t\n ')).to.equal(false);
       expect(valFunc('_')).to.equal(false);
       expect(valFunc('123!')).to.equal(false);
       expect(valFunc('890*')).to.equal(false);
+      expect(valFunc('123 123 123')).to.equal(false);
+      expect(valFunc('1234-1234-1234-1234')).to.equal(false);
       expect(valFunc('$112233')).to.equal(false);
       expect(valFunc('$!\.')).to.equal(false);
       expect(valFunc('Is this valid?')).to.equal(false);
     });
 
     it('is properly used by a `Field` component to validate', () => {
-      expect(wrapper.state()).to.have.property('valid', false);
       expect(wrapper.state()).to.have.property('value', '');
+      expect(wrapper.state()).to.have.property('valid', false);
 
       updateInput(wrapper, '12345\t12345 12345');
-      expect(wrapper.state()).to.have.property('valid', true);
       expect(wrapper.state()).to.have.property('value', '12345\t12345 12345');
+      expect(wrapper.state()).to.have.property('valid', false);
 
       updateInput(wrapper, '1234-1234-1234-1234');
-      expect(wrapper.state()).to.have.property('valid', false);
       expect(wrapper.state()).to.have.property('value', '1234-1234-1234-1234');
+      expect(wrapper.state()).to.have.property('valid', false);
 
       updateInput(wrapper, 123, 'number');
       expect(wrapper.state()).to.have.property('valid', true);
       expect(wrapper.state()).to.have.property('value', 123);
+
+      updateInput(wrapper, 0.5e3, 'number');
+      expect(wrapper.state()).to.have.property('valid', true);
+      expect(wrapper.state()).to.have.property('value', 0.5e3);
     });
   });
 

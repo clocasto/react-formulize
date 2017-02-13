@@ -75,9 +75,8 @@ function alpha() {
 }
 
 function numeric() {
-  var numericRegex = /[^0-9\s]/i;
   return function (value) {
-    return typeof value === 'number' || typeof value === 'string' && !numericRegex.test(value);
+    return typeof value === 'number' || typeof value === 'string' && (!value || !value.replace(/([-+]{0,1})[0-9]+(\.[0-9]+)?([eE]([+-]{0,1})[0-9]+)?/, ''));
   };
 }
 

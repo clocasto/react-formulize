@@ -51,7 +51,7 @@ var Field = function (_React$Component) {
   _createClass(Field, [{
     key: 'componentWillUpdate',
     value: function componentWillUpdate(nextProps) {
-      if (nextProps.value !== this.props.value && nextProps.value !== this.finalValue) {
+      if (nextProps.value !== this.props.value && nextProps.value !== this.state.value) {
         this.cancelBroadcast();
         this.setState({ value: nextProps.value });
         this.finalValue = nextProps.value;
@@ -65,7 +65,7 @@ var Field = function (_React$Component) {
   }, {
     key: 'shouldComponentUpdate',
     value: function shouldComponentUpdate(nextProps) {
-      if (nextProps.value !== this.finalValue) return true;
+      if (nextProps.value !== this.state.value) return true;
       if (this.state.value !== this.finalValue) return true;
       if (this.props.match !== nextProps.match) return true;
       return false;
@@ -138,7 +138,9 @@ var Field = function (_React$Component) {
         'div',
         null,
         _react2.default.Children.map(this.props.children, function (child) {
-          return (0, _utilities.mapPropsToChild)(child, 'input', inputProps);
+          return (0, _utilities.mapPropsToChild)(child, 'input', function () {
+            return inputProps;
+          });
         })
       );
     }

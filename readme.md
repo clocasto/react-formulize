@@ -202,6 +202,8 @@ The `Field` component will behave as follows with respect to its children:
 > @param {String} [type='text'] - The input type of the wrapped input element.
 
   The input type for the wrapped input element. Defaults to `text`.  
+
+  *Note:* When number input is desired, it is preferred to use 'text' inputs with a `number` validator if it is expected that the user will enter `+`, `-`, or `e` characters. See `https://github.com/facebook/react/issues/1549`.
   
 #### `props[validator] = [validator]`
 > @param {\?} [validator=\?] - Optional. One or more validators to apply to the `Field`'s state.
@@ -261,9 +263,9 @@ There are also a handful of different validators and properties (debounce, lengt
   This validates that the string input is comprised only of english alphabet characters and space characters.  
 
 #### `props.number = numericValidation`
-> @param {Boolean} [numericValidation=true] Optional. Will toggle validation for only numeric and space characters.
+> @param {Boolean} [numericValidation=true] Optional. Will toggle validation for only numeric characters.
 
-  This validates that the string or number input is comprised only of numeric and space characters.  
+  This validates that the string or number input is comprised only of numeric characters. This will allow appropriately placed `+`, `-`, `e`, and `.` characters.
 
 #### `props.max = maxValue`
 > @param {Number} maxValue - Validates an input field to be less than or equal to the maxValue.

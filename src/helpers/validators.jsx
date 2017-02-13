@@ -48,12 +48,13 @@ export function alpha() {
 }
 
 export function numeric() {
-  const numericRegex = /[^0-9\s]/i;
-  return value => typeof value === 'number' || (typeof value === 'string' && !numericRegex.test(value));
+  return value => typeof value === 'number' || (typeof value === 'string' &&
+    (!value || !value.replace(/([-+]{0,1})[0-9]+(\.[0-9]+)?([eE]([+-]{0,1})[0-9]+)?/, '')));
 }
 
 export function max(criteria) {
-  return value => ((typeof value === 'string' && value) || typeof value === 'number') && (Number(value) <= Number(criteria));
+  return value => ((typeof value === 'string' && value) || typeof value === 'number') &&
+    (Number(value) <= Number(criteria));
 }
 
 export function min(criteria) {

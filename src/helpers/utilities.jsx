@@ -46,17 +46,20 @@ export function buildStateForField(fieldProps) {
   return newState;
 }
 
-export function addFieldsToState(child, mounted = false) {
+export function addFieldsToState(component, child, mounted = false) {
   if (typeof child.type === 'function' && child.type.name === 'Field') {
     const name = child.props.name;
     const fieldState = buildStateForField(child.props);
     if (mounted) {
-      this.setState({ [name]: fieldState });
+      component.setState({
+        [name]: fieldState,
+      });
     } else {
-      this.state[name] = fieldState;
+      component.state[name] = fieldState; // eslint-disable-line
     }
   } else if (child.props && child.props.children) {
-    React.Children.forEach(child.props.children, nextChild => addFieldsToState(nextChild, mounted));
+    React.Children.forEach(child.props.children,
+      nextChild => addFieldsToState(component, nextChild, mounted));
   }
 }
 
@@ -72,12 +75,13 @@ export function makeFieldProps(child, onChange, state) {
   return null;
 }
 
-export function mapPropsToChild(child, type, props) {
+export function mapPropsToChild(child, type, propFunction) {
   if (child.type === type || (typeof child.type === 'function' && child.type.name === type)) {
-    return React.cloneElement(child, props);
-  } else if (child.props && child.props.children) {
+    return React.cloneElement(child, propFunction(child));
+  }
+  if (child.props && child.props.children) {
     const newChildren = React.Children.map(child.props.children, nestedChild => (
-      mapPropsToChild(nestedChild, type, props)));
+      mapPropsToChild(nestedChild, type, propFunction)));
     return React.cloneElement(child, null, newChildren);
   }
   return child;
