@@ -29,7 +29,7 @@ const Field = class extends React.Component {
   }
 
   componentWillUpdate(nextProps) {
-    if ((nextProps.value !== this.props.value) && (nextProps.value !== this.finalValue)) {
+    if ((nextProps.value !== this.props.value) && (nextProps.value !== this.state.value)) {
       this.cancelBroadcast();
       this.setState({ value: nextProps.value });
       this.finalValue = nextProps.value;
@@ -42,7 +42,7 @@ const Field = class extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    if (nextProps.value !== this.finalValue) return true;
+    if (nextProps.value !== this.state.value) return true;
     if (this.state.value !== this.finalValue) return true;
     if (this.props.match !== nextProps.match) return true;
     return false;
