@@ -1,7 +1,7 @@
-formulize-react [![Build Status](https://travis-ci.org/clocasto/formulize-react.svg?branch=master)](https://travis-ci.org/clocasto/formulize-react) [![Coverage Status](https://coveralls.io/repos/github/clocasto/formulize-react/badge.svg?branch=master&version=1_0_0)](https://coveralls.io/github/clocasto/formulize-react?branch=master&version=1_0_0)
+react-formulize [![Build Status](https://travis-ci.org/clocasto/react-formulize.svg?branch=master)](https://travis-ci.org/clocasto/react-formulize) [![Coverage Status](https://coveralls.io/repos/github/clocasto/react-formulize/badge.svg?branch=master&version=1_0_0)](https://coveralls.io/github/clocasto/react-formulize?branch=master&version=1_0_0)
 =========
 
-Formulize-react is a simple form validation library for React.js which wires up custom, controlled inputs through a declarative API. The library strives to be minimal, and as such, does most component communication implicity. The end result is a legible form which clearly states the rules of its behavior.
+React-formulize is a simple form validation library for React.js which wires up custom, controlled inputs through a declarative API. The library strives to be minimal, and as such, does most component communication implicity. The end result is a legible form which clearly states the rules of its behavior.
 
 ## Table of Contents  
   1. [Installation](#installation)
@@ -16,12 +16,12 @@ Formulize-react is a simple form validation library for React.js which wires up 
 ## <a href="installation"></a>Installation
 
   ```javascript  
-  npm install formulize-react --save
+  npm install react-formulize --save
   ```
 
 ## <a href="usage"></a>Usage
 
-Formulize-react can be used to both quickly compose forms or add validation to existing input components.
+React-formulize can be used to both quickly compose forms or add validation to existing input components.
 
 #### Rules to follow:
   1. A `Form` component can wrap (nested JSX) a set of `Field` components or `input` elements (or fragments containing them) and automatically manage the state of them. All `Field`s and `input`s *must* have `name` props assigned to them.
@@ -32,7 +32,7 @@ Formulize-react can be used to both quickly compose forms or add validation to e
 #### Example: Composing A New Form With Custom Input Component(s)
 ```javascript  
   import React from 'react';
-  import { Form, Field } from 'formulize-react';
+  import { Form, Field } from 'react-formulize';
   import { AgePickerComponent } from './components/agePicker';
   
   const onSubmit = formState => console.log(formState);
@@ -59,7 +59,7 @@ Formulize-react can be used to both quickly compose forms or add validation to e
 #### Example: Adding Validation To An Existing Form Input
 ```javascript  
   import React from 'react';
-  import { Field } from 'formulize-react';
+  import { Field } from 'react-formulize';
   import { AgePickerComponent } from './components/agePicker';
   
   export class RegistrationForm extends React.Component { 
@@ -133,7 +133,7 @@ The `Form` component will behave as follows with respect to its children:
 
 ```javascript  
 import React from 'react';
-import { Form, Field } from 'formulize-react';
+import { Form, Field } from 'react-formulize';
 
 export default class extends React.Component {
   constructor() {
@@ -299,4 +299,4 @@ MIT (See license.txt)
 
 ## <a href="release-history"></a>Release History
 
-* [1.0.0](https://github.com/clocasto/formulize-react/pull/25)
+* [1.0.0](https://github.com/clocasto/react-formulize/pull/25)

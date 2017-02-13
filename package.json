@@ -1,5 +1,5 @@
 {
-  "name": "formulize-react",
+  "name": "react-formulize",
   "version": "1.0.0",
   "description": "A simple form validation library for React.js which wires up custom, controlled inputs through a declarative API.",
   "main": "dist/index",
@@ -14,10 +14,10 @@
   ],
   "author": "@clocasto",
   "license": "MIT",
-  "bugs": "https://github.com/clocasto/formulize-react/issues",
+  "bugs": "https://github.com/clocasto/react-formulize/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/clocasto/formulize-react.git"
+    "url": "https://github.com/clocasto/react-formulize.git"
   },
   "scripts": {
     "lint": "node_modules/eslint/bin/eslint.js \"src/**\"",
