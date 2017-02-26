@@ -168,7 +168,7 @@ describe('<Form /> Higher-Order-Component', () => {
         expect(wrapper.find(Field).last().props()).to.not.have.property('email_valid');
       });
 
-      it.only('passes pristine information down to components with a `pristine` prop', () => {
+      it('passes pristine information down to components with a `pristine` prop', () => {
         wrapper = mount(
           <Form>
             <div>
