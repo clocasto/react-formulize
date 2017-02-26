@@ -89,24 +89,28 @@ export function makePropsForStatus(status, state) {
 export function mapPropsToChild(child, childPropsMap) {
   const type = (typeof child.type === 'function') ? child.type.name : child.type;
   const childProps = {};
+  let newChildren;
 
-  if (childPropsMap.valid && child.props && child.props.valid) {
-    Object.assign(childProps, childPropsMap.valid());
+  if (child.props) {
+    if (childPropsMap.valid && child.props.valid) {
+      Object.assign(childProps, childPropsMap.valid());
+    }
+    if (childPropsMap.pristine && child.props.pristine) {
+      Object.assign(childProps, childPropsMap.pristine());
+    }
+    if (child.props.children) {
+      newChildren = React.Children
+        .map(child.props.children, nestedChild => mapPropsToChild(nestedChild, childPropsMap));
+    }
   }
-  if (childPropsMap.pristine && child.props && child.props.pristine) {
-    Object.assign(childProps, childPropsMap.pristine());
-  }
+
   if (childPropsMap.Field && type === 'Field') {
-    return React.cloneElement(child, Object.assign(childPropsMap.Field(child), childProps));
+    return React.cloneElement(child, { ...childPropsMap.Field(child), ...childProps }, newChildren);
   }
   if (childPropsMap.input && type === 'input') {
-    return React.cloneElement(child, Object.assign(childPropsMap.input(child), childProps));
-  }
-  if (child.props && child.props.children) {
-    const newChildren = React.Children
-      .map(child.props.children, nestedChild => mapPropsToChild(nestedChild, childPropsMap));
-    return React.cloneElement(child, childProps, newChildren);
+    return React.cloneElement(child, { ...childPropsMap.input(child), ...childProps }, newChildren);
   }
 
-  return Object.keys(childProps).length ? React.cloneElement(child, childProps) : child;
+  return (Object.keys(childProps).length || newChildren) ?
+    React.cloneElement(child, childProps, newChildren) : child;
 }

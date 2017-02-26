@@ -153,7 +153,7 @@ describe('<Form /> Higher-Order-Component', () => {
         wrapper = mount(
           <Form>
             <Field name="name" value="Test Name" valid>
-              <span valid>Hi There!</span>
+              <span>Hi There!</span>
             </Field>
             <div>
               <Field name="email" value="user@company.com!!" email />
@@ -168,7 +168,7 @@ describe('<Form /> Higher-Order-Component', () => {
         expect(wrapper.find(Field).last().props()).to.not.have.property('email_valid');
       });
 
-      it('passes pristine information down to components with a `pristine` prop', () => {
+      it.only('passes pristine information down to components with a `pristine` prop', () => {
         wrapper = mount(
           <Form>
             <div>
