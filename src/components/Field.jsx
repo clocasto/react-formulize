@@ -32,7 +32,7 @@ const Field = class extends React.Component {
   componentWillUpdate(nextProps) {
     if (nextProps.passedValue !== this.props.passedValue) {
       this.cancelBroadcast();
-      this.setState({ value: nextProps.passedValue });
+      this.setState({ value: nextProps.passedValue }, this.debouncedBroadcastChange);
       this.finalValue = nextProps.passedValue;
     } else if (nextProps.value !== this.props.value && nextProps.value !== this.state.value) {
       this.cancelBroadcast();
