@@ -6,6 +6,7 @@ import {
   updateValidators,
   getValuesOf,
   mapPropsToChild,
+  makePropsForStatus,
 } from '../helpers/utilities';
 
 const Field = class extends React.Component {
@@ -29,7 +30,11 @@ const Field = class extends React.Component {
   }
 
   componentWillUpdate(nextProps) {
-    if ((nextProps.value !== this.props.value) && (nextProps.value !== this.state.value)) {
+    if (nextProps.passedValue !== this.props.passedValue) {
+      this.cancelBroadcast();
+      this.setState({ value: nextProps.passedValue });
+      this.finalValue = nextProps.passedValue;
+    } else if (nextProps.value !== this.props.value && nextProps.value !== this.state.value) {
       this.cancelBroadcast();
       this.setState({ value: nextProps.value });
       this.finalValue = nextProps.value;
@@ -42,6 +47,7 @@ const Field = class extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
+    if (nextProps.passedValue !== this.props.passedValue) return true;
     if (nextProps.value !== this.state.value) return true;
     if (this.state.value !== this.finalValue) return true;
     if (this.props.match !== nextProps.match) return true;
@@ -107,7 +113,13 @@ const Field = class extends React.Component {
     return (
       <div>
         {React.Children
-          .map(this.props.children, child => mapPropsToChild(child, 'input', () => inputProps))}
+          .map(this.props.children, child => mapPropsToChild(child, {
+            input: () => inputProps,
+            valid: () => makePropsForStatus('valid', { [this.props.name]: { valid: this.state.valid } }),
+            pristine: () => makePropsForStatus('pristine', {
+              [this.props.name]: { pristine: this.state.pristine },
+            }),
+          }))}
       </div>
     );
   }
@@ -115,6 +127,7 @@ const Field = class extends React.Component {
 
 Field.propTypes = {
   value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
+  passedValue: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
   name: React.PropTypes.string,
   onChange: React.PropTypes.func,
   onFocus: React.PropTypes.func,
@@ -131,6 +144,7 @@ Field.propTypes = {
 
 Field.defaultProps = {
   value: '',
+  passedValue: '',
   name: '',
   onChange: undefined,
   onFocus: undefined,

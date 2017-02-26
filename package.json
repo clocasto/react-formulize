@@ -1,6 +1,6 @@
 {
   "name": "react-formulize",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A simple form validation library for React.js which wires up custom, controlled inputs through a declarative API.",
   "main": "dist/index",
   "keywords": [

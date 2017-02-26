@@ -1,4 +1,4 @@
-react-formulize [![Build Status](https://travis-ci.org/clocasto/react-formulize.svg?branch=master)](https://travis-ci.org/clocasto/react-formulize) [![Coverage Status](https://coveralls.io/repos/github/clocasto/react-formulize/badge.svg?branch=master&version=1_0_0)](https://coveralls.io/github/clocasto/react-formulize?branch=master&version=1_0_0)
+react-formulize [![Build Status](https://travis-ci.org/clocasto/react-formulize.svg?branch=master)](https://travis-ci.org/clocasto/react-formulize) [![Coverage Status](https://coveralls.io/repos/github/clocasto/react-formulize/badge.svg?branch=master&version=1_1_0)](https://coveralls.io/github/clocasto/react-formulize?branch=master&version=1_1_0)
 =========
 
 React-formulize is a simple form validation library for React.js which wires up custom, controlled inputs through a declarative API. The library strives to be minimal, and as such, does most component communication implicity. The end result is a legible form which clearly states the rules of its behavior.
@@ -28,6 +28,7 @@ React-formulize can be used to both quickly compose forms or add validation to e
   2. A `Field` component can wrap (nested JSX) an `input` element (or a fragment containing an `input`) and control its underlying state automatically.
   3. Pass validator props to the `Field` components. A `Field` component will keep track of its own validity.
   4. Pass an `onSubmit` handler to `Form` in order to interact with the submission event. The callback will be passed a clone of the `Form`'s state.
+  5. Pass `valid` and `pristine` props to any nested child components in either a `Form` or `Field` component. These components will receive information about the `Form`'s status in the format of `${fieldName}_${statusType}` (e.g. name_valid & email_pristine).
 
 #### Example: Composing A New Form With Custom Input Component(s)
 ```javascript  
@@ -112,8 +113,10 @@ The `Form` component is a stateful higher-order-component which wraps presentati
 The `Form` component will behave as follows with respect to its children:
 
   1. Any `Field` tag will be passed the state associated with the `Field`'s name (`Form.state[child.props.name]`).
-  2. Any other component or element will be rendered with the props it would otherwise be passed.
-  3. Upon submission, `Form` will pass its `onSubmit` callback a clone of its current state.
+  2. Any component with a `valid` prop will be passed props stating the validity for all `Field`s in the `Form` (e.g. name_valid).  
+  3. Any component with a `pristine` prop will be passed a props stating the pristine state for all `Field`s in the `Form` (e.g. email_pristine).  
+  4. Any other component or element will be rendered with the props it would otherwise be passed.
+  5. Upon submission, `Form` will pass its `onSubmit` callback a clone of its current state.
 
 *Note:* The `Form` component should be passed an `onSubmit` handler if you want to interact with the submission event!
 
@@ -184,7 +187,9 @@ The `Field` component will behave as follows with respect to its children:
   2. Any `input` tag will be passed `name`, `type`, `value`, and `onChange` props.  
   3. If only a single direct child is passed to `Field`, it will be passed all of the relevant input props.  
   4. If multiple `input` tags are nested in a single `Field`, they would all share a single state (not recommended).  
-  
+  5. Any component with a `valid` prop will be passed a prop stating the `Field`'s validity (e.g. name_valid).  
+  6. Any component with a `pristine` prop will be passed a prop stating the `Field`'s pristine state (e.g. email_pristine).  
+
 *Note:* Only one input element should be nested inside of a `Field` tag (see #4 above).
 
 ### Props
@@ -196,7 +201,7 @@ The `Field` component will behave as follows with respect to its children:
 #### `props.value = value`
 > @param {String} [value=''] - The value of the wrapped input component.
 
-  This property is used to control the value of the wrapped input component.  
+  This property is used to control the value of the wrapped input component. If set on the field, this value will be used everytime it is detected as a new (changed) value. This is useful in cases where you need to programmatically populate the field's value (but still allow the input to be edited).  
 
 #### `props.type = type`
 > @param {String} [type='text'] - The input type of the wrapped input element.
@@ -299,4 +304,5 @@ MIT (See license.txt)
 
 ## <a href="release-history"></a>Release History
 
+* [1.1.0](https://github.com/clocasto/react-formulize/pull/32) (Current)
 * [1.0.0](https://github.com/clocasto/react-formulize/pull/25)

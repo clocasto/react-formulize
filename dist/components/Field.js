@@ -18,6 +18,8 @@ var _utilities = require('../helpers/utilities');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -51,7 +53,11 @@ var Field = function (_React$Component) {
   _createClass(Field, [{
     key: 'componentWillUpdate',
     value: function componentWillUpdate(nextProps) {
-      if (nextProps.value !== this.props.value && nextProps.value !== this.state.value) {
+      if (nextProps.passedValue !== this.props.passedValue) {
+        this.cancelBroadcast();
+        this.setState({ value: nextProps.passedValue });
+        this.finalValue = nextProps.passedValue;
+      } else if (nextProps.value !== this.props.value && nextProps.value !== this.state.value) {
         this.cancelBroadcast();
         this.setState({ value: nextProps.value });
         this.finalValue = nextProps.value;
@@ -65,6 +71,7 @@ var Field = function (_React$Component) {
   }, {
     key: 'shouldComponentUpdate',
     value: function shouldComponentUpdate(nextProps) {
+      if (nextProps.passedValue !== this.props.passedValue) return true;
       if (nextProps.value !== this.state.value) return true;
       if (this.state.value !== this.finalValue) return true;
       if (this.props.match !== nextProps.match) return true;
@@ -113,6 +120,8 @@ var Field = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var childCount = _react2.default.Children.count(this.props.children);
       var inputProps = {
         name: this.props.name,
@@ -138,8 +147,16 @@ var Field = function (_React$Component) {
         'div',
         null,
         _react2.default.Children.map(this.props.children, function (child) {
-          return (0, _utilities.mapPropsToChild)(child, 'input', function () {
-            return inputProps;
+          return (0, _utilities.mapPropsToChild)(child, {
+            input: function input() {
+              return inputProps;
+            },
+            valid: function valid() {
+              return (0, _utilities.makePropsForStatus)('valid', _defineProperty({}, _this2.props.name, { valid: _this2.state.valid }));
+            },
+            pristine: function pristine() {
+              return (0, _utilities.makePropsForStatus)('pristine', _defineProperty({}, _this2.props.name, { pristine: _this2.state.pristine }));
+            }
           });
         })
       );
@@ -151,6 +168,7 @@ var Field = function (_React$Component) {
 
 Field.propTypes = {
   value: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number]),
+  passedValue: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number]),
   name: _react2.default.PropTypes.string,
   onChange: _react2.default.PropTypes.func,
   onFocus: _react2.default.PropTypes.func,
@@ -163,6 +181,7 @@ Field.propTypes = {
 
 Field.defaultProps = {
   value: '',
+  passedValue: '',
   name: '',
   onChange: undefined,
   onFocus: undefined,
