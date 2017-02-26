@@ -196,7 +196,7 @@ The `Field` component will behave as follows with respect to its children:
 #### `props.value = value`
 > @param {String} [value=''] - The value of the wrapped input component.
 
-  This property is used to control the value of the wrapped input component.  
+  This property is used to control the value of the wrapped input component. If set on the field, this value will be used everytime it is detected as a new (changed) value. This is useful in cases where you need to programmatically populate the field's value (but still allow the input to be edited).  
 
 #### `props.type = type`
 > @param {String} [type='text'] - The input type of the wrapped input element.
