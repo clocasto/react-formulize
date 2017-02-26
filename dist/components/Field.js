@@ -55,13 +55,11 @@ var Field = function (_React$Component) {
     key: 'componentWillUpdate',
     value: function componentWillUpdate(nextProps) {
       if (nextProps.passedValue !== this.props.passedValue) {
-        this.cancelBroadcast();
+        this.cancelBroadcast(nextProps.passedValue);
         this.setState({ value: nextProps.passedValue }, this.debouncedBroadcastChange);
-        this.finalValue = nextProps.passedValue;
       } else if (nextProps.value !== this.props.value && nextProps.value !== this.state.value) {
-        this.cancelBroadcast();
+        this.cancelBroadcast(nextProps.value);
         this.setState({ value: nextProps.value });
-        this.finalValue = nextProps.value;
       }
 
       if (this.props.match !== nextProps.match) {
@@ -113,10 +111,12 @@ var Field = function (_React$Component) {
   }, {
     key: 'cancelBroadcast',
     value: function cancelBroadcast() {
+      var newFinalValue = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
       if (this.debouncedBroadcastChange.cancel) {
         this.debouncedBroadcastChange.cancel();
-        this.finalValue = null;
       }
+      this.finalValue = newFinalValue;
     }
   }, {
     key: 'render',
