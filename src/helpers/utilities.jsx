@@ -102,17 +102,16 @@ export function mapPropsToChild(child, childPropsMap) {
     if (childPropsMap.pristine && child.props.pristine) {
       Object.assign(childProps, childPropsMap.pristine());
     }
+    if (childPropsMap.input && (type === 'input' || child.props.input)) {
+      Object.assign(childProps, childPropsMap.input(child));
+    }
+    if (childPropsMap.field && (type === 'Field' || child.props.field)) {
+      Object.assign(childProps, childPropsMap.Field(child));
+    }
     if (child.props.children) {
       newChildren = React.Children
         .map(child.props.children, nestedChild => mapPropsToChild(nestedChild, childPropsMap));
     }
-  }
-
-  if (childPropsMap.Field && type === 'Field') {
-    return React.cloneElement(child, { ...childPropsMap.Field(child), ...childProps }, newChildren);
-  }
-  if (childPropsMap.input && type === 'input') {
-    return React.cloneElement(child, { ...childPropsMap.input(child), ...childProps }, newChildren);
   }
 
   return (Object.keys(childProps).length || newChildren) ?
