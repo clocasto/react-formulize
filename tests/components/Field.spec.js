@@ -128,6 +128,57 @@ describe('<Field /> Higher-Order-Component', () => {
     });
   });
 
+  describe('Passing down status', () => {
+    const TestComponent = () => <span>Test!</span>;
+    let wrapper;
+    let first;
+    let second;
+    let third;
+
+    beforeEach('Set up a basic form with testComponents in different configurations', () => {
+      wrapper = mount(
+        <Field name="name" value="" required>
+          <input />
+          <span>Hi There!</span>
+          <div>
+            <TestComponent valid />
+          </div>
+          <TestComponent pristine />
+          <TestComponent valid pristine>
+            <span>Hi There!</span>
+          </TestComponent>
+        </Field>,
+      );
+      first = wrapper.find(TestComponent).first();
+      second = wrapper.find(TestComponent).at(1);
+      third = wrapper.find(TestComponent).last();
+    });
+
+    it('passes validity information down to components with a `valid` prop', () => {
+      expect(first.props()).to.have.property('name_valid', false);
+
+      expect(second.props()).to.not.have.property('name_valid');
+    });
+
+    it('passes pristine information down to components with a `pristine` prop', () => {
+      expect(second.props()).to.have.property('name_pristine', true);
+
+      updateInput(wrapper, 'secondValue');
+      expect(second.props()).to.have.property('name_pristine', false);
+
+      expect(first.props()).to.not.have.property('name_pristine');
+    });
+
+    it('passes valid and pristine info down to components with flags', () => {
+      expect(third.props()).to.have.property('name_valid', false);
+      expect(third.props()).to.have.property('name_pristine', true);
+
+      updateInput(wrapper, 'Test Name');
+      expect(third.props()).to.have.property('name_pristine', false);
+      expect(third.props()).to.have.property('name_valid', true);
+    });
+  });
+
   describe('`Field` lifecycle method tests', () => {
     let wrapper;
     let shouldUpdateSpy;

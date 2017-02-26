@@ -3,13 +3,17 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 exports.assembleValidators = assembleValidators;
 exports.updateValidators = updateValidators;
 exports.isValid = isValid;
+exports.getValuesOf = getValuesOf;
 exports.buildStateForField = buildStateForField;
 exports.addFieldsToState = addFieldsToState;
-exports.getValuesOf = getValuesOf;
 exports.makeFieldProps = makeFieldProps;
+exports.makePropsForStatus = makePropsForStatus;
 exports.mapPropsToChild = mapPropsToChild;
 
 var _react = require('react');
@@ -77,16 +81,24 @@ function isValid(value, validators) {
   }, true);
 }
 
-function buildStateForField(fieldProps) {
-  var value = fieldProps.value,
-      valid = fieldProps.valid,
-      pristine = fieldProps.pristine;
+function getValuesOf() {
+  var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-  var newState = { value: '', valid: false, pristine: true };
+  return Object.keys(obj).map(function (key) {
+    return obj[key];
+  });
+}
+
+function buildStateForField(fieldProps) {
+  var value = fieldProps.value;
+
+  var newState = {
+    value: '',
+    valid: isValid(value, getValuesOf(assembleValidators(fieldProps))),
+    pristine: true
+  };
 
   if (value !== undefined) Object.assign(newState, { value: value });
-  if (valid !== undefined) Object.assign(newState, { valid: valid });
-  if (pristine !== undefined) Object.assign(newState, { pristine: pristine });
   return newState;
 }
 
@@ -108,14 +120,6 @@ function addFieldsToState(component, child) {
   }
 }
 
-function getValuesOf() {
-  var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-  return Object.keys(obj).map(function (key) {
-    return obj[key];
-  });
-}
-
 function makeFieldProps(child, onChange, state) {
   if (typeof child.type === 'function' && child.type.name === 'Field') {
     var name = child.props.name;
@@ -128,15 +132,40 @@ function makeFieldProps(child, onChange, state) {
   return null;
 }
 
-function mapPropsToChild(child, type, propFunction) {
-  if (child.type === type || typeof child.type === 'function' && child.type.name === type) {
-    return _react2.default.cloneElement(child, propFunction(child));
+function makePropsForStatus(status, state) {
+  return Object.keys(state).reduce(function (props, field) {
+    if (Object.prototype.hasOwnProperty.call(state[field], status)) {
+      return _extends({}, props, _defineProperty({}, field + '_' + status, state[field][status]));
+    }
+    return props;
+  }, {});
+}
+
+function mapPropsToChild(child, childPropsMap) {
+  var type = typeof child.type === 'function' ? child.type.name : child.type;
+  var childProps = {};
+  var newChildren = void 0;
+
+  if (child.props) {
+    if (childPropsMap.valid && child.props.valid) {
+      Object.assign(childProps, childPropsMap.valid());
+    }
+    if (childPropsMap.pristine && child.props.pristine) {
+      Object.assign(childProps, childPropsMap.pristine());
+    }
+    if (child.props.children) {
+      newChildren = _react2.default.Children.map(child.props.children, function (nestedChild) {
+        return mapPropsToChild(nestedChild, childPropsMap);
+      });
+    }
   }
-  if (child.props && child.props.children) {
-    var newChildren = _react2.default.Children.map(child.props.children, function (nestedChild) {
-      return mapPropsToChild(nestedChild, type, propFunction);
-    });
-    return _react2.default.cloneElement(child, null, newChildren);
+
+  if (childPropsMap.Field && type === 'Field') {
+    return _react2.default.cloneElement(child, _extends({}, childPropsMap.Field(child), childProps), newChildren);
   }
-  return child;
+  if (childPropsMap.input && type === 'input') {
+    return _react2.default.cloneElement(child, _extends({}, childPropsMap.input(child), childProps), newChildren);
+  }
+
+  return Object.keys(childProps).length || newChildren ? _react2.default.cloneElement(child, childProps, newChildren) : child;
 }

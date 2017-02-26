@@ -36,13 +36,19 @@ export function isValid(value, validators) {
   }, true);
 }
 
+export function getValuesOf(obj = {}) {
+  return Object.keys(obj).map(key => obj[key]);
+}
+
 export function buildStateForField(fieldProps) {
-  const { value, valid, pristine } = fieldProps;
-  const newState = { value: '', valid: false, pristine: true };
+  const { value } = fieldProps;
+  const newState = {
+    value: '',
+    valid: isValid(value, getValuesOf(assembleValidators(fieldProps))),
+    pristine: true,
+  };
 
   if (value !== undefined) Object.assign(newState, { value });
-  if (valid !== undefined) Object.assign(newState, { valid });
-  if (pristine !== undefined) Object.assign(newState, { pristine });
   return newState;
 }
 
@@ -63,10 +69,6 @@ export function addFieldsToState(component, child, mounted = false) {
   }
 }
 
-export function getValuesOf(obj = {}) {
-  return Object.keys(obj).map(key => obj[key]);
-}
-
 export function makeFieldProps(child, onChange, state) {
   if (typeof child.type === 'function' && child.type.name === 'Field') {
     const name = child.props.name;
@@ -79,14 +81,40 @@ export function makeFieldProps(child, onChange, state) {
   return null;
 }
 
-export function mapPropsToChild(child, type, propFunction) {
-  if (child.type === type || (typeof child.type === 'function' && child.type.name === type)) {
-    return React.cloneElement(child, propFunction(child));
+export function makePropsForStatus(status, state) {
+  return Object.keys(state).reduce((props, field) => {
+    if (Object.prototype.hasOwnProperty.call(state[field], status)) {
+      return { ...props, [`${field}_${status}`]: state[field][status] };
+    }
+    return props;
+  }, {});
+}
+
+export function mapPropsToChild(child, childPropsMap) {
+  const type = (typeof child.type === 'function') ? child.type.name : child.type;
+  const childProps = {};
+  let newChildren;
+
+  if (child.props) {
+    if (childPropsMap.valid && child.props.valid) {
+      Object.assign(childProps, childPropsMap.valid());
+    }
+    if (childPropsMap.pristine && child.props.pristine) {
+      Object.assign(childProps, childPropsMap.pristine());
+    }
+    if (child.props.children) {
+      newChildren = React.Children
+        .map(child.props.children, nestedChild => mapPropsToChild(nestedChild, childPropsMap));
+    }
   }
-  if (child.props && child.props.children) {
-    const newChildren = React.Children.map(child.props.children, nestedChild => (
-      mapPropsToChild(nestedChild, type, propFunction)));
-    return React.cloneElement(child, null, newChildren);
+
+  if (childPropsMap.Field && type === 'Field') {
+    return React.cloneElement(child, { ...childPropsMap.Field(child), ...childProps }, newChildren);
   }
-  return child;
+  if (childPropsMap.input && type === 'input') {
+    return React.cloneElement(child, { ...childPropsMap.input(child), ...childProps }, newChildren);
+  }
+
+  return (Object.keys(childProps).length || newChildren) ?
+    React.cloneElement(child, childProps, newChildren) : child;
 }
