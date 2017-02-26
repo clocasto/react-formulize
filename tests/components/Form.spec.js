@@ -219,4 +219,35 @@ describe('<Form /> Higher-Order-Component', () => {
       );
     });
   });
+
+  describe('Passes down a value prop that changed', () => {
+    let wrapper;
+    let fieldComponent;
+    const cache = { value: 'firstValue' };
+    const retrieveCacheValue = () => cache.value;
+    const FieldWithValue = () => <Field name="nameField" value={retrieveCacheValue()} />;
+
+    before('Assemble a custom input element', () => {
+      wrapper = mount(
+        <Form>
+          {FieldWithValue()}
+        </Form>);
+      fieldComponent = wrapper.find(Field);
+    });
+
+    it('Should update its value when passed a new value prop', () => {
+      expect(fieldComponent.props()).to.have.property('name', 'nameField');
+      expect(fieldComponent.props()).to.have.property('value', 'firstValue');
+      expect(fieldComponent.props()).to.have.property('passedValue', 'firstValue');
+
+      // Update the cache's value;
+      cache.value = 'secondValue';
+      wrapper.setProps({ children: FieldWithValue() });
+
+      expect(fieldComponent.props()).to.have.property('name', 'nameField');
+      expect(fieldComponent.props()).to.have.property('value', 'firstValue');
+      expect(fieldComponent.props()).to.have.property('passedValue', 'secondValue');
+      expect(wrapper.state().nameField).to.eql({ value: 'firstValue', valid: false, pristine: true });
+    });
+  });
 });

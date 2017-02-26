@@ -123,7 +123,11 @@ function addFieldsToState(component, child) {
 function makeFieldProps(child, onChange, state) {
   if (typeof child.type === 'function' && child.type.name === 'Field') {
     var name = child.props.name;
-    return { name: name, onChange: onChange, key: name, value: state[name] ? state[name].value : null };
+    var props = { name: name, onChange: onChange, key: name, value: state[name] ? state[name].value : null };
+
+    if (child.props.value !== undefined) props.passedValue = child.props.value;
+
+    return props;
   }
   return null;
 }

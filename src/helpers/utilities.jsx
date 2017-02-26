@@ -72,7 +72,11 @@ export function addFieldsToState(component, child, mounted = false) {
 export function makeFieldProps(child, onChange, state) {
   if (typeof child.type === 'function' && child.type.name === 'Field') {
     const name = child.props.name;
-    return { name, onChange, key: name, value: state[name] ? state[name].value : null };
+    const props = { name, onChange, key: name, value: state[name] ? state[name].value : null };
+
+    if (child.props.value !== undefined) props.passedValue = child.props.value;
+
+    return props;
   }
   return null;
 }
