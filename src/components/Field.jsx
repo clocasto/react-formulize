@@ -13,12 +13,14 @@ const Field = class extends React.Component {
   constructor(props) {
     super(props);
 
+    const validators = assembleValidators(props);
+
     this.state = {
-      value: props.value || '',
-      valid: false,
+      validators,
+      value: props.value,
+      valid: isValid(props.value, getValuesOf(validators)),
       pristine: true,
       debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
-      validators: assembleValidators(props),
     };
     this.finalValue = null;
 
@@ -31,13 +33,11 @@ const Field = class extends React.Component {
 
   componentWillUpdate(nextProps) {
     if (nextProps.passedValue !== this.props.passedValue) {
-      this.cancelBroadcast();
-      this.setState({ value: nextProps.passedValue });
-      this.finalValue = nextProps.passedValue;
+      this.cancelBroadcast(nextProps.passedValue);
+      this.setState({ value: nextProps.passedValue }, this.debouncedBroadcastChange);
     } else if (nextProps.value !== this.props.value && nextProps.value !== this.state.value) {
-      this.cancelBroadcast();
+      this.cancelBroadcast(nextProps.value);
       this.setState({ value: nextProps.value });
-      this.finalValue = nextProps.value;
     }
 
     if (this.props.match !== nextProps.match) {
@@ -83,11 +83,11 @@ const Field = class extends React.Component {
     }
   }
 
-  cancelBroadcast() {
+  cancelBroadcast(newFinalValue = null) {
     if (this.debouncedBroadcastChange.cancel) {
       this.debouncedBroadcastChange.cancel();
-      this.finalValue = null;
     }
+    this.finalValue = newFinalValue;
   }
 
   render() {

@@ -239,7 +239,7 @@ describe('Validator Functionality', () => {
     });
 
     it('is properly used by a `Field` component to validate', () => {
-      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('valid', true);
       expect(wrapper.state()).to.have.property('value', '');
 
       updateInput(wrapper, 'Test Input');
@@ -284,7 +284,7 @@ describe('Validator Functionality', () => {
 
     it('is properly used by a `Field` component to validate', () => {
       expect(wrapper.state()).to.have.property('value', '');
-      expect(wrapper.state()).to.have.property('valid', false);
+      expect(wrapper.state()).to.have.property('valid', true);
 
       updateInput(wrapper, '12345\t12345 12345');
       expect(wrapper.state()).to.have.property('value', '12345\t12345 12345');

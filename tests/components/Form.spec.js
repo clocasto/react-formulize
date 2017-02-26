@@ -245,9 +245,9 @@ describe('<Form /> Higher-Order-Component', () => {
       wrapper.setProps({ children: FieldWithValue() });
 
       expect(fieldComponent.props()).to.have.property('name', 'nameField');
-      expect(fieldComponent.props()).to.have.property('value', 'firstValue');
+      expect(fieldComponent.props()).to.have.property('value', 'secondValue');
       expect(fieldComponent.props()).to.have.property('passedValue', 'secondValue');
-      expect(wrapper.state().nameField).to.eql({ value: 'firstValue', valid: true, pristine: true });
+      expect(wrapper.state().nameField).to.eql({ value: 'secondValue', valid: true, pristine: true });
     });
   });
 });
