@@ -16,8 +16,8 @@ const Field = class extends React.Component {
     const validators = assembleValidators(props);
 
     this.state = {
-      value: props.value,
       validators,
+      value: props.value,
       valid: isValid(props.value, getValuesOf(validators)),
       pristine: true,
       debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
