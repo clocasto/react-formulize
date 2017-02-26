@@ -70,7 +70,7 @@ describe('<Field /> Higher-Order-Component', () => {
     });
 
     it('passes `props` down to the custom `Input` component flagged as input', () => {
-      const Input = props => <input value={props.value} />;
+      const Input = () => <input />;
       wrapper = mount(
         <Field value={'value!'} name="test_input" onChange={onChange}>
           <Input input />

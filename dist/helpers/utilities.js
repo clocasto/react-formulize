@@ -157,7 +157,7 @@ function mapPropsToChild(child, childPropsMap) {
   if (childPropsMap.input && (type === 'input' || child.props.input)) {
     childProps = _extends({}, childProps, childPropsMap.input(child));
   }
-  if (childPropsMap.Field && (type === 'Field' || child.props.field)) {
+  if (childPropsMap.Field && type === 'Field') {
     childProps = _extends({}, childProps, childPropsMap.Field(child));
   }
   if (child.props.children) {

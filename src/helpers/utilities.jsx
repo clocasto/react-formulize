@@ -106,7 +106,7 @@ export function mapPropsToChild(child, childPropsMap) {
   if (childPropsMap.input && (type === 'input' || child.props.input)) {
     childProps = { ...childProps, ...childPropsMap.input(child) };
   }
-  if (childPropsMap.Field && (type === 'Field' || child.props.field)) {
+  if (childPropsMap.Field && type === 'Field') {
     childProps = { ...childProps, ...childPropsMap.Field(child) };
   }
   if (child.props.children) {
