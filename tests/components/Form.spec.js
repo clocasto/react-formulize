@@ -144,5 +144,50 @@ describe('<Form /> Higher-Order-Component', () => {
 
       Form.prototype.reset.restore();
     });
+
+    it('passes validity information down to components with a `valid` prop', () => {
+      wrapper = mount(
+        <Form>
+          <Field name="name" value="Test Name" valid />
+          <Field name="email" value="user@company.com!!" email />
+        </Form>,
+      );
+
+      expect(wrapper.find(Field).first().props()).to.have.property('name_valid', true);
+      expect(wrapper.find(Field).first().props()).to.have.property('email_valid', false);
+      expect(wrapper.find(Field).last().props()).to.not.have.property('name_valid');
+      expect(wrapper.find(Field).last().props()).to.not.have.property('email_valid');
+    });
+
+    it('passes pristine information down to components with a `pristine` prop', () => {
+      wrapper = mount(
+        <Form>
+          <Field name="name" value="Test Name" pristine />
+        </Form>,
+      );
+
+      expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', true);
+
+      updateInput(wrapper, 'secondValue');
+      expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', false);
+    });
+
+    it(
+      'passes both valid and pristine information down to components with both `valid` and `pristine` props',
+      () => {
+        wrapper = mount(
+          <Form>
+            <Field name="name" value="Test Name" required valid pristine />
+          </Form>,
+        );
+
+        expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', true);
+        expect(wrapper.find(Field).first().props()).to.have.property('name_valid', false);
+
+        updateInput(wrapper, 'firstValue');
+        expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', false);
+        expect(wrapper.find(Field).first().props()).to.have.property('name_valid', true);
+      },
+    );
   });
 });
