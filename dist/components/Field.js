@@ -51,7 +51,11 @@ var Field = function (_React$Component) {
   _createClass(Field, [{
     key: 'componentWillUpdate',
     value: function componentWillUpdate(nextProps) {
-      if (nextProps.value !== this.props.value && nextProps.value !== this.state.value) {
+      if (nextProps.passedValue !== this.props.passedValue) {
+        this.cancelBroadcast();
+        this.setState({ value: nextProps.passedValue });
+        this.finalValue = nextProps.passedValue;
+      } else if (nextProps.value !== this.props.value && nextProps.value !== this.state.value) {
         this.cancelBroadcast();
         this.setState({ value: nextProps.value });
         this.finalValue = nextProps.value;
@@ -65,6 +69,7 @@ var Field = function (_React$Component) {
   }, {
     key: 'shouldComponentUpdate',
     value: function shouldComponentUpdate(nextProps) {
+      if (nextProps.passedValue !== this.props.passedValue) return true;
       if (nextProps.value !== this.state.value) return true;
       if (this.state.value !== this.finalValue) return true;
       if (this.props.match !== nextProps.match) return true;
@@ -151,6 +156,7 @@ var Field = function (_React$Component) {
 
 Field.propTypes = {
   value: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number]),
+  passedValue: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.number]),
   name: _react2.default.PropTypes.string,
   onChange: _react2.default.PropTypes.func,
   onFocus: _react2.default.PropTypes.func,
@@ -163,6 +169,7 @@ Field.propTypes = {
 
 Field.defaultProps = {
   value: '',
+  passedValue: '',
   name: '',
   onChange: undefined,
   onFocus: undefined,
