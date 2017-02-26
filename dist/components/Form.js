@@ -79,9 +79,9 @@ var Form = function (_React$Component) {
         'form',
         { onSubmit: this.onSubmit },
         _react2.default.Children.map(this.props.children, function (child) {
-          return (0, _utilities.mapPropsToChild)(child, 'Field', function (grandChild) {
-            return (0, _utilities.makeFieldProps)(grandChild, _this3.onFieldChange, _this3.state);
-          });
+          return (0, _utilities.mapPropsToChild)(child, { Field: function Field(grandChild) {
+              return (0, _utilities.makeFieldProps)(grandChild, _this3.onFieldChange, _this3.state);
+            } });
         })
       );
     }
