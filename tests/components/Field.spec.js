@@ -49,9 +49,10 @@ describe('<Field /> Higher-Order-Component', () => {
       expect(wrapper.find(Field)).to.have.length(1);
       expect(wrapper.find('h4')).to.have.length(1);
       expect(wrapper.find('h4').text()).to.equal('My Test Input!');
+      expect(wrapper.find('input').exists()).to.be.true; // eslint-disable-line
     });
 
-    it('passes `props` down to the custom `Input` component', () => {
+    it('passes `props` down to the nested field component', () => {
       expect(wrapper.find(Field)).to.have.length(1);
       expect(wrapper.find('h4')).to.have.length(1);
       expect(wrapper.find('h4').text()).to.equal('My Test Input!');
@@ -66,6 +67,23 @@ describe('<Field /> Higher-Order-Component', () => {
 
       expect(renderedCustomInputProps).to.have.property('onChange');
       expect(typeof renderedCustomInputProps.onChange).to.eql('function');
+    });
+
+    it('passes `props` down to the custom `Input` component flagged as input', () => {
+      const Input = props => <input value={props.value} />;
+      wrapper = mount(
+        <Field value={'value!'} name="test_input" onChange={onChange}>
+          <Input input />
+        </Field>);
+
+      const customInput = wrapper.find(Input);
+      expect(customInput).to.have.length(1);
+
+      const customInputProps = customInput.props();
+      expect(customInputProps).to.have.property('onChange');
+      expect(customInputProps).to.have.property('value', 'value!');
+      expect(customInputProps).to.have.property('type', 'text');
+      expect(typeof customInputProps.onChange).to.eql('function');
     });
   });
 
