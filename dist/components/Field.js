@@ -18,6 +18,8 @@ var _utilities = require('../helpers/utilities');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -113,6 +115,8 @@ var Field = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var childCount = _react2.default.Children.count(this.props.children);
       var inputProps = {
         name: this.props.name,
@@ -138,9 +142,17 @@ var Field = function (_React$Component) {
         'div',
         null,
         _react2.default.Children.map(this.props.children, function (child) {
-          return (0, _utilities.mapPropsToChild)(child, { input: function input() {
+          return (0, _utilities.mapPropsToChild)(child, {
+            input: function input() {
               return inputProps;
-            } });
+            },
+            valid: function valid() {
+              return (0, _utilities.makePropsForStatus)('valid', _defineProperty({}, _this2.props.name, { valid: _this2.state.valid }));
+            },
+            pristine: function pristine() {
+              return (0, _utilities.makePropsForStatus)('pristine', _defineProperty({}, _this2.props.name, { pristine: _this2.state.pristine }));
+            }
+          });
         })
       );
     }

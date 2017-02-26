@@ -6,6 +6,7 @@ import {
   updateValidators,
   getValuesOf,
   mapPropsToChild,
+  makePropsForStatus,
 } from '../helpers/utilities';
 
 const Field = class extends React.Component {
@@ -107,7 +108,13 @@ const Field = class extends React.Component {
     return (
       <div>
         {React.Children
-          .map(this.props.children, child => mapPropsToChild(child, { input: () => inputProps }))}
+          .map(this.props.children, child => mapPropsToChild(child, {
+            input: () => inputProps,
+            valid: () => makePropsForStatus('valid', { [this.props.name]: { valid: this.state.valid } }),
+            pristine: () => makePropsForStatus('pristine', {
+              [this.props.name]: { pristine: this.state.pristine },
+            }),
+          }))}
       </div>
     );
   }
