@@ -141,13 +141,12 @@ function mapPropsToChild(child, childPropsMap) {
   var type = typeof child.type === 'function' ? child.type.name : child.type;
   var childProps = {};
 
-  if (childPropsMap.valid && child.props.valid) {
+  if (childPropsMap.valid && child.props && child.props.valid) {
     Object.assign(childProps, childPropsMap.valid());
   }
-  if (childPropsMap.pristine && child.props.pristine) {
+  if (childPropsMap.pristine && child.props && child.props.pristine) {
     Object.assign(childProps, childPropsMap.pristine());
   }
-
   if (childPropsMap.Field && type === 'Field') {
     return _react2.default.cloneElement(child, Object.assign(childPropsMap.Field(child), childProps));
   }
@@ -160,5 +159,6 @@ function mapPropsToChild(child, childPropsMap) {
     });
     return _react2.default.cloneElement(child, childProps, newChildren);
   }
-  return child;
+
+  return Object.keys(childProps).length ? _react2.default.cloneElement(child, childProps) : child;
 }

@@ -147,10 +147,14 @@ describe('<Form /> Higher-Order-Component', () => {
     });
 
     describe('Passing down status', () => {
+      const TestComponent = () => <span>Test!</span>;
+
       it('passes validity information down to components with a `valid` prop', () => {
         wrapper = mount(
           <Form>
-            <Field name="name" value="Test Name" valid />
+            <Field name="name" value="Test Name" valid>
+              <span valid>Hi There!</span>
+            </Field>
             <div>
               <Field name="email" value="user@company.com!!" email />
             </div>
@@ -159,6 +163,7 @@ describe('<Form /> Higher-Order-Component', () => {
 
         expect(wrapper.find(Field).first().props()).to.have.property('name_valid', true);
         expect(wrapper.find(Field).first().props()).to.have.property('email_valid', false);
+
         expect(wrapper.find(Field).last().props()).to.not.have.property('name_valid');
         expect(wrapper.find(Field).last().props()).to.not.have.property('email_valid');
       });
@@ -169,13 +174,19 @@ describe('<Form /> Higher-Order-Component', () => {
             <div>
               <Field name="name" value="Test Name" pristine />
             </div>
+            <TestComponent id="test_div" pristine />
           </Form>,
         );
 
-        expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', true);
+        const firstField = wrapper.find(Field).first();
+        const testComponent = wrapper.find(TestComponent);
+
+        expect(firstField.props()).to.have.property('name_pristine', true);
+        expect(testComponent.props()).to.have.property('name_pristine', true);
 
         updateInput(wrapper, 'secondValue');
-        expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', false);
+        expect(firstField.props()).to.have.property('name_pristine', false);
+        expect(testComponent.props()).to.have.property('name_pristine', false);
       });
 
       it(
@@ -185,16 +196,25 @@ describe('<Form /> Higher-Order-Component', () => {
             <Form>
               <div>
                 <Field name="name" value="" required valid pristine />
+                <TestComponent valid pristine>
+                  <span>Hi there!</span>
+                  <div id="test" valid />
+                </TestComponent>
               </div>
             </Form>,
           );
 
-          expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', true);
-          expect(wrapper.find(Field).first().props()).to.have.property('name_valid', false);
+          const firstField = wrapper.find(Field).first();
+          const testComponent = wrapper.find(TestComponent).first();
+
+          expect(firstField.props()).to.have.property('name_pristine', true);
+          expect(testComponent.props()).to.have.property('name_pristine', true);
+          expect(firstField.props()).to.have.property('name_valid', false);
+          expect(testComponent.props()).to.have.property('name_valid', false);
 
           updateInput(wrapper, 'Test Name');
-          expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', false);
-          expect(wrapper.find(Field).first().props()).to.have.property('name_valid', true);
+          expect(firstField.props()).to.have.property('name_pristine', false);
+          expect(firstField.props()).to.have.property('name_valid', true);
         },
       );
     });
