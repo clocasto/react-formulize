@@ -81,7 +81,14 @@ var Form = function (_React$Component) {
         _react2.default.Children.map(this.props.children, function (child) {
           return (0, _utilities.mapPropsToChild)(child, { Field: function Field(grandChild) {
               return (0, _utilities.makeFieldProps)(grandChild, _this3.onFieldChange, _this3.state);
-            } });
+            },
+            pristine: function pristine() {
+              return (0, _utilities.makePropsForStatus)('pristine', _this3.state);
+            },
+            valid: function valid() {
+              return (0, _utilities.makePropsForStatus)('valid', _this3.state);
+            }
+          });
         })
       );
     }

@@ -75,6 +75,15 @@ export function makeFieldProps(child, onChange, state) {
   return null;
 }
 
+export function makePropsForStatus(status, state) {
+  return Object.keys(state).reduce((props, field) => {
+    if (Object.prototype.hasOwnProperty.call(state.field, status)) {
+      return { ...props, [field]: state[field][status] };
+    }
+    return props;
+  }, {});
+}
+
 export function mapPropsToChild(child, childPropsMap) {
   const type = (typeof child.type === 'function') ? child.type.name : child.type;
   const childProps = {};

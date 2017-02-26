@@ -1,5 +1,10 @@
 import React from 'react';
-import { addFieldsToState, mapPropsToChild, makeFieldProps } from '../helpers/utilities';
+import {
+  addFieldsToState,
+  mapPropsToChild,
+  makeFieldProps,
+  makePropsForStatus,
+} from '../helpers/utilities';
 
 const Form = class extends React.Component {
   constructor(props) {
@@ -37,7 +42,10 @@ const Form = class extends React.Component {
           .map(this.props.children, child =>
             mapPropsToChild(
               child,
-              { Field: grandChild => makeFieldProps(grandChild, this.onFieldChange, this.state) },
+              { Field: grandChild => makeFieldProps(grandChild, this.onFieldChange, this.state),
+                pristine: () => makePropsForStatus('pristine', this.state),
+                valid: () => makePropsForStatus('valid', this.state),
+              },
             ),
         )}
       </form>
