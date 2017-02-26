@@ -1,4 +1,4 @@
-react-formulize [![Build Status](https://travis-ci.org/clocasto/react-formulize.svg?branch=master)](https://travis-ci.org/clocasto/react-formulize) [![Coverage Status](https://coveralls.io/repos/github/clocasto/react-formulize/badge.svg?branch=master&version=1_1_1)](https://coveralls.io/github/clocasto/react-formulize?branch=master&version=1_1_1)
+react-formulize [![Build Status](https://travis-ci.org/clocasto/react-formulize.svg?branch=master)](https://travis-ci.org/clocasto/react-formulize) [![Coverage Status](https://coveralls.io/repos/github/clocasto/react-formulize/badge.svg?branch=master&version=1_2_0)](https://coveralls.io/github/clocasto/react-formulize?branch=master&version=1_2_0)
 =========
 
 React-formulize is a simple form validation library for React.js which wires up custom, controlled inputs through a declarative API. The library strives to be minimal, and as such, does most component communication implicity. The end result is a legible form which clearly states the rules of its behavior.
@@ -25,7 +25,7 @@ React-formulize can be used to both quickly compose forms or add validation to e
 
 #### Rules to follow:
   1. A `Form` component can wrap (nested JSX) a set of `Field` components or `input` elements (or fragments containing them) and automatically manage the state of them. All `Field`s and `input`s *must* have `name` props assigned to them.
-  2. A `Field` component can wrap (nested JSX) an `input` element (or a fragment containing an `input`) and control its underlying state automatically.
+  2. A `Field` component can wrap (nested JSX) an `input` element, a fragment containing an `input`, or a custom component flagged with a `props.input=true`, and control its underlying state automatically.
   3. Pass validator props to the `Field` components. A `Field` component will keep track of its own validity.
   4. Pass an `onSubmit` handler to `Form` in order to interact with the submission event. The callback will be passed a clone of the `Form`'s state.
   5. Pass `valid` and `pristine` props to any nested child components in either a `Form` or `Field` component. These components will receive information about the `Form`'s status in the format of `${fieldName}_${statusType}` (e.g. name_valid & email_pristine).
@@ -43,7 +43,7 @@ React-formulize can be used to both quickly compose forms or add validation to e
       <Form onSubmit={onSubmit}>
         <Field name="name_field" length={[3, 24]} />
         <Field name="age_field" required min="18" max="150">
-          <AgePickerComponent />
+          <AgePickerComponent input />
         </Field>
         <Field name="email_field" required email debounce="300">
           <label>
@@ -61,7 +61,6 @@ React-formulize can be used to both quickly compose forms or add validation to e
 ```javascript  
   import React from 'react';
   import { Field } from 'react-formulize';
-  import { AgePickerComponent } from './components/agePicker';
   
   export class RegistrationForm extends React.Component { 
     constructor(props) {
@@ -185,7 +184,7 @@ The `Field` component will behave as follows with respect to its children:
   
   1. If no components are nested in a `Field` component, a default label and input element will be used.  
   2. Any `input` tag will be passed `name`, `type`, `value`, and `onChange` props.  
-  3. If only a single direct child is passed to `Field`, it will be passed all of the relevant input props.  
+  3. Any component with an `input` flag (`props.input = true`) that is nested in a `Field` will be passed all of the relevant input props.  
   4. If multiple `input` tags are nested in a single `Field`, they would all share a single state (not recommended).  
   5. Any component with a `valid` prop will be passed a prop stating the `Field`'s validity (e.g. name_valid).  
   6. Any component with a `pristine` prop will be passed a prop stating the `Field`'s pristine state (e.g. email_pristine).  
@@ -304,6 +303,7 @@ MIT (See license.txt)
 
 ## <a href="release-history"></a>Release History
 
-* [1.1.1](https://github.com/clocasto/react-formulize/pull/35) (Current)
+* [1.2.0](https://github.com/clocasto/react-formulize/pull/38) (Current)
+* [1.1.1](https://github.com/clocasto/react-formulize/pull/35)
 * [1.1.0](https://github.com/clocasto/react-formulize/pull/32)
 * [1.0.0](https://github.com/clocasto/react-formulize/pull/25)

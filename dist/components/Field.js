@@ -37,8 +37,8 @@ var Field = function (_React$Component) {
     var validators = (0, _utilities.assembleValidators)(props);
 
     _this.state = {
-      value: props.value,
       validators: validators,
+      value: props.value,
       valid: (0, _utilities.isValid)(props.value, (0, _utilities.getValuesOf)(validators)),
       pristine: true,
       debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0 };
