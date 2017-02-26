@@ -37,9 +37,9 @@ const Form = class extends React.Component {
           .map(this.props.children, child =>
             mapPropsToChild(
               child,
-              'Field',
-              grandChild => makeFieldProps(grandChild, this.onFieldChange, this.state),
-        ))}
+              { Field: grandChild => makeFieldProps(grandChild, this.onFieldChange, this.state) },
+            ),
+        )}
       </form>
     );
   }

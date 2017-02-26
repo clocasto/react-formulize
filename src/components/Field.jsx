@@ -107,7 +107,7 @@ const Field = class extends React.Component {
     return (
       <div>
         {React.Children
-          .map(this.props.children, child => mapPropsToChild(child, 'input', () => inputProps))}
+          .map(this.props.children, child => mapPropsToChild(child, { input: () => inputProps }))}
       </div>
     );
   }
