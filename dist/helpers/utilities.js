@@ -92,9 +92,6 @@ function getValuesOf() {
 function buildStateForField(fieldProps) {
   var value = fieldProps.value;
 
-  console.log('fieldProps:', fieldProps);
-  console.log('validators:', getValuesOf(assembleValidators(fieldProps)));
-  console.log('valid:', isValid(value, getValuesOf(assembleValidators(fieldProps))));
   var newState = {
     value: '',
     valid: isValid(value, getValuesOf(assembleValidators(fieldProps))),

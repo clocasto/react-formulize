@@ -121,7 +121,7 @@ describe('<Form /> Higher-Order-Component', () => {
       expect(formResetSpy.callCount).to.eql(0);
       expect(wrapper.state().name).to.eql({
         value: 'firstValue',
-        valid: false,
+        valid: true,
         pristine: true,
       });
 
@@ -138,7 +138,7 @@ describe('<Form /> Higher-Order-Component', () => {
       expect(formResetSpy.callCount).to.eql(1);
       expect(wrapper.state().name).to.eql({
         value: 'firstValue',
-        valid: false,
+        valid: true,
         pristine: true,
       });
 
@@ -177,14 +177,14 @@ describe('<Form /> Higher-Order-Component', () => {
       () => {
         wrapper = mount(
           <Form>
-            <Field name="name" value="Test Name" required valid pristine />
+            <Field name="name" value="" required valid pristine />
           </Form>,
         );
 
         expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', true);
         expect(wrapper.find(Field).first().props()).to.have.property('name_valid', false);
 
-        updateInput(wrapper, 'firstValue');
+        updateInput(wrapper, 'Test Name');
         expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', false);
         expect(wrapper.find(Field).first().props()).to.have.property('name_valid', true);
       },
