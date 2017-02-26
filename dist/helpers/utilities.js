@@ -143,29 +143,28 @@ function makePropsForStatus(status, state) {
 
 function mapPropsToChild(child, childPropsMap) {
   var type = typeof child.type === 'function' ? child.type.name : child.type;
-  var childProps = {};
+  var childProps = void 0;
   var newChildren = void 0;
 
-  if (child.props) {
-    if (childPropsMap.valid && child.props.valid) {
-      Object.assign(childProps, childPropsMap.valid());
-    }
-    if (childPropsMap.pristine && child.props.pristine) {
-      Object.assign(childProps, childPropsMap.pristine());
-    }
-    if (child.props.children) {
-      newChildren = _react2.default.Children.map(child.props.children, function (nestedChild) {
-        return mapPropsToChild(nestedChild, childPropsMap);
-      });
-    }
+  if (!child.props) return child;
+
+  if (childPropsMap.valid && child.props.valid) {
+    childProps = _extends({}, childProps, childPropsMap.valid());
+  }
+  if (childPropsMap.pristine && child.props.pristine) {
+    childProps = _extends({}, childProps, childPropsMap.pristine());
+  }
+  if (childPropsMap.input && (type === 'input' || child.props.input)) {
+    childProps = _extends({}, childProps, childPropsMap.input(child));
+  }
+  if (childPropsMap.Field && (type === 'Field' || child.props.field)) {
+    childProps = _extends({}, childProps, childPropsMap.Field(child));
+  }
+  if (child.props.children) {
+    newChildren = _react2.default.Children.map(child.props.children, function (nestedChild) {
+      return mapPropsToChild(nestedChild, childPropsMap);
+    });
   }
 
-  if (childPropsMap.Field && type === 'Field') {
-    return _react2.default.cloneElement(child, _extends({}, childPropsMap.Field(child), childProps), newChildren);
-  }
-  if (childPropsMap.input && type === 'input') {
-    return _react2.default.cloneElement(child, _extends({}, childPropsMap.input(child), childProps), newChildren);
-  }
-
-  return Object.keys(childProps).length || newChildren ? _react2.default.cloneElement(child, childProps, newChildren) : child;
+  return childProps || newChildren ? _react2.default.cloneElement(child, childProps, newChildren) : child;
 }
