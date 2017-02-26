@@ -40,7 +40,6 @@ describe('<Form /> Higher-Order-Component', () => {
       expect(inputs.last().getDOMNode().value).to.equal('user@company.com');
     });
 
-
     it('passes appropriate props down through `props.children`', () => {
       wrapper = mount((
         <Form>
@@ -91,103 +90,113 @@ describe('<Form /> Higher-Order-Component', () => {
       });
     });
 
-    it('invoked an onSubmit callback upon form submission', () => {
-      const onSubmitSpy = sinon.spy();
-      wrapper = mount(
-        <Form onSubmit={onSubmitSpy}>
-          <Field name="name" value="firstValue" />
-          <button type="submit" />
-        </Form>,
-      );
+    describe('Functionality', () => {
+      it('invoked an onSubmit callback upon form submission', () => {
+        const onSubmitSpy = sinon.spy();
+        wrapper = mount(
+          <Form onSubmit={onSubmitSpy}>
+            <Field name="name" value="firstValue" />
+            <button type="submit" />
+          </Form>,
+        );
 
-      expect(onSubmitSpy.callCount).to.eql(0);
+        expect(onSubmitSpy.callCount).to.eql(0);
 
-      wrapper.find('form').simulate('submit');
+        wrapper.find('form').simulate('submit');
 
-      expect(onSubmitSpy.callCount).to.eql(1);
-      expect(onSubmitSpy.calledWith(wrapper.state())).to.eql(true);
-    });
-
-    it('can be reset through invoking the `reset` method on the instance', () => {
-      const formResetSpy = sinon.spy(Form.prototype, 'reset');
-
-      wrapper = mount(
-        <Form>
-          <Field name="name" value="firstValue" />
-          <button type="submit" />
-        </Form>,
-      );
-
-      expect(formResetSpy.callCount).to.eql(0);
-      expect(wrapper.state().name).to.eql({
-        value: 'firstValue',
-        valid: true,
-        pristine: true,
+        expect(onSubmitSpy.callCount).to.eql(1);
+        expect(onSubmitSpy.calledWith(wrapper.state())).to.eql(true);
       });
 
-      updateInput(wrapper, 'secondValue');
+      it('can be reset through invoking the `reset` method on the instance', () => {
+        const formResetSpy = sinon.spy(Form.prototype, 'reset');
 
-      expect(wrapper.state().name).to.eql({
-        value: 'secondValue',
-        valid: true,
-        pristine: false,
-      });
-
-      wrapper.instance().reset();
-
-      expect(formResetSpy.callCount).to.eql(1);
-      expect(wrapper.state().name).to.eql({
-        value: 'firstValue',
-        valid: true,
-        pristine: true,
-      });
-
-      Form.prototype.reset.restore();
-    });
-
-    it('passes validity information down to components with a `valid` prop', () => {
-      wrapper = mount(
-        <Form>
-          <Field name="name" value="Test Name" valid />
-          <Field name="email" value="user@company.com!!" email />
-        </Form>,
-      );
-
-      expect(wrapper.find(Field).first().props()).to.have.property('name_valid', true);
-      expect(wrapper.find(Field).first().props()).to.have.property('email_valid', false);
-      expect(wrapper.find(Field).last().props()).to.not.have.property('name_valid');
-      expect(wrapper.find(Field).last().props()).to.not.have.property('email_valid');
-    });
-
-    it('passes pristine information down to components with a `pristine` prop', () => {
-      wrapper = mount(
-        <Form>
-          <Field name="name" value="Test Name" pristine />
-        </Form>,
-      );
-
-      expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', true);
-
-      updateInput(wrapper, 'secondValue');
-      expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', false);
-    });
-
-    it(
-      'passes both valid and pristine information down to components with both `valid` and `pristine` props',
-      () => {
         wrapper = mount(
           <Form>
-            <Field name="name" value="" required valid pristine />
+            <Field name="name" value="firstValue" />
+            <button type="submit" />
+          </Form>,
+        );
+
+        expect(formResetSpy.callCount).to.eql(0);
+        expect(wrapper.state().name).to.eql({
+          value: 'firstValue',
+          valid: true,
+          pristine: true,
+        });
+
+        updateInput(wrapper, 'secondValue');
+
+        expect(wrapper.state().name).to.eql({
+          value: 'secondValue',
+          valid: true,
+          pristine: false,
+        });
+
+        wrapper.instance().reset();
+
+        expect(formResetSpy.callCount).to.eql(1);
+        expect(wrapper.state().name).to.eql({
+          value: 'firstValue',
+          valid: true,
+          pristine: true,
+        });
+
+        Form.prototype.reset.restore();
+      });
+    });
+
+    describe('Passing down status', () => {
+      it('passes validity information down to components with a `valid` prop', () => {
+        wrapper = mount(
+          <Form>
+            <Field name="name" value="Test Name" valid />
+            <div>
+              <Field name="email" value="user@company.com!!" email />
+            </div>
+          </Form>,
+        );
+
+        expect(wrapper.find(Field).first().props()).to.have.property('name_valid', true);
+        expect(wrapper.find(Field).first().props()).to.have.property('email_valid', false);
+        expect(wrapper.find(Field).last().props()).to.not.have.property('name_valid');
+        expect(wrapper.find(Field).last().props()).to.not.have.property('email_valid');
+      });
+
+      it('passes pristine information down to components with a `pristine` prop', () => {
+        wrapper = mount(
+          <Form>
+            <div>
+              <Field name="name" value="Test Name" pristine />
+            </div>
           </Form>,
         );
 
         expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', true);
-        expect(wrapper.find(Field).first().props()).to.have.property('name_valid', false);
 
-        updateInput(wrapper, 'Test Name');
+        updateInput(wrapper, 'secondValue');
         expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', false);
-        expect(wrapper.find(Field).first().props()).to.have.property('name_valid', true);
-      },
-    );
+      });
+
+      it(
+        'passes both valid and pristine information down to components with both `valid` and `pristine` props',
+        () => {
+          wrapper = mount(
+            <Form>
+              <div>
+                <Field name="name" value="" required valid pristine />
+              </div>
+            </Form>,
+          );
+
+          expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', true);
+          expect(wrapper.find(Field).first().props()).to.have.property('name_valid', false);
+
+          updateInput(wrapper, 'Test Name');
+          expect(wrapper.find(Field).first().props()).to.have.property('name_pristine', false);
+          expect(wrapper.find(Field).first().props()).to.have.property('name_valid', true);
+        },
+      );
+    });
   });
 });
