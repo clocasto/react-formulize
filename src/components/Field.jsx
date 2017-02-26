@@ -13,12 +13,14 @@ const Field = class extends React.Component {
   constructor(props) {
     super(props);
 
+    const validators = assembleValidators(props);
+
     this.state = {
-      value: props.value || '',
-      valid: false,
+      value: props.value,
+      validators,
+      valid: isValid(props.value, getValuesOf(validators)),
       pristine: true,
       debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
-      validators: assembleValidators(props),
     };
     this.finalValue = null;
 

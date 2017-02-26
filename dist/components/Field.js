@@ -34,13 +34,14 @@ var Field = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Field.__proto__ || Object.getPrototypeOf(Field)).call(this, props));
 
+    var validators = (0, _utilities.assembleValidators)(props);
+
     _this.state = {
-      value: props.value || '',
-      valid: false,
+      value: props.value,
+      validators: validators,
+      valid: (0, _utilities.isValid)(props.value, (0, _utilities.getValuesOf)(validators)),
       pristine: true,
-      debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
-      validators: (0, _utilities.assembleValidators)(props)
-    };
+      debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0 };
     _this.finalValue = null;
 
     _this.onChange = _this.onChange.bind(_this);
