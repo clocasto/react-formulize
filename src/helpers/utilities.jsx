@@ -75,14 +75,18 @@ export function makeFieldProps(child, onChange, state) {
   return null;
 }
 
-export function mapPropsToChild(child, type, propFunction) {
-  if (child.type === type || (typeof child.type === 'function' && child.type.name === type)) {
-    return React.cloneElement(child, propFunction(child));
-  }
+export function mapPropsToChild(child, propsForChildType) {
+  const type = (child.type === 'function') ? child.type.name : child.type;
+  const childProps = {};
+
+  if (child.props.valid) Object.assign(childProps, propsForChildType.valid);
+  if (child.props.pristine) Object.assign(childProps, propsForChildType.pristine);
+  if (type === 'Field') return React.cloneElement(child, propsForChildType.Field(child));
+
   if (child.props && child.props.children) {
     const newChildren = React.Children.map(child.props.children, nestedChild => (
-      mapPropsToChild(nestedChild, type, propFunction)));
-    return React.cloneElement(child, null, newChildren);
+      mapPropsToChild(nestedChild, propsForChildType)));
+    return React.cloneElement(child, childProps, newChildren);
   }
   return child;
 }
