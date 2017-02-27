@@ -8,8 +8,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.assembleValidators = assembleValidators;
 exports.updateValidators = updateValidators;
-exports.isValid = isValid;
 exports.getValuesOf = getValuesOf;
+exports.isValid = isValid;
 exports.buildStateForField = buildStateForField;
 exports.addFieldsToState = addFieldsToState;
 exports.makeFieldProps = makeFieldProps;
@@ -74,19 +74,23 @@ function updateValidators(config, validators) {
   return Object.assign({}, validators, assembleValidators(config));
 }
 
-function isValid(value, validators) {
-  return validators.reduce(function (status, validator) {
-    if (!status) return false;
-    return validator(value);
-  }, true);
-}
-
 function getValuesOf() {
   var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
   return Object.keys(obj).map(function (key) {
     return obj[key];
   });
+}
+
+function isValid(value, validatorSet) {
+  var validators = validatorSet;
+  if (!Array.isArray(validators)) {
+    validators = getValuesOf(validatorSet);
+  }
+  return validators.reduce(function (status, validator) {
+    if (!status) return false;
+    return validator(value);
+  }, true);
 }
 
 function buildStateForField(fieldProps) {
