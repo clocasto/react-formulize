@@ -29,15 +29,19 @@ export function updateValidators(config, validators) {
   return Object.assign({}, validators, assembleValidators(config));
 }
 
-export function isValid(value, validators) {
+export function getValuesOf(obj = {}) {
+  return Object.keys(obj).map(key => obj[key]);
+}
+
+export function isValid(value, validatorSet) {
+  let validators = validatorSet;
+  if (!Array.isArray(validators)) {
+    validators = getValuesOf(validatorSet);
+  }
   return validators.reduce((status, validator) => {
     if (!status) return false;
     return validator(value);
   }, true);
-}
-
-export function getValuesOf(obj = {}) {
-  return Object.keys(obj).map(key => obj[key]);
 }
 
 export function buildStateForField(fieldProps) {
