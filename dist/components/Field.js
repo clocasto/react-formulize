@@ -39,7 +39,7 @@ var Field = function (_React$Component) {
     _this.state = {
       validators: validators,
       value: props.value,
-      valid: (0, _utilities.isValid)(props.value, (0, _utilities.getValuesOf)(validators)),
+      valid: (0, _utilities.isValid)(props.value, validators),
       pristine: true,
       debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0 };
     _this.finalValue = null;
@@ -58,19 +58,19 @@ var Field = function (_React$Component) {
         this.cancelBroadcast(nextProps.passedValue);
         this.setState({
           value: nextProps.passedValue,
-          valid: (0, _utilities.isValid)(nextProps.passedValue, (0, _utilities.getValuesOf)(this.state.validators))
+          valid: (0, _utilities.isValid)(nextProps.passedValue, this.state.validators)
         }, this.debouncedBroadcastChange);
       } else if (nextProps.value !== this.props.value && nextProps.value !== this.state.value) {
         this.cancelBroadcast(nextProps.value);
         this.setState({
           value: nextProps.value,
-          valid: (0, _utilities.isValid)(nextProps.passedValue, (0, _utilities.getValuesOf)(this.state.validators))
+          valid: (0, _utilities.isValid)(nextProps.value, this.state.validators)
         });
       }
 
       if (this.props.match !== nextProps.match) {
         var validators = (0, _utilities.updateValidators)({ match: nextProps.match }, this.state.validators);
-        this.setState({ valid: (0, _utilities.isValid)(this.state.value, (0, _utilities.getValuesOf)(validators)), validators: validators });
+        this.setState({ valid: (0, _utilities.isValid)(this.state.value, validators), validators: validators });
       }
     }
   }, {
@@ -94,11 +94,9 @@ var Field = function (_React$Component) {
       var value = e.target.value;
       this.finalValue = value;
 
-      var validators = (0, _utilities.getValuesOf)(this.state.validators);
-
       this.setState({
         value: value,
-        valid: (0, _utilities.isValid)(value, validators),
+        valid: (0, _utilities.isValid)(value, this.state.validators),
         pristine: false
       }, this.debouncedBroadcastChange);
     }

@@ -4,7 +4,6 @@ import {
   assembleValidators,
   isValid,
   updateValidators,
-  getValuesOf,
   mapPropsToChild,
   makePropsForStatus,
 } from '../helpers/utilities';
@@ -18,7 +17,7 @@ const Field = class extends React.Component {
     this.state = {
       validators,
       value: props.value,
-      valid: isValid(props.value, getValuesOf(validators)),
+      valid: isValid(props.value, validators),
       pristine: true,
       debounce: Math.floor(Math.pow(Math.pow(+props.debounce, 2), 0.5)) || 0, //eslint-disable-line
     };
@@ -36,19 +35,19 @@ const Field = class extends React.Component {
       this.cancelBroadcast(nextProps.passedValue);
       this.setState({
         value: nextProps.passedValue,
-        valid: isValid(nextProps.passedValue, getValuesOf(this.state.validators)),
+        valid: isValid(nextProps.passedValue, this.state.validators),
       }, this.debouncedBroadcastChange);
     } else if (nextProps.value !== this.props.value && nextProps.value !== this.state.value) {
       this.cancelBroadcast(nextProps.value);
       this.setState({
         value: nextProps.value,
-        valid: isValid(nextProps.passedValue, getValuesOf(this.state.validators)),
+        valid: isValid(nextProps.value, this.state.validators),
       });
     }
 
     if (this.props.match !== nextProps.match) {
       const validators = updateValidators({ match: nextProps.match }, this.state.validators);
-      this.setState({ valid: isValid(this.state.value, getValuesOf(validators)), validators });
+      this.setState({ valid: isValid(this.state.value, validators), validators });
     }
   }
 
@@ -69,11 +68,9 @@ const Field = class extends React.Component {
     const value = e.target.value;
     this.finalValue = value;
 
-    const validators = getValuesOf(this.state.validators);
-
     this.setState({
       value,
-      valid: isValid(value, validators),
+      valid: isValid(value, this.state.validators),
       pristine: false,
     }, this.debouncedBroadcastChange);
   }
