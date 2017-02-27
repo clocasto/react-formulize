@@ -56,10 +56,16 @@ var Field = function (_React$Component) {
     value: function componentWillUpdate(nextProps) {
       if (nextProps.passedValue !== this.props.passedValue) {
         this.cancelBroadcast(nextProps.passedValue);
-        this.setState({ value: nextProps.passedValue }, this.debouncedBroadcastChange);
+        this.setState({
+          value: nextProps.passedValue,
+          valid: (0, _utilities.isValid)(nextProps.passedValue, (0, _utilities.getValuesOf)(this.state.validators))
+        }, this.debouncedBroadcastChange);
       } else if (nextProps.value !== this.props.value && nextProps.value !== this.state.value) {
         this.cancelBroadcast(nextProps.value);
-        this.setState({ value: nextProps.value });
+        this.setState({
+          value: nextProps.value,
+          valid: (0, _utilities.isValid)(nextProps.passedValue, (0, _utilities.getValuesOf)(this.state.validators))
+        });
       }
 
       if (this.props.match !== nextProps.match) {

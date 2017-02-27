@@ -34,10 +34,16 @@ const Field = class extends React.Component {
   componentWillUpdate(nextProps) {
     if (nextProps.passedValue !== this.props.passedValue) {
       this.cancelBroadcast(nextProps.passedValue);
-      this.setState({ value: nextProps.passedValue }, this.debouncedBroadcastChange);
+      this.setState({
+        value: nextProps.passedValue,
+        valid: isValid(nextProps.passedValue, getValuesOf(this.state.validators)),
+      }, this.debouncedBroadcastChange);
     } else if (nextProps.value !== this.props.value && nextProps.value !== this.state.value) {
       this.cancelBroadcast(nextProps.value);
-      this.setState({ value: nextProps.value });
+      this.setState({
+        value: nextProps.value,
+        valid: isValid(nextProps.passedValue, getValuesOf(this.state.validators)),
+      });
     }
 
     if (this.props.match !== nextProps.match) {
